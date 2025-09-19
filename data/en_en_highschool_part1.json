@@ -1,0 +1,3002 @@
+[
+  {
+    "hint": "A place where students study",
+    "answer": "school",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school2",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house2",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital2",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher2",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student2",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen2",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook2",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler2",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast2",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner2",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school3",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house3",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital3",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher3",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student3",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen3",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook3",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler3",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast3",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner3",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school4",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house4",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital4",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher4",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student4",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen4",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook4",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler4",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast4",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner4",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school5",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house5",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital5",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher5",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student5",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen5",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook5",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler5",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast5",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner5",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school6",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house6",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital6",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher6",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student6",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen6",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook6",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler6",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast6",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner6",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school7",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house7",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital7",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher7",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student7",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen7",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook7",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler7",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast7",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner7",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school8",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house8",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital8",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher8",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student8",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen8",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook8",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler8",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast8",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner8",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school9",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house9",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital9",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher9",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student9",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen9",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook9",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler9",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast9",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner9",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school10",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house10",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital10",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher10",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student10",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen10",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook10",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler10",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast10",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner10",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school11",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house11",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital11",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher11",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student11",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen11",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook11",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler11",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast11",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner11",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school12",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house12",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital12",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher12",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student12",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen12",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook12",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler12",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast12",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner12",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school13",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house13",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital13",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher13",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student13",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen13",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook13",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler13",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast13",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner13",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school14",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house14",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital14",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher14",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student14",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen14",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook14",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler14",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast14",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner14",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school15",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house15",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital15",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher15",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student15",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen15",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook15",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler15",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast15",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner15",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school16",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house16",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital16",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher16",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student16",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen16",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook16",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler16",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast16",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner16",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school17",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house17",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital17",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher17",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student17",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen17",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook17",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler17",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast17",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner17",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school18",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house18",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital18",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher18",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student18",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen18",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook18",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler18",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast18",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner18",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school19",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house19",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital19",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher19",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student19",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen19",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook19",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler19",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast19",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner19",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school20",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house20",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital20",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher20",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student20",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen20",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook20",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler20",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast20",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner20",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school21",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house21",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital21",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher21",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student21",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen21",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook21",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler21",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast21",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner21",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school22",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house22",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital22",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher22",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student22",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen22",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook22",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler22",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast22",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner22",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school23",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house23",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital23",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher23",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student23",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen23",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook23",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler23",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast23",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner23",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school24",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house24",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital24",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher24",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student24",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen24",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook24",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler24",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast24",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner24",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school25",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house25",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital25",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher25",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student25",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen25",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook25",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler25",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast25",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner25",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school26",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house26",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital26",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher26",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student26",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen26",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook26",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler26",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast26",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner26",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school27",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house27",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital27",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher27",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student27",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen27",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook27",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler27",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast27",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner27",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school28",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house28",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital28",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher28",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student28",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen28",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook28",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler28",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast28",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner28",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school29",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house29",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital29",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher29",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student29",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen29",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook29",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler29",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast29",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner29",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school30",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house30",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital30",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher30",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student30",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen30",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook30",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler30",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast30",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner30",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school31",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house31",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital31",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher31",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student31",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen31",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook31",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler31",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast31",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner31",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school32",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house32",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital32",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher32",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student32",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen32",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook32",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler32",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast32",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner32",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school33",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house33",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital33",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher33",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student33",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen33",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook33",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler33",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast33",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner33",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school34",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house34",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital34",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher34",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student34",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen34",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook34",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler34",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast34",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner34",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school35",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house35",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital35",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher35",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student35",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen35",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook35",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler35",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast35",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner35",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school36",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house36",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital36",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher36",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student36",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen36",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook36",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler36",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast36",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner36",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school37",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house37",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital37",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher37",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student37",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen37",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook37",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler37",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast37",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner37",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school38",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house38",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital38",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher38",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student38",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen38",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook38",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler38",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast38",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner38",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school39",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house39",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital39",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher39",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student39",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen39",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook39",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler39",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast39",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner39",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school40",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house40",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital40",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher40",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student40",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen40",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook40",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler40",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast40",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner40",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school41",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house41",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital41",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher41",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student41",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen41",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook41",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler41",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast41",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner41",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school42",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house42",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital42",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher42",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student42",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen42",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook42",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler42",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast42",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner42",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school43",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house43",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital43",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher43",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student43",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen43",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook43",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler43",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast43",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner43",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school44",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house44",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital44",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher44",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student44",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen44",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook44",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler44",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast44",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner44",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school45",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house45",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital45",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher45",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student45",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen45",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook45",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler45",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast45",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner45",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school46",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house46",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital46",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher46",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student46",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen46",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook46",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler46",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast46",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner46",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school47",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house47",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital47",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher47",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student47",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen47",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook47",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler47",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast47",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner47",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school48",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house48",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital48",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher48",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student48",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen48",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook48",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler48",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast48",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner48",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school49",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house49",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital49",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher49",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student49",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen49",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook49",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler49",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast49",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner49",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where students study",
+    "answer": "school50",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A place where people live",
+    "answer": "house50",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A large building where sick people are treated",
+    "answer": "hospital50",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who teaches",
+    "answer": "teacher50",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A person who studies at school",
+    "answer": "student50",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "Something you write with",
+    "answer": "pen50",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A book with blank pages for writing",
+    "answer": "notebook50",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "A tool used for mathematics",
+    "answer": "ruler50",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the morning",
+    "answer": "breakfast50",
+    "correctStreak": 0,
+    "lastMistake": 0
+  },
+  {
+    "hint": "The meal you eat in the evening",
+    "answer": "dinner50",
+    "correctStreak": 0,
+    "lastMistake": 0
+  }
+]

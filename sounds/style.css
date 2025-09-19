@@ -1,0 +1,123 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#loading-message {
+  position: absolute;
+  font-size: 20px;
+  top: 45%;
+  text-align: center;
+}
+
+#startBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  padding: 12px 24px;
+  cursor: pointer;
+  border: none;
+  background-color: #61dafb;
+  border-radius: 6px;
+}
+
+#game-container {
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 20px 40px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #000;
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+#problem-box {
+  margin: 20px 0;
+  position: relative;
+  height: 120px;
+}
+
+#hint {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+#answer-input {
+  padding: 10px;
+  font-size: 16px;
+  width: 80%;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+#submit-btn, #restartBtn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #61dafb;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+#submit-btn:hover, #restartBtn:hover {
+  background-color: #4eaed6;
+}
+
+#feedback {
+  margin-top: 15px;
+  font-size: 16px;
+  height: 24px;
+}
+
+#base {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 48px;
+  z-index: 2;
+  transition: opacity 0.3s ease;
+}
+
+#base::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(0, 200, 255, 0.15);
+  border: 2px solid rgba(0, 200, 255, 0.3);
+  z-index: -1;
+  pointer-events: none;
+}
+
+#meteor {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 32px;
+  transition: top 0.05s linear;
+  z-index: 5;
+}
+

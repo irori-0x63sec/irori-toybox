@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LexiBlaster - Multi Meteor Mode</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="loading-message" style="text-align:center;">Loading...</div>
+  <button id="startBtn" style="display: none;">Start</button>
+  <div id="game-container" style="display: none;">
+    <h1>🚀 LexiBlaster</h1>
+    <div id="problem-box">
+      <p id="hint-text">Hint: ...</p>
+      <p id="hint-reveal" style="font-size: 14px; color: #ccc";></p>
+      <p id="correct-answer" style="display:none; color:#aaa; font-size: 14px;"></p>
+    </div>
+
+    <input
+      type="text"
+      id="answer-input"
+      placeholder="Type the word here..."
+      autocomplete="off"
+    />
+    <button id="submit-btn">Blast!</button>
+    <button id="restartBtn">Restart</button>
+
+    <div id="feedback"></div>
+  </div>
+  <div id="meteor">🪨</div>
+  <div id="base">🛰️</div>
+
+  <script src="main.js"></script>
+</body>
+</html>

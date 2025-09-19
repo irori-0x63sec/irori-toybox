@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lexi Blaster</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Lexi Blaster" />
+  <meta property="og:description" content="英単語で敵を撃ち抜け！ハイスコアを目指せ。" />
+  <!-- 公開URLに置き換えてね（相対パスでも出るサービスもあるけど、基本は絶対URL推奨） -->
+  <meta property="og:image" content="https://your-domain.example/social/lexi-blaster-og.png" />
+  <meta property="og:url" content="https://your-domain.example/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Lexi Blaster" />
+
+  <!-- X(Twitter) Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Lexi Blaster" />
+  <meta name="twitter:description" content="英単語タイピングゲーム Lexi Blaster" />
+  <meta name="twitter:image" content="https://your-domain.example/social/lexi-blaster-og.png" />
+  <!-- （任意）公式アカがあれば
+  <meta name="twitter:site" content="@YourAccount" />
+  -->
+
+  <link rel="icon" href="/favicon.ico" />
+
+  <!-- ドット調フォント -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="wrap">
+    <canvas id="gameCanvas" width="800" height="720"></canvas>
+  </div>
+
+  <button id="shareXBtn" class="share-x-btn" hidden>🡕 Xで共有</button>
+  
+  <!-- ゲーム本体 -->
+  <script src="canvas.js"></script>
+  <!-- スコアオーバーレイ（共有済み） -->
+  <script src="score.js"></script>
+  <!-- ロジック -->
+  <script src="main.js"></script>
+</body>
+</html>
