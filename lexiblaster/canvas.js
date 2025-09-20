@@ -6,44 +6,49 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 /* ==== Help Button & Overlay ===================================== */
-/*  使い方:
-    1) 本ファイル内で initHelp(canvas) を一度呼出し（下で呼んでます）
-    2) 毎フレームの最後に drawHelp(ctx, canvas) を呼出し（下のループ内で呼んでます）
-    3) 位置は音符ボタンのすぐ左（右上）に配置
-*/
 const HELP = {
   visible: false,
   x: 0, y: 0, r: 18,
-  offsetFromRightPx: 56,  // 音符から左に少し
+  offsetFromRightPx: 56,
   marginTopPx: 12
 };
-function initHelp(canvas) {
-  const updateHelpPos = () => {
-    const base = Math.min(canvas.width, canvas.height);
-    HELP.r = Math.min(22, Math.max(16, Math.round(base * 0.028)));
-    HELP.x = canvas.width - HELP.offsetFromRightPx - HELP.r;
-    HELP.y = HELP.marginTopPx + HELP.r;
-  };
-  updateHelpPos();
-  window.addEventListener('resize', updateHelpPos);
 
-  canvas.addEventListener('click', (e) => {
+function updateHelpPos(canvas) {
+  const base = Math.min(canvas.width, canvas.height);
+  HELP.r = Math.min(22, Math.max(16, Math.round(base * 0.028)));
+  HELP.x = canvas.width - HELP.offsetFromRightPx - HELP.r;
+  HELP.y = HELP.marginTopPx + HELP.r;
+}
+
+function initHelp(canvas) {
+  updateHelpPos(canvas);
+  window.addEventListener('resize', () => updateHelpPos(canvas));
+
+  // ← click ではなく pointerdown を使う
+  canvas.addEventListener('pointerdown', (e) => {
     const { x, y } = getCanvasPointerPos(canvas, e);
 
-    // オーバーレイ表示中はどこでも閉じる
-    if (HELP.visible) { HELP.visible = false; return; }
-
-    // ?ボタン命中
-    if (isHit(x, y, HELP.x, HELP.y, HELP.r)) {
-      HELP.visible = true;
+    // オーバーレイ表示中はどこでも閉じる（他UIに伝播させない）
+    if (HELP.visible) {
+      HELP.visible = false;
+      e.stopPropagation();
       return;
     }
-  });
+
+    // ?ボタン命中で開く（他UIに伝播させない）
+    if (isHit(x, y, HELP.x, HELP.y, HELP.r)) {
+      HELP.visible = true;
+      e.stopPropagation();
+      return;
+    }
+  }, { capture: true });
 }
+
 function drawHelp(ctx, canvas) {
   drawHelpButton(ctx);
   if (HELP.visible) drawHelpOverlay(ctx, canvas);
 }
+
 function drawHelpButton(ctx) {
   ctx.save();
   ctx.lineWidth = 2;
@@ -52,6 +57,7 @@ function drawHelpButton(ctx) {
   ctx.beginPath();
   ctx.arc(HELP.x, HELP.y, HELP.r, 0, Math.PI * 2);
   ctx.fill(); ctx.stroke();
+
   ctx.fillStyle = '#fff';
   ctx.font = `${Math.round(HELP.r * 1.2)}px system-ui, -apple-system, Segoe UI, Roboto, sans-serif`;
   ctx.textAlign = 'center';
@@ -59,6 +65,7 @@ function drawHelpButton(ctx) {
   ctx.fillText('?', HELP.x, HELP.y + (HELP.r * 0.05));
   ctx.restore();
 }
+
 function drawHelpOverlay(ctx, canvas) {
   ctx.save();
   ctx.fillStyle = 'rgba(0,0,0,0.78)';
@@ -91,14 +98,13 @@ function drawHelpOverlay(ctx, canvas) {
   ty += titleSize + 12;
 
   ctx.font = `${bodySize}px system-ui, -apple-system, Segoe UI, Roboto, sans-serif`;
-    const lines = [
-      '1) 画面上のヒントを見て、正解の単語をタイプします。',
-      '2) Enter（または発射ボタン）で解答を送信。正解でスコア+、ミスでヒントの文字が1つ開きます。',
-      '3) ライフが0になるとゲームオーバー。スコアはXで共有できます。',
-      '',
-      '※ 画面のどこか（キャンバス内）をクリック/タップすると説明を閉じます。'
-    ];
-
+  const lines = [
+    '1) 画面上のヒントを見て、正解の単語をタイプします。',
+    '2) Enter（または発射ボタン）で解答。正解でスコア+、ミスでヒントの文字が1つ開きます。',
+    '3) ライフが0になるとゲームオーバー。スコアはXで共有！',
+    '',
+    '※ 画面のどこかをクリック/タップすると説明を閉じます。'
+  ];
   const lineGap = 8;
   for (const line of lines) {
     ctx.fillText(line, tx, ty);
@@ -106,6 +112,8 @@ function drawHelpOverlay(ctx, canvas) {
   }
   ctx.restore();
 }
+/* ================================================================ */
+
 function roundRect(ctx, x, y, w, h, r) {
   const rr = Math.min(r, w * 0.5, h * 0.5);
   ctx.beginPath();
