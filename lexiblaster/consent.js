@@ -1,115 +1,91 @@
-// 保存先: localStorage('lexiConsent') + cookie('_lexi_consent')
-// 期待する要素ID: cookieOverlay, btn-accept-all, btn-accept-essential, btn-reject-all
+// consent.js（差し替え）
 (function () {
-  'use strict';
+  const KEY = 'lexiConsent.v1';
+  const SCRIPTS = ['canvas.js', 'score.js', 'main.js'];
 
-  const KEY = 'lexiConsent';
-  const COOKIE = '_lexi_consent';
-  const SELECTORS = {
-    overlay:  'cookieOverlay',
-    acceptAll: 'btn-accept-all',
-    acceptEssential: 'btn-accept-essential',
-    rejectAll: 'btn-reject-all',
-    // （任意）再設定リンクがある場合
-    reopenLink: '.cookie-footer-link .linklike'
-  };
+  const $ = (id) => document.getElementById(id);
 
-  // ---- utils ----
-  const qs  = (sel) => document.querySelector(sel);
-  const qsa = (sel) => Array.from(document.querySelectorAll(sel));
+  function show(el) { if (el) el.hidden = false; }
+  function hide(el) { if (el) el.hidden = true; }
+  function rm(el)   { if (el && el.parentNode) el.parentNode.removeChild(el); }
 
-  function setLS(val) { try { localStorage.setItem(KEY, JSON.stringify(val)); } catch {} }
-  function getLS() {
-    try { const v = localStorage.getItem(KEY); return v ? JSON.parse(v) : null; }
-    catch { return null; }
-  }
-  function setCookie(name, value, days = 180) {
-    const d = new Date(); d.setTime(d.getTime() + days*24*60*60*1000);
-    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${d.toUTCString()}; path=/; SameSite=Lax`;
-  }
-  function getCookie(name) {
-    const m = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-    return m ? decodeURIComponent(m[1]) : null;
-  }
-
-  function hideOverlay() {
-    const ov = qs(SELECTORS.overlay);
-    if (!ov) return;
-    ov.style.display = 'none';
-    ov.setAttribute('aria-hidden', 'true');
-    const canvas = document.getElementById('gameCanvas');
-    if (canvas) canvas.style.pointerEvents = 'auto';
-  }
-  function showOverlay() {
-    const ov = qs(SELECTORS.overlay);
-    if (!ov) return;
-    ov.style.display = 'grid';
-    ov.removeAttribute('aria-hidden');
-    const canvas = document.getElementById('gameCanvas');
-    if (canvas) canvas.style.pointerEvents = 'none';
-  }
-
-  function dispatchConsent(choice) {
-    document.dispatchEvent(new CustomEvent('lexi:consent', { detail: choice }));
-    if (typeof window.__onConsentDecided === 'function') {
-      try { window.__onConsentDecided(choice); } catch {}
+  function loadGameScripts() {
+    // すでに読込済みなら二重ロードしない
+    if (document.querySelector('script[data-lexi-game="1"]')) return;
+    for (const src of SCRIPTS) {
+      const s = document.createElement('script');
+      s.src = src;
+      s.defer = true;
+      s.dataset.lexiGame = '1';
+      document.body.appendChild(s);
     }
   }
 
-  function decideAndClose(status) {
-    const payload = { status, ts: Date.now(), ver: 1 };
-    setLS(payload);
-    setCookie(COOKIE, status);
-    hideOverlay();
-    dispatchConsent(payload);
+  function applyChoice(choice) {
+    // 保存
+    try {
+      localStorage.setItem(KEY, JSON.stringify({ choice, at: Date.now() }));
+    } catch (_) {}
+
+    // 閉じる（確実に）
+    rm($('cookie-overlay'));
+
+    // フッターの「Cookie設定」リンクは表示しておく
+    show($('cookie-footer-link'));
+
+    // ゲーム読み込み
+    loadGameScripts();
   }
 
-  // ---- bind buttons（直接バインド＋委譲の二段構え）----
-  function bind() {
-    const ov = qs(SELECTORS.overlay);
+  function reopenDialog() {
+    // まだDOMに残っていなければ作り直し（今回は最初のHTMLを使う前提）
+    const overlay = $('cookie-overlay');
+    if (!overlay) return; // 既に削除した後は何もしない（再表示は別UIで実装想定）
+    show(overlay);
+  }
 
-    // 直接バインド
-    const a = qs(SELECTORS.acceptAll);
-    const e = qs(SELECTORS.acceptEssential);
-    const r = qs(SELECTORS.rejectAll);
-    if (a) a.addEventListener('click', (ev) => { ev.preventDefault(); decideAndClose('all'); });
-    if (e) e.addEventListener('click', (ev) => { ev.preventDefault(); decideAndClose('essential'); });
-    if (r) r.addEventListener('click', (ev) => { ev.preventDefault(); decideAndClose('reject'); });
+  // 初期化
+  window.addEventListener('DOMContentLoaded', () => {
+    const overlay = $('cookie-overlay');
+    const btnAll  = $('cookie-accept-all');
+    const btnEss  = $('cookie-accept-essential');
+    const btnRej  = $('cookie-reject-all');
+    const footer  = $('cookie-footer-link');
+    const openBtn = $('cookie-open-settings');
 
-    // イベント委譲（ID が正しければ確実に反応）
-    if (ov) {
-      ov.addEventListener('click', (ev) => {
-        const t = ev.target;
-        if (t.closest(SELECTORS.acceptAll))      { ev.preventDefault(); decideAndClose('all');       return; }
-        if (t.closest(SELECTORS.acceptEssential)){ ev.preventDefault(); decideAndClose('essential');  return; }
-        if (t.closest(SELECTORS.rejectAll))      { ev.preventDefault(); decideAndClose('reject');     return; }
-        // バックドロップクリックでは閉じない（必須選択）
-      }, true);
+    // ID が正しく取得できているかのデバッグ
+    // console.log({
+    //   overlay: !!overlay, btnAll: !!btnAll, btnEss: !!btnEss, btnRej: !!btnRej, footer: !!footer, openBtn: !!openBtn
+    // });
+
+    // 既に選択済みならオーバーレイ出さずにゲーム読み込み
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (_) {}
+    if (saved && saved.choice) {
+      // 設定済み → オーバーレイは消してゲームだけ読む
+      rm(overlay);
+      show(footer);          // 設定リンクは出しておく
+      loadGameScripts();
+      return;
     }
 
-    // 再設定（任意）
-    const reopen = qs(SELECTORS.reopenLink);
-    if (reopen) reopen.addEventListener('click', (e) => { e.preventDefault(); showOverlay(); });
-  }
+    // 未選択 → オーバーレイを表示し、選ぶまでゲームは読み込まない
+    show(overlay);
+    hide(footer);
 
-  function init() {
-    bind();
+    // クリックで確実に閉じ＆保存＆ゲーム読み込み
+    if (btnAll) btnAll.addEventListener('click', () => applyChoice('all'));
+    if (btnEss) btnEss.addEventListener('click', () => applyChoice('essential'));
+    if (btnRej) btnRej.addEventListener('click', () => applyChoice('reject'));
 
-    // 既に同意済みなら即閉じる（イベントは飛ばす）
-    const saved = getLS() || getCookie(COOKIE);
-    if (saved) {
-      hideOverlay();
-      const status = typeof saved === 'string' ? saved : saved.status;
-      dispatchConsent({ status, ts: Date.now(), ver: 1, restored: true });
-    } else {
-      showOverlay();
-    }
-  }
-
-  // DOM 準備前後どちらでも初期化されるように
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init, { once: true });
-  } else {
-    init();
-  }
+    // 再表示用リンク
+    if (openBtn) openBtn.addEventListener('click', () => {
+      // いったん簡易実装：ページを再読込して再表示（最小実装で確実）
+      // location.reload();
+      // （ダイアログをDOMから消している場合は上のreloadでOK。
+      //  残している場合は単純に表示でよい）
+      const ov = $('cookie-overlay');
+      if (ov) show(ov);
+    });
+  });
 })();
