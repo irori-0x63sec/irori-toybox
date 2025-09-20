@@ -1,9 +1,135 @@
 // === canvas.js ===
 // タイトル/レベル選択/カウントダウン/プレイ/結果
-// 安全入力・英日両対応・ミュートUI(♬)・メテオ/爆発/尾・Base差分
+// 安全入力・英日両対応・ミュートUI(♬)・メテオ/爆発/尾・Base差分 + Help(?)
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+
+/* ==== Help Button & Overlay ===================================== */
+/*  使い方:
+    1) 本ファイル内で initHelp(canvas) を一度呼出し（下で呼んでます）
+    2) 毎フレームの最後に drawHelp(ctx, canvas) を呼出し（下のループ内で呼んでます）
+    3) 位置は音符ボタンのすぐ左（右上）に配置
+*/
+const HELP = {
+  visible: false,
+  x: 0, y: 0, r: 18,
+  offsetFromRightPx: 56,  // 音符から左に少し
+  marginTopPx: 12
+};
+function initHelp(canvas) {
+  const updateHelpPos = () => {
+    const base = Math.min(canvas.width, canvas.height);
+    HELP.r = Math.min(22, Math.max(16, Math.round(base * 0.028)));
+    HELP.x = canvas.width - HELP.offsetFromRightPx - HELP.r;
+    HELP.y = HELP.marginTopPx + HELP.r;
+  };
+  updateHelpPos();
+  window.addEventListener('resize', updateHelpPos);
+
+  canvas.addEventListener('click', (e) => {
+    const { x, y } = getCanvasPointerPos(canvas, e);
+
+    // オーバーレイ表示中はどこでも閉じる
+    if (HELP.visible) { HELP.visible = false; return; }
+
+    // ?ボタン命中
+    if (isHit(x, y, HELP.x, HELP.y, HELP.r)) {
+      HELP.visible = true;
+      return;
+    }
+  });
+}
+function drawHelp(ctx, canvas) {
+  drawHelpButton(ctx);
+  if (HELP.visible) drawHelpOverlay(ctx, canvas);
+}
+function drawHelpButton(ctx) {
+  ctx.save();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+  ctx.fillStyle   = 'rgba(0,0,0,0.35)';
+  ctx.beginPath();
+  ctx.arc(HELP.x, HELP.y, HELP.r, 0, Math.PI * 2);
+  ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#fff';
+  ctx.font = `${Math.round(HELP.r * 1.2)}px system-ui, -apple-system, Segoe UI, Roboto, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('?', HELP.x, HELP.y + (HELP.r * 0.05));
+  ctx.restore();
+}
+function drawHelpOverlay(ctx, canvas) {
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.78)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const pad = 20;
+  const cardW = Math.min(canvas.width * 0.9, 720);
+  const cardH = Math.min(canvas.height * 0.75, 420);
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+  const x = Math.round(cx - cardW / 2);
+  const y = Math.round(cy - cardH / 2);
+  const r = 14;
+
+  roundRect(ctx, x, y, cardW, cardH, r);
+  ctx.fillStyle = 'rgba(30,32,36,0.95)';
+  ctx.fill();
+
+  ctx.fillStyle = '#fff';
+  const titleSize = 22;
+  const bodySize  = 16;
+  ctx.font = `600 ${titleSize}px system-ui, -apple-system, Segoe UI, Roboto, sans-serif`;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+
+  const tx = x + pad;
+  let ty  = y + pad;
+
+  ctx.fillText('遊び方 – Lexi Blaster', tx, ty);
+  ty += titleSize + 12;
+
+  ctx.font = `${bodySize}px system-ui, -apple-system, Segoe UI, Roboto, sans-serif`;
+    const lines = [
+      '1) 画面上のヒントを見て、正解の単語をタイプします。',
+      '2) Enter（または発射ボタン）で解答を送信。正解でスコア+、ミスでヒントの文字が1つ開きます。',
+      '3) ライフが0になるとゲームオーバー。スコアはXで共有できます。',
+      '',
+      '※ 画面のどこか（キャンバス内）をクリック/タップすると説明を閉じます。'
+    ];
+
+  const lineGap = 8;
+  for (const line of lines) {
+    ctx.fillText(line, tx, ty);
+    ty += bodySize + lineGap;
+  }
+  ctx.restore();
+}
+function roundRect(ctx, x, y, w, h, r) {
+  const rr = Math.min(r, w * 0.5, h * 0.5);
+  ctx.beginPath();
+  ctx.moveTo(x + rr, y);
+  ctx.arcTo(x + w, y,     x + w, y + h, rr);
+  ctx.arcTo(x + w, y + h, x,     y + h, rr);
+  ctx.arcTo(x,     y + h, x,     y,     rr);
+  ctx.arcTo(x,     y,     x + w, y,     rr);
+  ctx.closePath();
+}
+function getCanvasPointerPos(canvas, e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width  / rect.width;
+  const scaleY = canvas.height / rect.height;
+  return {
+    x: (e.clientX - rect.left) * scaleX,
+    y: (e.clientY - rect.top)  * scaleY
+  };
+}
+function isHit(px, py, cx, cy, r) {
+  const dx = px - cx, dy = py - cy;
+  return (dx * dx + dy * dy) <= (r * r);
+}
+/* ================================================================ */
 
 // ---- Secure Hidden Input for JP/EN typing ----
 const hidden = document.createElement('input');
@@ -32,8 +158,6 @@ function sanitize(str, maxLen=64){
   const clean = (nfkc.match(ALLOWED_RE) || []).join('');
   return clean.slice(0, maxLen);
 }
-
-// paste は常にテキストのみ＆サニタイズ
 hidden.addEventListener('paste', (e)=>{
   e.preventDefault();
   const t = (e.clipboardData && e.clipboardData.getData('text')) || '';
@@ -41,8 +165,6 @@ hidden.addEventListener('paste', (e)=>{
   hidden.value = clean;
   model.input = clean;
 });
-
-// 入力同期
 hidden.addEventListener('input', ()=>{
   const clean = sanitize(hidden.value);
   if (clean !== hidden.value){
@@ -52,8 +174,6 @@ hidden.addEventListener('input', ()=>{
   model.input = clean;
   if (typeof model.onInputChange === 'function') model.onInputChange(model.input);
 });
-
-// DnD/ショートカット制御
 window.addEventListener('dragover', e=> e.preventDefault());
 window.addEventListener('drop',     e=> e.preventDefault());
 document.addEventListener('keydown', (e)=>{
@@ -61,7 +181,6 @@ document.addEventListener('keydown', (e)=>{
   if (vKey) e.preventDefault();
 }, {capture:true});
 
-// API同期フック
 const _origSetInput   = setInput;
 const _origFocusInput = focusInput;
 setInput = function(s){
@@ -113,7 +232,6 @@ window.canvasGameSFX = sfx;
 
 const FPS = 3;
 const FRAME_DURATION = 1000 / FPS;
-// baseは1フレーム前提（差分は別画像）
 let baseFrameCount   = 1;
 let meteorFrameCount = 3;
 let boomFrameCount   = 4;
@@ -281,7 +399,6 @@ function drawPixelText(text,x,y,size=12,align='left',color='#fff'){
   ctx.fillText(text, ix, iy);
   ctx.restore();
 }
-
 function drawPixelTextSkew(text,x,y,size=48,align='center',color='#ff9f43',skew=-0.32){
   ctx.save();
   ctx.translate(Math.round(x), Math.round(y));
@@ -298,7 +415,6 @@ function drawPixelTextSkew(text,x,y,size=48,align='center',color='#ff9f43',skew=
   ctx.fillText(text, 0, 0);
   ctx.restore();
 }
-
 function drawRectButton(x,y,w,h,label,primary=false,active=false, fontSize=10){
   ctx.save();
   ctx.fillStyle = primary ? (active ? '#0e3a52' : '#143a4f') : (active ? '#203040' : '#1b2a38');
@@ -309,7 +425,6 @@ function drawRectButton(x,y,w,h,label,primary=false,active=false, fontSize=10){
   drawPixelText(label, x+w/2, y+(h-fontSize)/2, fontSize, 'center', '#5cd4ff');
   ctx.restore();
 }
-
 function drawRectButtonFit(x,y,w,h,label,primary=false,active=false, fontSize=12, padding=10){
   ctx.save();
   ctx.fillStyle = primary ? (active ? '#0e3a52' : '#143a4f') : (active ? '#203040' : '#1b2a38');
@@ -328,7 +443,6 @@ function drawRectButtonFit(x,y,w,h,label,primary=false,active=false, fontSize=12
   drawPixelText(label, x+w/2, y+(h-fs)/2, fs, 'center', '#5cd4ff');
   ctx.restore();
 }
-
 function drawWrappedText(text, x, y, maxW, size=10, align='left', color='#fff') {
   if (!text) return;
   ctx.save();
@@ -352,19 +466,17 @@ function drawWrappedText(text, x, y, maxW, size=10, align='left', color='#fff') 
   ctx.fillStyle=color;  ctx.fillText(line, x, yy);
   ctx.restore();
 }
-
 /** 縦スプライトストリップを「幅フィット＋等比」で描画（ベース矩形でクリップ＆下寄せ） */
 function drawStripFitWidth(img, frames, fps, rect, verticalAlign='bottom', alpha=1.0){
   const t   = performance.now() / 1000;
   const idx = frames > 1 ? Math.floor(t * fps) % frames : 0;
   const fh  = img.height / frames;
-  const scale = rect.w / img.width;  // 幅フィット
+  const scale = rect.w / img.width;
   const dw  = rect.w;
   const dh  = fh * scale;
   const dx  = rect.x;
   const dy  = (verticalAlign === 'bottom') ? (rect.y + rect.h - dh) : rect.y;
 
-  // ベース矩形でクリップ（はみ出しを隠す）
   ctx.save();
   ctx.beginPath();
   ctx.rect(rect.x, rect.y, rect.w, rect.h);
@@ -389,7 +501,7 @@ function drawBackground(){
   ctx.strokeStyle='#183048'; ctx.strokeRect(0.5, PLAYFIELD_H+0.5, CANVAS_W-1, FOOTER_H-1);
 }
 
-// Base排他表示（lives/phaseに応じて1つだけ）
+// Base排他表示
 function drawBase(){
   const r = baseRect();
   const lives = (model.lives | 0);
@@ -397,9 +509,9 @@ function drawBase(){
 
   let img = null, frames = 1, fps = 0, useFitWidth = false;
   if (!isKO && lives >= 3) {
-    img = images["base"]; frames = 1; fps = 0; useFitWidth = false; // baseはそのまま
+    img = images["base"]; frames = 1; fps = 0; useFitWidth = false;
   } else if (lives === 2) {
-    img = images["crack1"]; frames = 1; fps = 0; useFitWidth = true; // 等比・下寄せ
+    img = images["crack1"]; frames = 1; fps = 0; useFitWidth = true;
   } else if (lives === 1) {
     img = images["crack2"]; frames = 4; fps = 6; useFitWidth = true;
   } else if (isKO) {
@@ -408,10 +520,8 @@ function drawBase(){
 
   if (img) {
     if (useFitWidth) {
-      // 幅フィット＋等比（下寄せ）で「縦潰れ」を根治
       drawStripFitWidth(img, frames, fps, r, 'bottom', 1.0);
     } else {
-      // baseはベース矩形にピッタリ
       const fh  = img.height / frames;
       const idx = frames > 1 ? (Math.floor((performance.now()/1000) * fps) % frames) : 0;
       ctx.drawImage(img, 0, fh * idx, img.width, fh, r.x, r.y, r.w, r.h);
@@ -660,7 +770,7 @@ function updateAndDraw(ts){
     updateAndDrawTrail(dt);
     for (const m of meteors) drawMeteor(m, mf);
 
-    // Base はプレイ/結果時のみ表示（選択画面では非表示）
+    // Base
     drawBase();
 
     for (let i = explosions.length - 1; i >= 0; i--){
@@ -687,6 +797,9 @@ function updateAndDraw(ts){
 
   // ♬
   drawAudioIcon();
+
+  // ?（最後に重ねる）
+  drawHelp(ctx, canvas);
 
   requestAnimationFrame(updateAndDraw);
 }
@@ -722,7 +835,7 @@ function drawLangSelect(){
   const btns = [
     { label:"EN → EN", x: CANVAS_W/2-240, y: 360, w: 180, h: 56, key:"en_en" },
     { label:"JP → EN", x: CANVAS_W/2-  60, y: 360, w: 180, h: 56, key:"jp_en" },
-//    { label:"EN → JP", x: CANVAS_W/2+ 120, y: 360, w: 180, h: 56, key:"en_jp" },
+    // { label:"EN → JP", x: CANVAS_W/2+ 120, y: 360, w: 180, h: 56, key:"en_jp" },
   ];
   btns.forEach(b => drawRectButton(b.x,b.y,b.w,b.h,b.label,true));
 }
@@ -826,7 +939,7 @@ window.addEventListener('keydown', (e) => {
 }, { capture:true });
 
 // ---- Public API ----
-async function start(){ await loadAssets(); initStars(); requestAnimationFrame(updateAndDraw); }
+async function start(){ await loadAssets(); initStars(); initHelp(canvas); requestAnimationFrame(updateAndDraw); }
 function resetScene(){ meteors.length=0; explosions.length=0; trailParticles.length=0; model.input=""; model.hintMeaningText="Hint: —"; model.hintLettersText=""; }
 function baseHitFlash(){ model.baseFlash = 0.5; }
 async function setMeteorSprite(src){ await loadImage("meteor", src); }
