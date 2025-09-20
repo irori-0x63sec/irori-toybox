@@ -8,20 +8,19 @@
   <!-- Open Graph -->
   <meta property="og:title" content="Lexi Blaster" />
   <meta property="og:description" content="英単語で敵を撃ち抜け！ハイスコアを目指せ。" />
-  <!-- 公開URLに置き換えてね（相対パスでも出るサービスもあるけど、基本は絶対URL推奨） -->
-  <meta property="og:image" content="https://irori-toybox.com/social/lexi-blaster-og.png" />
+  <meta property="og:image" content="https://irori-toybox.com/lexiblaster/social/lexi-blaster-og.png" />
   <meta property="og:url" content="https://irori-toybox.com/lexiblaster/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Lexi Blaster" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/png" />
 
   <!-- X(Twitter) Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Lexi Blaster" />
   <meta name="twitter:description" content="英単語タイピングゲーム Lexi Blaster" />
-  <meta name="twitter:image" content="https://irori-toybox.com/social/lexi-blaster-og.png" />
-  <!-- （任意）公式アカがあれば
-  <meta name="twitter:site" content="@YourAccount" />
-  -->
+  <meta name="twitter:image" content="https://irori-toybox.com/lexiblaster/social/lexi-blaster-og.png" />
 
   <link rel="icon" href="/favicon.ico" />
 
@@ -30,22 +29,58 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-
-  <!-- 追加：Cookie 同意（バナー/スタイルを自己注入） -->
-  <script src="consent.js" defer></script>
 </head>
 <body>
   <div id="wrap">
     <canvas id="gameCanvas" width="800" height="720"></canvas>
   </div>
 
+  <!-- 共有ボタン（X と LINE）。ゲーム終了時に表示される -->
   <button id="shareXBtn" class="share-x-btn" hidden>🡕 Xで共有</button>
-  
-  <!-- ゲーム本体 -->
-  <script src="canvas.js"></script>
-  <!-- スコアオーバーレイ（共有済み） -->
-  <script src="score.js"></script>
-  <!-- ロジック -->
-  <script src="main.js"></script>
+  <button id="shareLineBtn" class="share-line-btn" hidden>🟩 LINEで共有</button>
+
+  <!-- Cookie 同意オーバーレイ（ゲーム読込前に必ず表示） -->
+  <div id="cookie-overlay" class="cookie-overlay" hidden>
+    <div class="cookie-card">
+      <h2>Cookieの使用について</h2>
+      <p class="cookie-lead">
+        サイト体験の改善や計測のためにCookieを使用します。
+        目的に応じて選択できます。選択後にゲームが読み込まれます。
+      </p>
+
+      <details class="cookie-details">
+        <summary>詳細を表示</summary>
+        <ul>
+          <li><strong>必須</strong>（セッション・言語設定など。常に有効）</li>
+          <li><strong>機能/計測</strong>（操作ログ、利用状況の把握）</li>
+          <li><strong>広告/トラッキング</strong>（パーソナライズ広告・測定）</li>
+        </ul>
+      </details>
+
+      <div class="cookie-actions">
+        <button id="cookie-accept-all" class="btn primary">同意する（すべて許可）</button>
+        <button id="cookie-accept-essential" class="btn">必須のみ同意する</button>
+        <button id="cookie-reject-all" class="btn ghost">一切拒否する</button>
+      </div>
+
+      <p class="cookie-note">
+        選択内容は端末に保存され、いつでもページ下部の
+        <em>Cookie設定</em>リンクから変更できます。
+      </p>
+    </div>
+  </div>
+
+  <!-- フッタに小さな「Cookie設定」リンク（再表示用） -->
+  <div id="cookie-footer-link" class="cookie-footer-link" hidden>
+    <button id="cookie-open-settings" class="linklike">Cookie設定</button>
+  </div>
+
+  <!-- consent.js が合図を出したら、下のゲームスクリプトを動的ロードします -->
+  <script src="consent.js" defer></script>
+  <!-- ↓ これらは consent.js が選択後に動的挿入するため、ここには書きません
+       <script src="canvas.js"></script>
+       <script src="score.js"></script>
+       <script src="main.js"></script>
+  -->
 </body>
 </html>

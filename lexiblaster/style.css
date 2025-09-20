@@ -39,3 +39,108 @@ html, body {
 .share-x-btn:hover { transform: translateY(-1px); }
 .share-x-btn:active { transform: translateY(0); }
 .share-x-btn[hidden] { display: none !important; }
+
+/* ===== Cookie Consent Overlay ===== */
+.cookie-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.7);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.cookie-card {
+  width: min(720px, 92vw);
+  background: #1e2024;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  padding: 20px;
+}
+
+.cookie-card h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.cookie-lead {
+  line-height: 1.6;
+  opacity: 0.95;
+  margin-bottom: 8px;
+}
+
+.cookie-details summary {
+  cursor: pointer;
+  margin: 8px 0 12px;
+  color: #b5d1ff;
+}
+.cookie-details ul {
+  margin: 6px 0 0 18px;
+  line-height: 1.6;
+}
+
+.cookie-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin: 12px 0 8px;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: #2a2d33;
+  color: #fff;
+  padding: 12px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn.primary {
+  background: #0ea5e9;
+  border-color: #0ea5e9;
+  color: #001018;
+}
+.btn.ghost {
+  background: transparent;
+}
+
+.cookie-note {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* フッタの再設定リンク */
+.cookie-footer-link {
+  position: fixed;
+  left: 12px;
+  bottom: 10px;
+  z-index: 20;
+}
+.linklike {
+  background: transparent;
+  border: none;
+  color: #b5d1ff;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 6px 8px;
+}
+
+/* ===== 共有ボタン（位置は既存のXと同じ系統で追加） ===== */
+.share-line-btn {
+  position: fixed;
+  right: 16px;
+  bottom: 64px;   /* Xボタンとずらす */
+  z-index: 15;
+  padding: 10px 12px;
+  font-weight: 700;
+  background: #06C755; /* LINEグリーン */
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+}

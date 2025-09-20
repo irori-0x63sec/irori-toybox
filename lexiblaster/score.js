@@ -1,4 +1,3 @@
-// === score.js ===
 // グローバルに window.ScoreTracker / window.ScoreboardOverlay を定義
 (function () {
   // -------------------------------
@@ -38,24 +37,71 @@
       return { correct, mistakes, attempts, accuracy };
     }
 
-    /** X共有用テキスト（MISTAKEは含めない） */
-    toTweetText({ gameName = 'LexiBlaster', level = 'N/A', avgWPM = 0 } = {}) {
+    /** X共有用テキスト（情報多め＆自動で長さ調整。MISTAKEは内訳から除外） */
+    toTweetText({
+      gameName = 'LexiBlaster',
+      level = 'N/A',
+      avgWPM = 0,
+      playTimeSec,      // 任意: 総プレイ秒
+      band,             // 任意: 例 'C1'
+      maxCombo,         // 任意
+      showBreakdown = true, // falseで内訳省略
+    } = {}) {
       const total = Math.max(0, this.total());
       const { accuracy, correct, mistakes } = this.stats();
       const accPct = (accuracy * 100).toFixed(1);
+
+      // 内訳（上位3つ、ミスは除外）
       const top = this.grouped()
         .filter(g => g.type !== 'MISTAKE' && g.sum > 0)
         .slice(0, 3)
         .map(g => `${this.label(g.type)}+${g.sum}`)
         .join(' / ');
-      const pieces = [
-        `${gameName} でスコア ${total}`,
+
+      // 1行目：見出し
+      const line1 = `${gameName} でスコア ${total} pts`;
+
+      // 2行目：KPI
+      const chips = [
         `Lv:${level}`,
-        `Accuracy:${accPct}% (${correct}-${mistakes})`,
-        top ? `Bonus:${top}` : '',
+        band ? `Band:${band}` : null,
+        `Acc:${accPct}% (${correct}-${mistakes})`,
+        (maxCombo != null) ? `MaxC:${maxCombo}` : null,
         `AvgWPM:${Math.round(avgWPM)}`
-      ].filter(Boolean);
-      return pieces.join(' | ') + `\n#LexiBlaster #英単語ゲーム`;
+      ].filter(Boolean).join(' | ');
+      const line2 = chips;
+
+      // 3行目：内訳（任意）
+      const line3 = (showBreakdown && top) ? `Bonus: ${top}` : '';
+
+      // 4行目：時間（任意）
+      const line4 = (typeof playTimeSec === 'number')
+        ? `Time:${Math.round(playTimeSec)}s`
+        : '';
+
+      const hashtags = `#LexiBlaster #英単語ゲーム`;
+
+      // 初期テキスト（URLはintentのurlパラメータで渡す前提）
+      let text = [line1, line2, line3, line4, hashtags].filter(Boolean).join('\n');
+
+      // 長さ調整（安全のため ~250文字目安にトリム）
+      const LIMIT = 250;
+
+      // まずボーナス行を落とす
+      if (text.length > LIMIT && line3) {
+        text = [line1, line2, line4, hashtags].filter(Boolean).join('\n');
+      }
+      // それでも長ければKPIを簡略化（AvgWPM → MaxC → Band を優先的にカット）
+      if (text.length > LIMIT) {
+        const simpleChips = [
+          `Lv:${level}`,
+          `Acc:${accPct}% (${correct}-${mistakes})`
+        ];
+        const fallback2 = [line1, simpleChips.join(' | '), line4, hashtags].filter(Boolean).join('\n');
+        text = (fallback2.length <= LIMIT) ? fallback2 : [line1, `Acc:${accPct}%`, hashtags].join('\n');
+      }
+
+      return text;
     }
 
     label(type) {

@@ -1,108 +1,136 @@
-// すべて自己完結：CSSとバナーHTMLを動的に注入し、localStorageに同意状態を保存。
-// API:
-//   window.hasConsent(category)             // 'necessary' | 'analytics' | 'ads'
-//   window.runIfConsented(category, fn)     // 同意がある時だけfnを実行
+// consent.js
+// 目的：Cookie同意をゲーム読み込み前に必須化し、選択に応じてスクリプトを動的読み込み。
+// 結果は localStorage "cookieConsent" に保存（{ level: 'all' | 'essential' | 'reject', ts }）。
 
 (function () {
-  const KEY = 'consent.v1';
-  const DEFAULT = { necessary: true, analytics: false, ads: false, ts: 0 };
+  const OVERLAY_ID = 'cookie-overlay';
+  const FOOTER_LINK_ID = 'cookie-footer-link';
 
-  function load() {
+  const state = {
+    loaded: false,
+  };
+
+  function $(id) { return document.getElementById(id); }
+
+  function showOverlay() {
+    const el = $(OVERLAY_ID);
+    if (!el) return;
+    el.hidden = false;
+  }
+
+  function hideOverlay() {
+    const el = $(OVERLAY_ID);
+    if (!el) return;
+    el.hidden = true;
+  }
+
+  function showFooterLink() {
+    const el = $(FOOTER_LINK_ID);
+    if (!el) return;
+    el.hidden = false;
+  }
+
+  function saveConsent(level) {
+    const data = { level, ts: Date.now() };
+    localStorage.setItem('cookieConsent', JSON.stringify(data));
+    // 外部から参照できるように
+    window.cookieConsent = data;
+  }
+
+  function readConsent() {
     try {
-      const raw = localStorage.getItem(KEY);
-      if (!raw) return { ...DEFAULT };
-      const v = JSON.parse(raw);
-      return { ...DEFAULT, ...v };
-    } catch {
-      return { ...DEFAULT };
-    }
-  }
-  function save(obj) {
-    localStorage.setItem(KEY, JSON.stringify({ ...obj, ts: Date.now() }));
+      const raw = localStorage.getItem('cookieConsent');
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      window.cookieConsent = data;
+      return data;
+    } catch { return null; }
   }
 
-  // --- CSS を <head> に注入（既存CSSは触らない） ---
-  const css = `
-  .cc-wrap{position:fixed;left:0;right:0;bottom:0;z-index:99999;display:none;padding:14px 16px;background:rgba(10,15,22,.96);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 -8px 28px rgba(0,0,0,.35)}
-  .cc-inner{max-width:980px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
-  .cc-text{font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#eaf6ff;opacity:.95}
-  .cc-text a{color:#9ad5ff;text-decoration:underline}
-  .cc-actions{display:flex;gap:8px;flex-wrap:wrap}
-  .cc-btn{appearance:none;border:none;cursor:pointer;padding:10px 14px;border-radius:10px;font-weight:700;font-size:14px}
-  .cc-accept{background:#1d9bf0;color:#fff}
-  .cc-reject{background:rgba(255,255,255,.10);color:#eaf6ff}
-  `;
-  const styleEl = document.createElement('style');
-  styleEl.setAttribute('data-consent-style', 'v1');
-  styleEl.textContent = css;
-  document.head.appendChild(styleEl);
-
-  // --- バナーDOMをボディ末尾に挿入 ---
-  function ensureBanner() {
-    if (document.getElementById('cc-wrap')) return;
-
-    const wrap = document.createElement('div');
-    wrap.className = 'cc-wrap';
-    wrap.id = 'cc-wrap';
-    wrap.innerHTML = `
-      <div class="cc-inner">
-        <div class="cc-text">
-          本サイトでは、機能向上や計測・広告のためにクッキー等を利用する場合があります。
-          詳細は <a href="/privacy" target="_blank" rel="noopener">プライバシーポリシー</a> をご確認ください。
-        </div>
-        <div class="cc-actions">
-          <button class="cc-btn cc-reject" id="cc-reject">拒否（必須のみ）</button>
-          <button class="cc-btn cc-accept" id="cc-accept">同意する（すべて）</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(wrap);
-
-    document.getElementById('cc-accept').addEventListener('click', () => {
-      const c = load();
-      c.analytics = true;
-      c.ads = true;
-      save(c);
-      hideBanner();
-      document.dispatchEvent(new CustomEvent('consent:updated', { detail: c }));
-    });
-
-    document.getElementById('cc-reject').addEventListener('click', () => {
-      const c = load();
-      c.analytics = false;
-      c.ads = false;
-      save(c);
-      hideBanner();
-      document.dispatchEvent(new CustomEvent('consent:updated', { detail: c }));
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.body.appendChild(s);
     });
   }
 
-  function showBanner() {
-    const el = document.getElementById('cc-wrap');
-    if (el) el.style.display = 'block';
-  }
-  function hideBanner() {
-    const el = document.getElementById('cc-wrap');
-    if (el) el.style.display = 'none';
-  }
+  async function loadGame() {
+    if (state.loaded) return;
+    state.loaded = true;
 
-  // 公開API
-  window.hasConsent = function (category) {
-    const c = load();
-    if (category === 'necessary') return true;
-    return !!c[category];
-  };
-  window.runIfConsented = function (category, fn) {
-    if (window.hasConsent(category)) {
-      try { fn(); } catch (e) { console.error(e); }
-      return true;
+    // ゲーム本体スクリプト群
+    await loadScript('canvas.js');
+    await loadScript('score.js');  // ← LINE共有ボタンもここで扱う
+    await loadScript('main.js');
+
+    // もし「すべて同意」のときだけ広告/計測スクリプトを読み込みたいなら、ここで条件分岐
+    const consent = readConsent();
+    if (consent && consent.level === 'all') {
+      // 例: Google Analytics / AdSense など
+      // await loadScript('ads.js');
+      // await loadScript('analytics.js');
     }
-    return false;
-  };
 
-  document.addEventListener('DOMContentLoaded', () => {
-    ensureBanner();
-    const c = load();
-    if (c.ts === 0) showBanner(); // 未選択なら表示
+    // フッタの「Cookie設定」を表示（再設定用）
+    showFooterLink();
+  }
+
+  function openSettings() {
+    // 設定の再表示（オーバーレイ復活）
+    const overlay = $(OVERLAY_ID);
+    if (overlay) {
+      overlay.hidden = false;
+      overlay.querySelector('.cookie-card')?.focus();
+    }
+  }
+
+  function attachEvents() {
+    const btnAll = $('cookie-accept-all');
+    const btnEssential = $('cookie-accept-essential');
+    const btnReject = $('cookie-reject-all');
+    const btnOpenSettings = $('cookie-open-settings');
+
+    if (btnAll) {
+      btnAll.addEventListener('click', async () => {
+        saveConsent('all');
+        hideOverlay();
+        await loadGame();
+      });
+    }
+    if (btnEssential) {
+      btnEssential.addEventListener('click', async () => {
+        saveConsent('essential');
+        hideOverlay();
+        await loadGame();
+      });
+    }
+    if (btnReject) {
+      btnReject.addEventListener('click', async () => {
+        saveConsent('reject');
+        hideOverlay();
+        await loadGame();
+      });
+    }
+    if (btnOpenSettings) {
+      btnOpenSettings.addEventListener('click', () => {
+        openSettings();
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    attachEvents();
+    const consent = readConsent();
+    if (consent) {
+      // 既に選択済みなら即ロード
+      await loadGame();
+      showFooterLink();
+    } else {
+      // まだならオーバーレイを出して選択させる
+      showOverlay();
+    }
   });
 })();
