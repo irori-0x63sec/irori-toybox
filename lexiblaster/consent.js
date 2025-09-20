@@ -6,10 +6,10 @@
   const KEY = 'lexiConsent';
   const COOKIE = '_lexi_consent';
   const SELECTORS = {
-    overlay:  '#cookieOverlay',
-    acceptAll: '#btn-accept-all',
-    acceptEssential: '#btn-accept-essential',
-    rejectAll: '#btn-reject-all',
+    overlay:  'cookieOverlay',
+    acceptAll: 'btn-accept-all',
+    acceptEssential: 'btn-accept-essential',
+    rejectAll: 'btn-reject-all',
     // （任意）再設定リンクがある場合
     reopenLink: '.cookie-footer-link .linklike'
   };
