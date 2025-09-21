@@ -5,7 +5,7 @@
 
   // 1) パーシャルを取得して挿入
   try {
-    const res = await fetch('/_partials/header.html', { cache: 'no-cache' });
+    const res = await fetch('/partials/header.html', { cache: 'no-cache' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const html = await res.text();
     hostHeader.innerHTML = html;
