@@ -39,13 +39,13 @@
   <button id="shareXBtn" class="share-x-btn" hidden>🡕 Xで共有</button>
   <button id="shareLineBtn" class="share-line-btn" hidden>🟩 LINEで共有</button>
 
-  <!-- Cookie 同意オーバーレイ（ゲーム読込前に必ず表示） -->
+  <!-- Cookie 同意オーバーレイ（必要なときだけ開く／デフォルトは非表示） -->
   <div id="cookie-overlay" class="cookie-overlay" hidden>
     <div class="cookie-card">
       <h2>Cookieの使用について</h2>
       <p class="cookie-lead">
         サイト体験の改善や計測のためにCookieを使用します。
-        目的に応じて選択できます。選択後にゲームが読み込まれます。
+        目的に応じて選択できます。ゲームの起動は同意に関わらず可能です。
       </p>
 
       <details class="cookie-details">
@@ -71,16 +71,16 @@
   </div>
 
   <!-- フッタに小さな「Cookie設定」リンク（再表示用） -->
-  <div id="cookie-footer-link" class="cookie-footer-link" hidden>
+  <div id="cookie-footer-link" class="cookie-footer-link">
     <button id="cookie-open-settings" class="linklike">Cookie設定</button>
   </div>
 
-  <!-- consent.js が合図を出したら、下のゲームスクリプトを動的ロードします -->
+  <!-- 1) 同意管理は軽量JSに集約 -->
   <script src="consent.js" defer></script>
-  <!-- ↓ これらは consent.js が選択後に動的挿入するため、ここには書きません
-       <script src="canvas.js"></script>
-       <script src="score.js"></script>
-       <script src="main.js"></script>
-  -->
+
+  <!-- 2) ゲーム本体は常に読み込む（順序保証のため defer＋記述順） -->
+  <script src="score.js" defer></script>
+  <script src="canvas.js" defer></script>
+  <script src="main.js" defer></script>
 </body>
 </html>

@@ -1,146 +1,87 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  background: #0a121a;
-  color: #fff;
-  font-family: "Press Start 2P", monospace;
-  user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-}
-#wrap {
-  width: 800px;
-  margin: 24px auto;
-  border: 1px solid #193044;
-  box-shadow: 0 0 18px rgba(0,0,0,0.5);
-}
-#gameCanvas {
-  display: block;
-  background: #081018;
-  /* 初期は main.js が visibility を制御（フォント/アセット待ち） */
-  visibility: hidden;
-}
-/* === share button (X) === */
-.share-x-btn {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 1000;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 0;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 6px 14px rgba(0,0,0,.25);
-  transition: transform .06s ease, opacity .2s;
-  background: #111827;       /* slate-900 */
-  color: #fff;
-}
-.share-x-btn:hover { transform: translateY(-1px); }
-.share-x-btn:active { transform: translateY(0); }
-.share-x-btn[hidden] { display: none !important; }
+/* 既存のスタイルはそのまま下に追加してOK。必要分だけ再掲 */
 
-/* ===== Cookie Consent Overlay ===== */
-.cookie-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(0,0,0,0.7);
-  display: grid;
-  place-items: center;
-  padding: 16px;
-}
-
-.cookie-card {
-  width: min(720px, 92vw);
-  background: #1e2024;
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  padding: 20px;
-}
-
-.cookie-card h2 {
-  margin: 0 0 10px;
-  font-size: 20px;
-}
-
-.cookie-lead {
-  line-height: 1.6;
-  opacity: 0.95;
-  margin-bottom: 8px;
-}
-
-.cookie-details summary {
-  cursor: pointer;
-  margin: 8px 0 12px;
-  color: #b5d1ff;
-}
-.cookie-details ul {
-  margin: 6px 0 0 18px;
-  line-height: 1.6;
-}
-
-.cookie-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
-  margin: 12px 0 8px;
-}
-
-.btn {
-  appearance: none;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: #2a2d33;
-  color: #fff;
-  padding: 12px 14px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-}
-.btn.primary {
-  background: #0ea5e9;
-  border-color: #0ea5e9;
-  color: #001018;
-}
-.btn.ghost {
-  background: transparent;
-}
-
-.cookie-note {
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-/* フッタの再設定リンク */
-.cookie-footer-link {
+/* === Cookie Overlay === */
+.cookie-footer-btn{
   position: fixed;
   left: 12px;
-  bottom: 10px;
-  z-index: 20;
-}
-.linklike {
-  background: transparent;
-  border: none;
-  color: #b5d1ff;
-  text-decoration: underline;
+  bottom: 12px;
+  z-index: 9998;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(20,24,32,.7);
+  color: #eaf6ff;
+  font: 600 12px system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
   cursor: pointer;
-  padding: 6px 8px;
+  backdrop-filter: blur(6px);
+}
+.cookie-footer-btn:hover{ background: rgba(24,28,38,.8); }
+
+.cookie-overlay{
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
 }
 
-/* ===== 共有ボタン（位置は既存のXと同じ系統で追加） ===== */
-.share-line-btn {
-  position: fixed;
-  right: 16px;
-  bottom: 64px;   /* Xボタンとずらす */
-  z-index: 15;
-  padding: 10px 12px;
-  font-weight: 700;
-  background: #06C755; /* LINEグリーン */
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+.cookie-overlay[hidden] { display: none !important; }
+
+.cookie-card{
+  width: min(860px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(14,18,28,.95);
+  color: #eaf6ff;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  font: 14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
 }
+.cookie-title{ font-size: 20px; font-weight: 800; margin: 0 0 8px; }
+.cookie-desc{ margin: 0 0 12px; opacity: .9; }
+
+.cookie-actions{
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin: 12px 0 14px;
+}
+.cookie-btn{
+  appearance: none; border: 1px solid rgba(255,255,255,.15);
+  background: rgba(255,255,255,.08);
+  color: #eaf6ff; padding: 10px 14px; border-radius: 10px;
+  cursor: pointer; font-weight: 700;
+}
+.cookie-btn.primary{ background: #1d9bf0; border-color: #1d9bf0; }
+.cookie-btn.ghost{ background: transparent; }
+
+.cookie-state{
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6px 16px; padding: 10px; border-radius: 10px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  margin-bottom: 12px;
+}
+
+.cookie-inventory h3{ margin: 8px 0; font-size: 16px; }
+.cookie-table{
+  width: 100%; border-collapse: collapse; margin-bottom: 8px;
+}
+.cookie-table th, .cookie-table td{
+  border-bottom: 1px dashed rgba(255,255,255,.08);
+  padding: 8px 6px; text-align: left; vertical-align: top;
+}
+.cookie-table th:nth-child(3), .cookie-table td:nth-child(3){ white-space: nowrap; }
+.cookie-note{ font-size: 12px; opacity: .75; }
+
+/* === Game Share Button（既存） === */
+.share-x-btn{
+  position: fixed; right: 12px; top: 12px; z-index: 10;
+  appearance: none; border: none;
+  background: #1d9bf0; color: #fff; font-weight: 700; border-radius: 10px;
+  padding: 8px 12px; cursor: pointer;
+}
+
+/* ここより下に既存のゲーム用スタイルが続くならそのままでOK */

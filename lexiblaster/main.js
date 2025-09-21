@@ -2,6 +2,12 @@
 // AvgWPM計測＋速度ボーナス / BGM: WebAudioでシームレスループ
 // フォント/アセット読み込み完了まで Canvas を非表示にしてチラつき回避
 
+// ---- 保存同意ガード（consent.js が未ロードでも true でフォールバック）----
+function canUseStorage(){
+  try { return !!(window.lexiConsent && window.lexiConsent.allow('storage')); }
+  catch { return true; }
+}
+
 const VOCAB_FILES = {
   A: "data/en_en_A.json",
   B: "data/en_en_B.json",
@@ -31,24 +37,19 @@ let startedAt = 0;
 
 /* =========================================================
    BGM manager (WebAudioでサンプル精度ループ)
-   - 以前の HTMLAudio + timeupdate を全置換
-   - ループ範囲は BGM_LOOP_START / BGM_LOOP_END で調整
-   - ♬トグルは toggleBGMMute() / isBGMMuted() を経由
 ========================================================= */
 let bgmReady = false, bgmStarted = false;
 let bgmMuted = false, sfxMuted = false;
 let sfxVolumeSaved = 1;
 
 const BGM_SRC = 'sounds/bgm_main.mp3';
-const BGM_LOOP_START = 0.0;   // ループ開始（秒）
-const BGM_LOOP_END   = 0;   // ループ終了（秒） 0ならファイル末尾
-const BGM_VOLUME     = 0.40;  // 基本音量
-const LOOP_PAD       = 0.030; // クリック対策のパッド(0.03〜0.07で調整)
+const BGM_LOOP_START = 0.0;
+const BGM_LOOP_END   = 0;
+const BGM_VOLUME     = 0.40;
+const LOOP_PAD       = 0.030;
 
-// WebAudio 内部
 let _ctx, _gain, _buffer, _src;
 
-// 近傍のゼロクロスへスナップ（ポップノイズ低減）
 function _snapZero(buffer, timeSec, prefer = 'forward', searchMs = 30) {
   if (!buffer) return timeSec;
   const ch = buffer.getChannelData(0);
@@ -56,53 +57,42 @@ function _snapZero(buffer, timeSec, prefer = 'forward', searchMs = 30) {
   let i = Math.max(1, Math.min(ch.length - 2, Math.floor(timeSec * sr)));
   const span = Math.floor(searchMs * sr / 1000);
   const dir = (prefer === 'backward') ? -1 : 1;
-
   for (let k = 0; k <= span; k++) {
     const idx = i + dir * k;
     if (idx < 1 || idx >= ch.length - 1) break;
     const a = ch[idx - 1], b = ch[idx];
-    if (a === 0 || b === 0 || (a > 0 && b < 0) || (a < 0 && b > 0)) {
-      return idx / sr;
-    }
+    if (a === 0 || b === 0 || (a > 0 && b < 0) || (a < 0 && b > 0)) return idx / sr;
   }
   return timeSec;
 }
 
 async function initBGM(){
   if (bgmReady) return;
-
-  // 既存のミュート状態をロード
-  try { bgmMuted = (localStorage.getItem('bgmMuted') === '1'); } catch {}
+  try { if (canUseStorage()) bgmMuted = (localStorage.getItem('bgmMuted') === '1'); } catch {}
 
   _ctx  = _ctx  || new (window.AudioContext || window.webkitAudioContext)();
   _gain = _gain || _ctx.createGain();
   _gain.gain.value = bgmMuted ? 0 : BGM_VOLUME;
   _gain.connect(_ctx.destination);
 
-  // iOS/ブラウザ対策：初回操作で resume
   const resume = ()=> _ctx.resume().catch(()=>{});
   window.addEventListener('pointerdown', resume, { once:true, capture:true });
   window.addEventListener('keydown',     resume, { once:true, capture:true });
 
-  // デコード
   const res = await fetch(BGM_SRC, { cache: 'no-store' });
   const arr = await res.arrayBuffer();
   _buffer = await _ctx.decodeAudioData(arr);
-
   bgmReady = true;
 }
 
 function _startSource(){
   if (!_buffer) return;
-
-  // 既存を停止して作り直し（BufferSourceは使い捨て）
   if (_src) { try{ _src.stop(); }catch{}; _src.disconnect(); _src = null; }
 
   const dur = _buffer.duration;
   const rawStart = Math.max(0, BGM_LOOP_START + LOOP_PAD);
   const rawEnd   = Math.min(dur, (BGM_LOOP_END > 0 ? BGM_LOOP_END : dur) - LOOP_PAD);
 
-  // 始点は「前方」・終点は「後方」に少しだけ寄せてゼロクロスへ
   const loopStart = _snapZero(_buffer, rawStart, 'forward', 30);
   const loopEnd   = _snapZero(_buffer, rawEnd,   'backward', 30);
   const validLoop = loopEnd > loopStart + 0.005;
@@ -110,28 +100,18 @@ function _startSource(){
   _src = _ctx.createBufferSource();
   _src.buffer = _buffer;
   _src.loop = true;
-  if (validLoop) {
-    _src.loopStart = loopStart;
-    _src.loopEnd   = loopEnd;
-  }
+  if (validLoop) { _src.loopStart = loopStart; _src.loopEnd = loopEnd; }
   _src.connect(_gain);
   _src.start(0, validLoop ? loopStart : 0);
 }
 
-function startBGM(){
-  if (!bgmReady) return;
-  _startSource();
-  bgmStarted = true;
-}
-function stopBGM(){
-  if (_src) { try{ _src.stop(); }catch{}; _src.disconnect(); _src = null; }
-  bgmStarted = false;
-}
+function startBGM(){ if (!bgmReady) return; _startSource(); bgmStarted = true; }
+function stopBGM(){ if (_src) { try{ _src.stop(); }catch{}; _src.disconnect(); _src = null; } bgmStarted = false; }
 function toggleBGMMute(){
   bgmMuted = !bgmMuted;
   const t = _ctx ? _ctx.currentTime : 0;
   if (_gain) _gain.gain.setTargetAtTime(bgmMuted ? 0 : BGM_VOLUME, t, 0.02);
-  try { localStorage.setItem('bgmMuted', bgmMuted ? '1' : '0'); } catch {}
+  try { if (canUseStorage()) localStorage.setItem('bgmMuted', bgmMuted ? '1' : '0'); } catch {}
 }
 function isBGMMuted(){ return !!bgmMuted; }
 /* ========================================================= */
@@ -172,8 +152,14 @@ const Typing = {
 // ---- 苦手度（SRS） ----
 const LS_KEY = "lb_scores_v1";
 let userScores = {};
-function loadScores(){ try { userScores = JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch { userScores = {}; } }
-function saveScores(){ try { localStorage.setItem(LS_KEY, JSON.stringify(userScores)); } catch {} }
+function loadScores(){
+  if (!canUseStorage()) { userScores = {}; return; }
+  try { userScores = JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch { userScores = {}; }
+}
+function saveScores(){
+  if (!canUseStorage()) return;
+  try { localStorage.setItem(LS_KEY, JSON.stringify(userScores)); } catch {}
+}
 function keyNew(w){ const ans = (w.answer_en || w.answer || "").toLowerCase(); return `${currentBand}:${w.level}:${ans}`; }
 function keyOld(w){ const ans = (w.answer_en || w.answer || "").toLowerCase(); return `${currentBand}:${ans}`; }
 function getScore(w){
@@ -207,7 +193,8 @@ function pickNextIndex(){
   const candidates = activeList
     .map((w,i)=>({ w,i,s:getScore(w) }))
     .filter(o=>{
-      if (weakOnly && o.s < 0)  return false;
+      // ★ WEAK=ON は「弱点のみ出題」
+      if (weakOnly && o.s >= 0) return false;
       if (srsMode  && o.s < -3) return false;
       return true;
     });
@@ -368,7 +355,6 @@ window.addEventListener("meteorHitBase", ()=>{
     window.canvasGame?.focusInput(false);
 
     const avgWPM = Typing.avgWPM();
-    // ※速度ボーナスは現状のロジックをそのまま利用
     const speedBonus = Math.max(0, Math.round((avgWPM - 20) * 1));
     if (speedBonus > 0) {
       Score.tracker.record('SPEED_BONUS', speedBonus, { avgWPM: Math.round(avgWPM) });
@@ -433,19 +419,25 @@ async function waitForPixelFont(timeoutMs = 4000) {
   await window.canvasGame.start();
   await waitForPixelFont(4000);
 
-  // タイトル表示
   window.canvasGame.setFlow({ started: false, gameOver: false, phase: 'title' });
   showCanvas();
 
-  // ===== BGM: WebAudio初期化＆スタート =====
-  try {
-    await initBGM();
-    startBGM(); // コンテキストがサスペンド中でも走らせておく（初回操作でresume）
-  } catch (e) { console.warn('[BGM] init/start failed', e); }
+  try { await initBGM(); startBGM(); } catch (e) { console.warn('[BGM] init/start failed', e); }
 
-  // ♬UIフック
   window.AudioUI = {
     toggleBGM: () => { try { toggleBGMMute(); } catch(_){} },
     isBGMMuted: () => { try { return isBGMMuted(); } catch(_) { return false; } }
   };
+
+  // 同意変更: reject になったら即座に保存物をクリア
+  document.addEventListener('lb:consent', (e)=>{
+    const choice = e?.detail?.choice;
+    if (choice === 'reject') {
+      try { localStorage.removeItem('lb_scores_v1'); localStorage.removeItem('bgmMuted'); } catch {}
+      // メモリ上の状態もリセット
+      userScores = {};
+      bgmMuted = false;
+      try { toggleBGMMute(); } catch(_) {}
+    }
+  });
 })();

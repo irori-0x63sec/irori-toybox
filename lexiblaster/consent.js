@@ -1,123 +1,131 @@
-// consent.js（確実に閉じる版）
+// consent.js — 同意UIと可否APIのみ（ゲームは常時ロード）
+// 仕様: 初回は必ずダイアログを開く。選択ボタン押下で確実に閉じる。
+// 同意は {choice:'all'|'essential'|'reject', at:number} を localStorage に保存。
+
 (function () {
   const KEY = 'lexiConsent.v1';
-  const SCRIPTS = ['canvas.js', 'score.js', 'main.js'];
 
-  const $id = (id) => document.getElementById(id);
-
-  function loadGameScripts() {
-    if (document.querySelector('script[data-lexi-game="1"]')) return;
-    for (const src of SCRIPTS) {
-      const s = document.createElement('script');
-      s.src = src;
-      s.defer = true;
-      s.dataset.lexiGame = '1';
-      document.body.appendChild(s);
-    }
+  // ---------- 同意状態 ----------
+  function getConsent() {
+    try {
+      const v = JSON.parse(localStorage.getItem(KEY) || 'null');
+      return (v && v.choice) ? v.choice : 'unset';
+    } catch { return 'unset'; }
+  }
+  function setConsent(choice) {
+    try { localStorage.setItem(KEY, JSON.stringify({ choice, at: Date.now() })); } catch {}
   }
 
-  function hardHideOverlay(overlay) {
-    if (!overlay) return;
-    try { overlay.remove(); } catch (_) {}
-    try { overlay.hidden = true; } catch (_) {}
-    try { overlay.style.display = 'none'; } catch (_) {}
+  // ---------- 公開API（ゲーム側が使う） ----------
+  const Consent = {
+    state() { return getConsent(); },
+    allow(category) {
+      const s = getConsent();
+      if (category === 'essential') return true;
+      if (category === 'storage')   return s !== 'reject';
+      if (category === 'analytics' || category === 'ads') return s === 'all';
+      return false;
+    },
+    onChange(cb) { document.addEventListener('lb:consent', cb); }
+  };
+  window.lexiConsent = window.lbConsent = Consent;
+
+  // ---------- DOMユーティリティ ----------
+  const $id = (id) => document.getElementById(id);
+
+  function openOverlay() {
+    const ov = $id('cookie-overlay'); if (!ov) return;
+    ov.hidden = false;
+    ov.style.display = 'grid';
+    ov.setAttribute('aria-modal', 'true');
+    ov.setAttribute('role', 'dialog');
+    ov.style.position = 'fixed';
+    ov.style.inset = '0';
+    ov.style.zIndex = '99999';
+    ov.style.pointerEvents = 'auto';
+  }
+
+  function closeOverlay() {
+    const ov = $id('cookie-overlay'); if (!ov) return;
+    ov.hidden = true;
+    ov.style.display = 'none';
+    ov.removeAttribute('aria-modal');
+    ov.removeAttribute('role');
   }
 
   function applyChoice(choice) {
-    try {
-      localStorage.setItem(KEY, JSON.stringify({ choice, at: Date.now() }));
-    } catch (_) {}
+    setConsent(choice);
 
-    const overlay = $id('cookie-overlay');
-    hardHideOverlay(overlay);
+    // 拒否へ切り替えたら保存物を削除（キーを明示）
+    if (choice === 'reject') {
+      try { localStorage.removeItem('lb_scores_v1'); } catch {}
+      try { localStorage.removeItem('bgmMuted'); } catch {}
+    }
 
-    const footer = $id('cookie-footer-link');
-    if (footer) footer.hidden = false;
+    // 必ず閉じる
+    closeOverlay();
 
-    loadGameScripts();
+    // 変更通知（計測/広告の遅延ロードはここで反応）
+    document.dispatchEvent(new CustomEvent('lb:consent', { detail: { choice } }));
   }
 
-  function ensureOverlayInteractive(overlay) {
-    if (!overlay) return;
-    // クリックが下に抜けないように強制
-    overlay.style.position = 'fixed';
-    overlay.style.inset = '0';
-    overlay.style.zIndex = '99999';
-    overlay.style.pointerEvents = 'auto';
-  }
-
-  window.addEventListener('DOMContentLoaded', () => {
-    const overlay = $id('cookie-overlay');
+  function bindOnce() {
     const btnAll  = $id('cookie-accept-all');
     const btnEss  = $id('cookie-accept-essential');
     const btnRej  = $id('cookie-reject-all');
-    const footer  = $id('cookie-footer-link');
-    const reopen  = $id('cookie-open-settings');
+    const btnOpen = $id('cookie-open-settings');
+    const overlay = $id('cookie-overlay');
 
-    // 既に選択済みならオーバーレイ出さずゲーム読み込み
-    let saved = null;
-    try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (_) {}
-    if (saved && saved.choice) {
-      hardHideOverlay(overlay);
-      if (footer) footer.hidden = false;
-      loadGameScripts();
-      return;
-    }
+    const attach = (el, handler) => {
+      if (!el) return;
+      const fn = (e) => { e.preventDefault(); e.stopPropagation(); handler(); };
+      el.addEventListener('click', fn, { passive: false });
+      el.onclick = fn; // 念のため
+    };
 
-    // 未選択 → 強制的にオーバーレイを前面・クリック可能に
+    attach(btnAll, () => applyChoice('all'));
+    attach(btnEss, () => applyChoice('essential'));
+    attach(btnRej, () => applyChoice('reject'));
+    attach(btnOpen, () => openOverlay());
+
+    // ★ 背景クリックだけを止める（captureは使わない）
     if (overlay) {
-      overlay.hidden = false;
-      overlay.style.display = 'block';
-      ensureOverlayInteractive(overlay);
-
-      // ボタン直付け（競合対策で stop/prev）
-      const attach = (el, handler) => {
-        if (!el) return;
-        el.addEventListener('click', (e) => {
-          e.preventDefault();
+      overlay.addEventListener('click', (e) => {
+        // 背景（overlay 自身）をクリックした時のみ反応
+        if (e.target === overlay) {
+          // 閉じる仕様にしたければここで closeOverlay();
+          // いまは誤クリック防止のため何もしないで止めるだけ
           e.stopPropagation();
-          handler();
-        }, { passive: false });
-        // 念のため onclick も登録（二重実行は防ぐ）
-        el.onclick = (e) => { e.preventDefault(); e.stopPropagation(); handler(); };
-      };
-
-      attach(btnAll, () => applyChoice('all'));
-      attach(btnEss, () => applyChoice('essential'));
-      attach(btnRej, () => applyChoice('reject'));
-
-      // イベント委任（何かの理由で上が拾えない場合の保険）
-      overlay.addEventListener('click', (e) => {
-        const t = e.target;
-        if (!t || !t.id) return;
-        if (t.id === 'cookie-accept-all')       { e.preventDefault(); e.stopPropagation(); applyChoice('all'); }
-        else if (t.id === 'cookie-accept-essential') { e.preventDefault(); e.stopPropagation(); applyChoice('essential'); }
-        else if (t.id === 'cookie-reject-all')  { e.preventDefault(); e.stopPropagation(); applyChoice('reject'); }
-      }, { passive: false, capture: true });
-
-      // オーバーレイ自体のクリックはキャンセル（背面に抜けないように）
-      overlay.addEventListener('click', (e) => {
-        e.stopPropagation();
-      }, { capture: true });
-    }
-
-    if (footer) footer.hidden = true;
-
-    if (reopen) {
-      reopen.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        // 再表示（今回は単純表示。remove後は location.reload() 等で復元）
-        const ov = $id('cookie-overlay');
-        if (ov) {
-          ov.hidden = false;
-          ov.style.display = 'block';
-          ensureOverlayInteractive(ov);
-        } else {
-          // 既に remove 済みなら再読み込みで出す簡易実装
-          location.reload();
+        }
+      }); // ← capture: true を使わないことが重要
+      // Esc で閉じたい場合は任意で有効化（既存選択があればそれを維持）
+      overlay.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          closeOverlay();
         }
       });
     }
-  });
+  }
+
+  function init() {
+    bindOnce();
+
+    // 初回は必ず開く（「unset」ならモーダルを表示）
+    if (getConsent() === 'unset') {
+      openOverlay();
+    } else {
+      closeOverlay(); // 二重表示防止
+    }
+
+    // フッターの再表示リンクは常に表示
+    const footer = $id('cookie-footer-link');
+    if (footer) footer.hidden = false;
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();

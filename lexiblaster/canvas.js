@@ -24,23 +24,10 @@ function initHelp(canvas) {
   updateHelpPos(canvas);
   window.addEventListener('resize', () => updateHelpPos(canvas));
 
-  // ← click ではなく pointerdown を使う
   canvas.addEventListener('pointerdown', (e) => {
     const { x, y } = getCanvasPointerPos(canvas, e);
-
-    // オーバーレイ表示中はどこでも閉じる（他UIに伝播させない）
-    if (HELP.visible) {
-      HELP.visible = false;
-      e.stopPropagation();
-      return;
-    }
-
-    // ?ボタン命中で開く（他UIに伝播させない）
-    if (isHit(x, y, HELP.x, HELP.y, HELP.r)) {
-      HELP.visible = true;
-      e.stopPropagation();
-      return;
-    }
+    if (HELP.visible) { HELP.visible = false; e.stopPropagation(); return; }
+    if (isHit(x, y, HELP.x, HELP.y, HELP.r)) { HELP.visible = true; e.stopPropagation(); return; }
   }, { capture: true });
 }
 
@@ -227,9 +214,9 @@ const toLoad = [
   ["heart","assets/heart.png"],
   ["btn_blast","assets/btn_blast.png"],
   // damage overlays
-  ["crack1","assets/base_crack1.png"], // 静止
-  ["crack2","assets/base_crack2.png"], // 4フレーム縦
-  ["smoke1","assets/base_smoke1.png"], // 3フレーム縦
+  ["crack1","assets/base_crack1.png"],
+  ["crack2","assets/base_crack2.png"],
+  ["smoke1","assets/base_smoke1.png"],
 ];
 const sfx = {
   blast:    new Audio('sounds/blast.wav'),
@@ -264,6 +251,12 @@ const TRAIL_COLS = ['#fff1a8','#ffd166','#ff9f43','#ff6b3d','#ff3b2f'];
 
 // ---- UI Layout ----
 const BTN_BACK = { x: 20, y: 84, w: 100, h: 36 };
+// ★ モード選択ボタンを一元化（描画/判定で共有）
+const MODE_BTNS = [
+  { label:"EN → EN", x: CANVAS_W/2-240, y: 360, w: 180, h: 56, key:"en_en" },
+  { label:"JP → EN", x: CANVAS_W/2-  60, y: 360, w: 180, h: 56, key:"jp_en" },
+  { label:"EN → JP", x: CANVAS_W/2+ 120, y: 360, w: 180, h: 56, key:"en_jp" },
+];
 
 const gridLevels = [
   ["A1","A2","A3"],
@@ -329,12 +322,11 @@ const model = {
   selectedLang:  null,
   weakOnly: false,
 
-  // countdown（1秒刻み "3","2","1","START"）
+  // countdown
   cdIndex: -1,
   cdTimer: 0,
   cdLabels: ["3","2","1","START"],
 
-  // Base hit flash
   baseFlash: 0,
 
   // callbacks
@@ -474,7 +466,6 @@ function drawWrappedText(text, x, y, maxW, size=10, align='left', color='#fff') 
   ctx.fillStyle=color;  ctx.fillText(line, x, yy);
   ctx.restore();
 }
-/** 縦スプライトストリップを「幅フィット＋等比」で描画（ベース矩形でクリップ＆下寄せ） */
 function drawStripFitWidth(img, frames, fps, rect, verticalAlign='bottom', alpha=1.0){
   const t   = performance.now() / 1000;
   const idx = frames > 1 ? Math.floor(t * fps) % frames : 0;
@@ -745,7 +736,6 @@ function updateAndDraw(ts){
   const gf = Math.floor(performance.now() / FRAME_DURATION);
   const mf = gf % meteorFrameCount;
 
-  // フェーズ別
   if (model.phase === "countdown") {
     if (model.cdIndex >= 0 && model.cdIndex < model.cdLabels.length) {
       model.cdTimer -= dt;
@@ -778,7 +768,6 @@ function updateAndDraw(ts){
     updateAndDrawTrail(dt);
     for (const m of meteors) drawMeteor(m, mf);
 
-    // Base
     drawBase();
 
     for (let i = explosions.length - 1; i >= 0; i--){
@@ -799,14 +788,9 @@ function updateAndDraw(ts){
     drawCountdown();
   }
 
-  // フッター/HUDは常時
   drawFooter();
   drawHUD();
-
-  // ♬
   drawAudioIcon();
-
-  // ?（最後に重ねる）
   drawHelp(ctx, canvas);
 
   requestAnimationFrame(updateAndDraw);
@@ -840,12 +824,8 @@ function drawLevelSelect(){
 function drawLangSelect(){
   drawPixelText('SELECT MODE', CANVAS_W/2, 120, 18, 'center', '#5cd4ff');
   drawRectButton(BTN_BACK.x, BTN_BACK.y, BTN_BACK.w, BTN_BACK.h, "BACK", false, false, 12);
-  const btns = [
-    { label:"EN → EN", x: CANVAS_W/2-240, y: 360, w: 180, h: 56, key:"en_en" },
-    { label:"JP → EN", x: CANVAS_W/2-  60, y: 360, w: 180, h: 56, key:"jp_en" },
-    // { label:"EN → JP", x: CANVAS_W/2+ 120, y: 360, w: 180, h: 56, key:"en_jp" },
-  ];
-  btns.forEach(b => drawRectButton(b.x,b.y,b.w,b.h,b.label,true));
+  // ★ 一元化した配列から描画
+  MODE_BTNS.forEach(b => drawRectButton(b.x,b.y,b.w,b.h,b.label,true));
 }
 
 function drawCountdown(){
@@ -861,7 +841,6 @@ canvas.addEventListener('mousedown', (e)=>{
   const r = canvas.getBoundingClientRect();
   const mx = e.clientX - r.left, my = e.clientY - r.top;
 
-  // 先に♬
   if (hitBox(AUDIO_BTN, mx, my)) {
     if (window.AudioUI && typeof window.AudioUI.toggleBGM === 'function') window.AudioUI.toggleBGM();
     return;
@@ -891,12 +870,8 @@ canvas.addEventListener('mousedown', (e)=>{
     }
   } else if (model.phase === "selectLang") {
     if (hitBox(BTN_BACK, mx, my)) { model.phase = "selectLevel"; return; }
-    const btns = [
-      { label:"EN → EN", x: CANVAS_W/2-240, y: 360, w: 180, h: 56, key:"en_en" },
-      { label:"JP → EN", x: CANVAS_W/2-  60, y: 360, w: 180, h: 56, key:"jp_en" },
-      { label:"EN → JP", x: CANVAS_W/2+ 120, y: 360, w: 180, h: 56, key:"en_jp" },
-    ];
-    for (const b of btns) {
+    // ★ 一元化した配列で判定
+    for (const b of MODE_BTNS) {
       if (hitBox(b, mx, my)) {
         model.selectedLang = b.key;
         model.onSelectLang && model.onSelectLang(b.key);
@@ -919,7 +894,6 @@ canvas.addEventListener('mousedown', (e)=>{
 canvas.addEventListener('mouseup',   ()=>{ if (model.phase==='playing') focusInput(true); });
 canvas.addEventListener('pointerup', ()=>{ if (model.phase==='playing') focusInput(true); });
 
-// キー入力
 document.addEventListener('keydown', (e)=>{
   const k = e.key;
   if (model.phase === "selectLang" && k === "Escape") { model.phase = "selectLevel"; e.preventDefault(); return; }
@@ -934,14 +908,12 @@ document.addEventListener('keydown', (e)=>{
   }
 });
 
-// Canvas外クリックで入力OFF（playingのみ）
 document.addEventListener('mousedown', (e) => {
   const r = canvas.getBoundingClientRect();
   const inside = (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom);
   if (model.phase === 'playing') { if (!inside) focusInput(false); }
 }, { capture:true });
 
-// Spaceスクロール抑止（IME中は許可）
 window.addEventListener('keydown', (e) => {
   if (e.code === 'Space' && !isComposing) e.preventDefault();
 }, { capture:true });
