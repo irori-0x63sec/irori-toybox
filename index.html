@@ -19,6 +19,9 @@
   <!-- AdSense（サイト審査用タグ：そのままでOK） -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6056438145584303" crossorigin="anonymous"></script>
 
+  <link rel="stylesheet" href="/assets/site.css">
+  <script src="/assets/load-header.js" defer></script>
+
   <style>
     :root{
       --bg:#0b1520; --panel:#121c28; --panel-2:#0f1d2a; --txt:#e6f2ff; --muted:#9ab6c9; --acc:#5cd4ff; --acc-2:#ffb35a; --border:#203447;
@@ -156,11 +159,7 @@
       <!-- 右：更新 -->
       <aside class="card">
         <h2>更新履歴（最近）</h2>
-        <ul>
-          <li><strong>2025-09-21</strong> — Cookie同意UXを刷新。ALL時のみ広告ロードに対応。</li>
-          <li><strong>2025-09-20</strong> — Lexi Blaster 安定版を公開。弱点出題の精度アップ。</li>
-          <li><strong>2025-09-15</strong> — サイト公開。OG/Twitterカード設定。</li>
-        </ul>
+        <ul id="recent-changelog"><li>読み込み中…</li></ul>
         <p style="margin-top:10px;"><a href="/changelog/">全ての更新を見る →</a></p>
       </aside>
     </div>
@@ -191,8 +190,36 @@
     // 年号の自動更新
     (function(){ document.getElementById('y').textContent = new Date().getFullYear(); })();
 
-    // 「Cookie設定」リンクが ?openCookie=1 で遷移してきた場合、ゲーム側で開けるように備忘
-    // （このページ自体には consent.js を読み込んでいない想定）
+    // changelog から最新N件を抜粋して表示
+    (async function loadRecentFromChangelog(N = 3){
+      const list = document.getElementById('recent-changelog');
+      if (!list) return;
+      try {
+        const res  = await fetch('/changelog/');
+        const html = await res.text();
+        const doc  = new DOMParser().parseFromString(html, 'text/html');
+
+        // 各エントリ（.card）から「日付」と「タイトル（h3 or 最初のli）」を抽出
+        const cards = Array.from(doc.querySelectorAll('.card'));
+        const items = cards.slice(0, N).map(card => {
+          const date  = (card.querySelector('.time') || card.querySelector('time'))?.textContent?.trim() || '';
+          const title = card.querySelector('h3')?.textContent?.trim()
+                    || card.querySelector('li')?.textContent?.trim()
+                    || '更新';
+          const id    = card.id || '';
+          const href  = '/changelog/' + (id ? ('#' + id) : '');
+          return { date, title, href };
+        }).filter(x => x.title);
+
+        list.innerHTML = items.map(i =>
+          `<li><a href="${i.href}"><strong>${i.date}</strong> — ${i.title}</a></li>`
+        ).join('') || `<li>項目が見つかりませんでした。<a href="/changelog/">更新履歴へ</a></li>`;
+      } catch (e) {
+        console.warn('[changelog-load]', e);
+        list.innerHTML = `<li>読み込みに失敗しました。<a href="/changelog/">更新履歴へ</a></li>`;
+      }
+    })();
   </script>
+
 </body>
 </html>
