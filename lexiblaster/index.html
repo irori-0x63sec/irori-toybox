@@ -75,8 +75,98 @@
     <button id="cookie-open-settings" class="linklike">Cookie設定</button>
   </div>
 
+  <!-- ▼▼▼ ここから広告エリア ▼▼▼ -->
+  <div class="ad-area" aria-label="広告エリア">
+    <div class="ad-row">
+      <!-- 左広告枠（プレースホルダー）。AdSenseや他社タグをこの中に入れる -->
+      <div class="ad-slot" id="ad-left">
+        <!-- 例: 後でここに <ins class="adsbygoogle" ...></ins> を入れる -->
+        <span class="ad-ph">AD 300×250 / 320×50 / 728×90 など</span>
+      </div>
+      <!-- 右広告枠 -->
+      <div class="ad-slot" id="ad-right">
+        <span class="ad-ph">AD 300×250 / 320×50 / 728×90 など</span>
+      </div>
+    </div>
+  </div>
+  <!-- ▲▲▲ 広告エリア終わり ▲▲▲ -->
+
+
   <!-- 1) 同意管理は軽量JSに集約 -->
   <script src="consent.js" defer></script>
+  <!-- モバイル非対応オーバーレイ -->
+  <div id="unsupported-overlay" class="unsupported-overlay" hidden>
+    <div class="unsupported-card" role="dialog" aria-modal="true" aria-label="Unsupported">
+      <h2>このゲームはモバイルに未対応です</h2>
+      <p>
+        現在はPC（キーボード操作）向けのみ提供しています。<br>
+        お手数ですが、PCからアクセスしてください。
+      </p>
+      <div class="unsupported-actions">
+        <!-- 任意: 自己責任で続行できるボタンを出す（不要なら丸ごと削除） -->
+        <button id="unsupported-continue" class="unsupported-btn">とりあえず続行</button>
+        <button id="unsupported-home" class="unsupported-btn primary" onclick="location.href='/'">Irori-toybox Homeへ</button>
+      </div>
+    </div>
+  </div>
+  <script>
+/* mobile-gate: モバイル/タブレット等を検出してゲーム起動を止める */
+  (function(){
+    function isMobileLike(){
+      // 画面の物理的な小ささ or ポインタの粗さで一次判定
+      const coarse = matchMedia('(pointer:coarse)').matches;
+      const narrow = Math.min(window.innerWidth, window.innerHeight) <= 820; // iPad縦含む
+      // UAの補助（将来互換のため軽めに）
+      const ua = navigator.userAgent || '';
+      const uaMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+      return (coarse && narrow) || (uaMobile && narrow);
+    }
+
+    function showGate(on){
+      const ov = document.getElementById('unsupported-overlay');
+      if (!ov) return;
+      if (on){
+        ov.hidden = false; ov.style.display = 'grid';
+        window.__MOBILE_BLOCKED__ = true;
+        // ゲームCanvasを隠して誤操作を避ける
+        const c = document.getElementById('gameCanvas'); if (c) c.style.visibility = 'hidden';
+      } else {
+        ov.hidden = true; ov.style.display = 'none';
+        window.__MOBILE_BLOCKED__ = false;
+        const c = document.getElementById('gameCanvas'); if (c) c.style.visibility = 'visible';
+      }
+    }
+
+    function updateGate(){ showGate(isMobileLike()); }
+
+    // リサイズ/向き変更でも再評価
+    addEventListener('resize', updateGate);
+    addEventListener('orientationchange', updateGate);
+    // 初期
+    (document.readyState === 'loading')
+      ? addEventListener('DOMContentLoaded', updateGate)
+      : updateGate();
+
+    // 「とりあえず続行」を押したら、今回のセッションだけ解除
+    addEventListener('DOMContentLoaded', function(){
+      const btn = document.getElementById('unsupported-continue');
+      if (!btn) return;
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        sessionStorage.setItem('lb_mobile_override', '1');
+        showGate(false);
+      });
+    });
+
+    // セッションオーバーライドがあれば解除
+    if (sessionStorage.getItem('lb_mobile_override') === '1') {
+      (document.readyState === 'loading')
+        ? addEventListener('DOMContentLoaded', () => showGate(false))
+        : showGate(false);
+    }
+  })();
+  </script>
+
 
   <!-- 2) ゲーム本体は常に読み込む（順序保証のため defer＋記述順） -->
   <script src="score.js" defer></script>

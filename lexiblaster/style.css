@@ -1,5 +1,25 @@
-/* 既存のスタイルはそのまま下に追加してOK。必要分だけ再掲 */
-
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #0a121a;
+  color: #fff;
+  font-family: "Press Start 2P", monospace;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+#wrap {
+  width: 800px;
+  margin: 24px auto;
+  border: 1px solid #193044;
+  box-shadow: 0 0 18px rgba(0,0,0,0.5);
+}
+#gameCanvas {
+  display: block;
+  background: #081018;
+  /* 初期は main.js が visibility を制御（フォント/アセット待ち） */
+  visibility: hidden;
+}
 /* === Cookie Overlay === */
 .cookie-footer-btn{
   position: fixed;
@@ -84,4 +104,71 @@
   padding: 8px 12px; cursor: pointer;
 }
 
-/* ここより下に既存のゲーム用スタイルが続くならそのままでOK */
+/* ==== モバイル非対応オーバーレイ ==== */
+.unsupported-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;            /* consent より上 */
+  display: none;              /* JSで制御 */
+  place-items: center;
+  background: rgba(0,0,0,0.85);
+  color: #eaf6ff;
+  text-align: center;
+  padding: 24px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+.unsupported-card {
+  width: min(680px, 92vw);
+  background: #12181f;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 24px 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+}
+.unsupported-card h2 { margin: 0 0 10px; font-size: 20px; }
+.unsupported-card p  { line-height: 1.7; opacity: .95; margin: 8px 0; }
+.unsupported-actions { margin-top: 14px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.unsupported-btn {
+  appearance: none; border: 1px solid rgba(255,255,255,.2);
+  background: #2a2d33; color: #fff; padding: 10px 14px; border-radius: 10px; cursor: pointer; font-weight: 700;
+}
+.unsupported-btn.primary { background: #0ea5e9; border-color: #0ea5e9; color: #001018; }
+
+
+/* ==== Ads under canvas ==== */
+/* キャンバス(800px)より少し長い 880px 幅で中央寄せ。PC想定なので固定でOK */
+.ad-area{
+  width: 880px;
+  margin: 18px auto 48px;
+}
+
+.ad-row{
+  display: flex;
+  gap: 16px;
+}
+
+/* 2分割の同サイズ枠。高さは確保してCLSを避ける */
+.ad-slot{
+  flex: 1 1 0;
+  min-height: 130px;          /* 728×90 / 300×250 などに合わせてゆとり確保 */
+  background: #0f1d2a;        /* ゲームの配色に合わせたダーク背景 */
+  border: 1px solid #1f3144;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+/* プレースホルダー（審査中のダミー表示） */
+.ad-ph{
+  font: 600 12px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: #8fbad2;
+  opacity: .9;
+}
+
+/* もし画面が狭い場合（デスクトップでもウィンドウを細くした時）は縦積み */
+@media (max-width: 920px){
+  .ad-area{ width: 96vw; }
+  .ad-row{ flex-direction: column; }
+  .ad-slot{ min-height: 120px; }
+}

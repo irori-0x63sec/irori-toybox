@@ -255,7 +255,7 @@ const BTN_BACK = { x: 20, y: 84, w: 100, h: 36 };
 const MODE_BTNS = [
   { label:"EN → EN", x: CANVAS_W/2-240, y: 360, w: 180, h: 56, key:"en_en" },
   { label:"JP → EN", x: CANVAS_W/2-  60, y: 360, w: 180, h: 56, key:"jp_en" },
-  { label:"EN → JP", x: CANVAS_W/2+ 120, y: 360, w: 180, h: 56, key:"en_jp" },
+//{ label:"EN → JP", x: CANVAS_W/2+ 120, y: 360, w: 180, h: 56, key:"en_jp" },
 ];
 
 const gridLevels = [
