@@ -1,9 +1,9 @@
-// assets/load-header.js
+// /assets/load-header.js
 (async function mountHeader(){
   const hostHeader = document.getElementById('site-header');
   if (!hostHeader) return;
 
-  // 1) パーシャルを取得して挿入
+  // 取り込み（キャッシュ無効化で反映ズレ防止）
   try {
     const res = await fetch('/partials/header.html', { cache: 'no-cache' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -18,21 +18,18 @@
         <a class="brand" href="/"><div class="logo">IT</div><strong>Irori's Toybox</strong></a>
         <nav><a class="link" href="/">Home</a></nav>
       </div>`;
-    return; // フォールバック終了
+    return;
   }
 
-  // 2) 現在ページに応じてメニューをアクティブ表示
+  // 現在ページをアクティブ表示（/changelog/xxx でも「更新履歴」をハイライト）
   try {
     const path = location.pathname.endsWith('/') ? location.pathname : (location.pathname + '/');
     const links = Array.from(document.querySelectorAll('header.site .link'));
-    // data-path が一番長くマッチするリンクを current に（/changelog/xxx にも対応）
     let current = null, maxLen = -1;
     for (const a of links) {
       const p = a.getAttribute('data-path');
       if (p && path.startsWith(p) && p.length > maxLen) { current = a; maxLen = p.length; }
     }
-    if (current) {
-      current.setAttribute('aria-current', 'page');
-    }
-  } catch(e) { /* noop */ }
+    if (current) current.setAttribute('aria-current', 'page');
+  } catch {}
 })();
