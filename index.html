@@ -2,20 +2,203 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <title>Irori's Toybox</title>
+  <title>Irori's Toybox — 小さな作品たちの置き場</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="個人開発のミニゲームや学習ツールを置いていく実験箱。おすすめは英単語タイピングゲーム『Lexi Blaster』。" />
+  <link rel="canonical" href="https://irori-toybox.com/">
+  <meta name="theme-color" content="#0b1520" />
 
-  <!-- OG/Twitter カード（任意） -->
+  <!-- OG/Twitter -->
   <meta property="og:title" content="Irori's Toybox" />
-  <meta property="og:description" content="小さな作品たちの置き場。Lexi Blaster で英単語力を鍛えよう！" />
+  <meta property="og:description" content="個人開発のミニゲームや学習ツールの置き場。英単語ゲーム『Lexi Blaster』公開中。" />
   <meta property="og:url" content="https://irori-toybox.com/" />
   <meta property="og:image" content="https://irori-toybox.com/ogp.png" />
+  <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6056438145584303"crossorigin="anonymous"></script>
 
+  <!-- AdSense（サイト審査用タグ：そのままでOK） -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6056438145584303" crossorigin="anonymous"></script>
+
+  <style>
+    :root{
+      --bg:#0b1520; --panel:#121c28; --panel-2:#0f1d2a; --txt:#e6f2ff; --muted:#9ab6c9; --acc:#5cd4ff; --acc-2:#ffb35a; --border:#203447;
+    }
+    *{ box-sizing: border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0; background: radial-gradient(1200px 600px at 20% -10%, #0e2436 0%, transparent 60%),
+                       radial-gradient(900px 500px at 100% 0%, #0a2132 0%, transparent 60%),
+                       var(--bg);
+      color:var(--txt); font: 16px/1.7 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      letter-spacing:.02em;
+    }
+    a{ color:var(--acc); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    .container{ width:min(1000px, 92vw); margin:0 auto; padding: 28px 0 64px; }
+    header{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px; }
+    .brand{ display:flex; align-items:center; gap:12px; }
+    .logo{
+      width:40px; height:40px; border-radius:10px;
+      background: linear-gradient(135deg,#173653,#0f2a40);
+      border:1px solid var(--border); display:grid; place-items:center; color:#cfe8ff; font-weight:800;
+      box-shadow:0 6px 24px rgba(0,0,0,.3), inset 0 0 40px rgba(92,212,255,.08);
+    }
+    nav a{ margin-left:14px; color:var(--muted); }
+    nav a:hover{ color:var(--txt); }
+
+    .hero{
+      margin: 6px 0 24px;
+      padding: 28px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background: linear-gradient(180deg, rgba(18,28,40,.9), rgba(15,29,42,.9));
+      box-shadow: 0 20px 50px rgba(0,0,0,.35);
+    }
+    .hero h1{ margin:0 0 8px; font-size: clamp(22px, 4vw, 30px); letter-spacing:.03em; }
+    .hero p{ margin:0; color:var(--muted); }
+    .cta-row{ margin-top:18px; display:flex; gap:12px; flex-wrap:wrap; }
+    .btn{
+      appearance:none; border:1px solid var(--border); border-radius:12px; padding:10px 16px; cursor:pointer;
+      background: var(--panel-2); color:var(--txt); font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:10px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.25);
+    }
+    .btn.primary{ background: linear-gradient(180deg,#1a3b52,#143245); border-color:#18435a; }
+    .btn .sub{ font-weight:600; color:var(--muted); font-size:.9em; }
+
+    .grid{ display:grid; grid-template-columns: 1fr; gap:16px; margin-top:24px; }
+    @media (min-width: 760px){ .grid{ grid-template-columns: 1.3fr .7fr; } }
+
+    .card{
+      border:1px solid var(--border); border-radius:14px; background:var(--panel); padding:16px 16px 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.28);
+    }
+    .card h2{ margin:2px 0 10px; font-size:18px; letter-spacing:.02em; }
+    .card ul{ list-style:none; padding:0; margin:0; }
+    .card li{ padding:10px 8px; border-top:1px solid rgba(255,255,255,.06); }
+    .card li:first-child{ border-top:none; }
+    .meta{ color:var(--muted); font-size:.92em; }
+
+    .projects{ display:grid; grid-template-columns: 1fr; gap:12px; }
+    @media (min-width: 600px){ .projects{ grid-template-columns: 1fr 1fr; } }
+    .proj{
+      border:1px solid var(--border); border-radius:12px; padding:14px; background:var(--panel-2);
+    }
+    .tag{ font-size:.78em; color:#001018; background:var(--acc); padding:2px 8px; border-radius:999px; font-weight:800; }
+
+    footer{ margin-top:28px; padding-top:16px; color:var(--muted); display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; border-top:1px solid var(--border); }
+    .links a{ margin-right:12px; }
+    .small{ font-size:.9em; }
+
+    /* 視認性向上 */
+    .kbd{ font: 600 12px/1 system-ui, -apple-system, "Segoe UI", Roboto; padding:3px 6px; border:1px solid #2a3a48; border-radius:6px; background:#09121a; color:#cfe8ff; }
+  </style>
+
+  <!-- 構造化データ（任意） -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Irori's Toybox",
+    "url": "https://irori-toybox.com/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://irori-toybox.com/?q={query}",
+      "query-input": "required name=query"
+    }
+  }
+  </script>
 </head>
 <body>
-  <h1>Irori's Toybox</h1>
-  <p><a href="/lexiblaster/">▶ Lexi Blaster をプレイ</a></p>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">IT</div>
+        <div>
+          <div style="font-weight:800;">Irori's Toybox</div>
+          <div class="small" style="color:var(--muted)">個人開発のミニゲーム & 学習ツール</div>
+        </div>
+      </div>
+      <nav>
+        <a href="/lexiblaster/">Lexi Blaster</a>
+        <a href="/changelog/">更新履歴</a>
+        <a href="/privacy/">プライバシー</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <h1>小さな作品たちの置き場へようこそ。</h1>
+      <p>まずは英単語タイピングゲーム <strong>Lexi Blaster</strong>。弱点に合わせて出題が偏る “SRS風” ロジックで、英語の瞬発力を鍛えます。</p>
+      <div class="cta-row">
+        <a class="btn primary" href="/lexiblaster/">
+          ▶ 今すぐプレイ
+          <span class="sub">PC推奨／キーボード操作</span>
+        </a>
+        <a class="btn" href="/changelog/">📝 更新履歴を見る</a>
+      </div>
+    </section>
+
+    <div class="grid">
+      <!-- 左：注目 -->
+      <section class="card">
+        <h2>Featured: Lexi Blaster</h2>
+        <p class="meta">英単語タイピング / SRS風出題 / スコア共有</p>
+        <ul>
+          <li>タイプして <span class="kbd">Enter</span> で発射。正解でスコア＋、ミスでヒントが1文字だけ開きます。</li>
+          <li>「WEAK」フィルタONで、苦手語（自動推定）だけを集中的に出題。</li>
+          <li>Cookie同意がなくても遊べます。同意があると<span class="kbd">スコア</span>や<span class="kbd">ミュート</span>が保存されます。</li>
+        </ul>
+        <div class="cta-row" style="margin-top:10px;">
+          <a class="btn" href="/lexiblaster/">▶ プレイ</a>
+          <a class="btn" href="/lexiblaster/?openCookie=1">⚙ Cookie設定</a>
+        </div>
+      </section>
+
+      <!-- 右：更新 -->
+      <aside class="card">
+        <h2>更新履歴（最近）</h2>
+        <ul>
+          <li><strong>2025-09-21</strong> — Cookie同意UXを刷新。ALL時のみ広告ロードに対応。</li>
+          <li><strong>2025-09-20</strong> — Lexi Blaster 安定版を公開。弱点出題の精度アップ。</li>
+          <li><strong>2025-09-15</strong> — サイト公開。OG/Twitterカード設定。</li>
+        </ul>
+        <p style="margin-top:10px;"><a href="/changelog/">全ての更新を見る →</a></p>
+      </aside>
+    </div>
+
+    <!-- 今後の作品 / スロット -->
+    <section class="card" style="margin-top:16px;">
+      <h2>Works / 進行中</h2>
+      <div class="projects">
+        <div class="proj">
+          <div class="tag">Planning</div>
+          <h3 style="margin:8px 0 6px;">英語SRSトレーナー（仮）</h3>
+          <p class="small">英文→単語穴埋め／タイピング／弱点自動学習を組み合わせた軽量Webアプリ。</p>
+        </div>
+        <div class="proj">
+          <div class="tag" style="background:#ffcf7a;">Coming soon</div>
+          <h3 style="margin:8px 0 6px;">ミニパズル</h3>
+          <p class="small">1プレイ30秒の短編パズル。操作感の研究用。</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="links">
+        <a href="/privacy/">プライバシーポリシー</a>
+        <a href="/cookie-policy/">クッキーポリシー</a>
+        <a href="/contact/">お問い合わせ</a>
+      </div>
+      <div class="small">© <span id="y"></span> Irori</div>
+    </footer>
+  </div>
+
+  <script>
+    // 年号の自動更新
+    (function(){ document.getElementById('y').textContent = new Date().getFullYear(); })();
+
+    // 「Cookie設定」リンクが ?openCookie=1 で遷移してきた場合、ゲーム側で開けるように備忘
+    // （このページ自体には consent.js を読み込んでいない想定）
+  </script>
 </body>
 </html>
