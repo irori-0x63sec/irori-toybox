@@ -1,19 +1,11 @@
-:root{
-  --bg:#0b1520; --panel:#121c28; --panel2:#0f1d2a; --txt:#e6f2ff;
-  --muted:#9ab6c9; --acc:#5cd4ff; --border:#203447;
-}
+:root{ --bg:#0b1520; --panel:#121c28; --panel2:#0f1d2a; --txt:#e6f2ff; --muted:#9ab6c9; --acc:#5cd4ff; --border:#203447 }
 *{ box-sizing:border-box }
 a{ color:var(--acc); text-decoration:none } a:hover{ text-decoration:underline }
 
-/* 共通ヘッダー */
-header.site{ position:sticky; top:0; z-index:10;
-  backdrop-filter: blur(8px);
+header.site{ position:sticky; top:0; z-index:10; backdrop-filter: blur(8px);
   background:linear-gradient(180deg,rgba(11,21,32,.85),rgba(11,21,32,.65));
-  border-bottom:1px solid rgba(255,255,255,.06);
-}
-header.site .nav{
-  width:min(1000px,92vw); margin:0 auto; display:flex; align-items:center; gap:16px; padding:10px 0;
-}
+  border-bottom:1px solid rgba(255,255,255,.06); }
+header.site .nav{ width:min(1000px,92vw); margin:0 auto; display:flex; align-items:center; gap:16px; padding:10px 0; }
 .brand{ display:flex; align-items:center; gap:10px; margin-right:auto; color:var(--txt) }
 .logo{ width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#173653,#0f2a40);
   border:1px solid var(--border); display:grid; place-items:center; color:#cfe8ff; font-weight:800 }

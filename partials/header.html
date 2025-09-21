@@ -1,12 +1,11 @@
-<header id="site-header" hidden></header>
-<script>
-(async () => {
-  try {
-    const res = await fetch('/partials/header.html');
-    const html = await res.text();
-    const el = document.getElementById('site-header');
-    el.innerHTML = html;
-    el.hidden = false;
-  } catch {}
-})();
-</script>
+<div class="nav">
+  <a class="brand" href="/"><div class="logo">IT</div><strong>Irori's Toybox</strong></a>
+  <nav>
+    <a class="link" data-path="/"               href="/">Home</a>
+    <a class="link" data-path="/lexiblaster/"   href="/lexiblaster/">Lexi Blaster</a>
+    <a class="link" data-path="/changelog/"     href="/changelog/">更新履歴</a>
+    <a class="link" data-path="/privacy/"       href="/privacy/">プライバシー</a>
+    <a class="link" data-path="/cookie-policy/" href="/cookie-policy/">クッキー</a>
+    <a class="link" data-path="/contact/"       href="/contact/">お問い合わせ</a>
+  </nav>
+</div>
