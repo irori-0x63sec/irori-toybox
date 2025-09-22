@@ -159,6 +159,26 @@
       .lexi-miss ul{margin:0;padding-left:18px;}
       .lexi-miss li{font-size:14px;line-height:1.6;margin:4px 0;}
       .lexi-miss code{font-weight:700;}
+
+      .lexi-leaderboard{margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);}
+      .lexi-leaderboard h3{margin:0 0 8px;font-size:16px;}
+      .lexi-leaderboard label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;letter-spacing:.2px;}
+      .lexi-leaderboard-form{margin-bottom:14px;}
+      .lexi-leaderboard-inputs{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+      .lexi-leaderboard-inputs input{flex:1 1 200px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:8px;padding:8px 10px;font-size:14px;min-width:160px;}
+      .lexi-leaderboard-inputs input:focus{outline:none;border-color:#1d9bf0;box-shadow:0 0 0 2px rgba(29,155,240,.35);}
+      .lexi-leaderboard .lexi-btn{font-size:13px;padding:8px 12px;}
+      .lexi-leaderboard .lexi-btn.tertiary{background:#4f6df5;}
+      .lexi-leaderboard .lexi-btn.tertiary:disabled{opacity:.5;cursor:not-allowed;}
+      .lb-status{font-size:13px;margin:6px 0 12px 0;}
+      .lb-status--info{color:#bcd9ff;}
+      .lb-status--loading{color:#9ad0ff;}
+      .lb-status--success{color:#8ef59d;}
+      .lb-status--error{color:#ff8e8e;}
+      .lb-status--warning{color:#ffd27d;}
+      .lb-table th:nth-child(3),.lb-table td:nth-child(3){text-align:right;}
+      .lb-table td:nth-child(2){max-width:220px;overflow:hidden;text-overflow:ellipsis;}
+      .lb-row-self{background:rgba(76,175,80,.18);}
       `;
       const st = document.createElement('style');
       st.id = 'lexi-scoreboard-style';
@@ -191,6 +211,23 @@
             <h3>ミスした単語</h3>
             <ul id="lexi-miss-list"></ul>
             <p class="lexi-note">※このリストは共有テキストには含まれません。</p>
+          </div>
+
+          <div class="lexi-leaderboard" id="lb-leaderboard" hidden>
+            <h3>オンラインランキング</h3>
+            <p class="lb-status" id="lb-leaderboard-status" aria-live="polite">ハイスコアを登録してランキングに参加しよう！</p>
+            <form class="lexi-leaderboard-form" id="lb-leaderboard-form">
+              <label for="lb-leaderboard-name">ハンドルネーム（1〜12文字）</label>
+              <div class="lexi-leaderboard-inputs">
+                <input type="text" id="lb-leaderboard-name" name="name" maxlength="12" autocomplete="nickname" required />
+                <button type="submit" class="lexi-btn tertiary" id="lb-leaderboard-submit">スコア登録</button>
+              </div>
+            </form>
+            <table class="lexi-sb-table lb-table" id="lb-leaderboard-table">
+              <thead><tr><th>Rank</th><th>Name</th><th>Score</th></tr></thead>
+              <tbody id="lb-leaderboard-body"></tbody>
+            </table>
+            <p class="lexi-note" id="lb-leaderboard-empty" hidden>まだ登録がありません。最初の挑戦者になろう！</p>
           </div>
 
           <div class="lexi-sb-actions">
@@ -283,10 +320,15 @@
       }
 
       this.el.style.display = 'grid';
+
+      const leaderboardRoot = this.el.querySelector('#lb-leaderboard');
+      this._dispatchLeaderboard('show', { tracker, meta, total, root: leaderboardRoot });
     }
 
     hide() {
       this.el.style.display = 'none';
+      const leaderboardRoot = this.el?.querySelector('#lb-leaderboard');
+      this._dispatchLeaderboard('hide', { root: leaderboardRoot });
     }
 
     _chip(text) {
@@ -386,6 +428,15 @@
         window.prompt('共有に失敗しました。以下のテキストをコピーしてください。', text);
       } catch (err) {
         console.error('[ScoreboardOverlay] prompt copy failed', err);
+      }
+    }
+
+    _dispatchLeaderboard(type, detail = {}) {
+      try {
+        const ev = new CustomEvent(`lb:leaderboard:${type}`, { detail });
+        window.dispatchEvent(ev);
+      } catch (err) {
+        console.warn('[ScoreboardOverlay] leaderboard event error', err);
       }
     }
   }
