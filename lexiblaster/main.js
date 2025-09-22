@@ -34,6 +34,7 @@ let lives = 3;
 let isGameOver = false;
 let revealed = [];
 let startedAt = 0;
+const streak = { current: 0, best: 0 };
 
 /* =========================================================
    BGM manager (WebAudioでサンプル精度ループ)
@@ -152,6 +153,8 @@ const Typing = {
 // ---- 苦手度（SRS） ----
 const LS_KEY = "lb_scores_v1";
 let userScores = {};
+const LB_BACKUP_KEY = 'LBBackup';
+let runtimeBackupProfile = { highestScore: 0 };
 function loadScores(){
   if (!canUseStorage()) { userScores = {}; return; }
   try { userScores = JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch { userScores = {}; }
@@ -159,6 +162,45 @@ function loadScores(){
 function saveScores(){
   if (!canUseStorage()) return;
   try { localStorage.setItem(LS_KEY, JSON.stringify(userScores)); } catch {}
+}
+function loadBackupProfile(){
+  if (canUseStorage()) {
+    try {
+      const raw = localStorage.getItem(LB_BACKUP_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          const highest = Number.isFinite(parsed.highestScore)
+            ? Math.max(0, Math.floor(parsed.highestScore))
+            : 0;
+          runtimeBackupProfile = { ...parsed, highestScore: highest };
+          return { ...runtimeBackupProfile };
+        }
+      }
+    } catch {}
+  }
+  return { ...runtimeBackupProfile };
+}
+function saveBackupProfile(profile){
+  const highest = Math.max(0, Math.floor(Number(profile?.highestScore) || 0));
+  runtimeBackupProfile = { ...profile, highestScore: highest };
+  if (canUseStorage()) {
+    try { localStorage.setItem(LB_BACKUP_KEY, JSON.stringify(runtimeBackupProfile)); } catch {}
+  }
+  return { ...runtimeBackupProfile };
+}
+function updatePersonalBest(finalScore){
+  const scoreValue = Math.max(0, Math.floor(Number(finalScore) || 0));
+  const profile = loadBackupProfile();
+  const previousBest = Math.max(0, Math.floor(Number(profile.highestScore) || 0));
+  const highestScore = Math.max(previousBest, scoreValue);
+  profile.highestScore = highestScore;
+  saveBackupProfile(profile);
+  return {
+    isPersonalBest: scoreValue > previousBest,
+    previousBest,
+    highestScore
+  };
 }
 function keyNew(w){ const ans = (w.answer_en || w.answer || "").toLowerCase(); return `${currentBand}:${w.level}:${ans}`; }
 function keyOld(w){ const ans = (w.answer_en || w.answer || "").toLowerCase(); return `${currentBand}:${ans}`; }
@@ -252,6 +294,8 @@ function handleCorrect(){
   Typing.onSolved(answer);
 
   Score.add(+SCORE_PLUS, 'CORRECT', { word: (w.answer_en || w.answer || '').toLowerCase() });
+  streak.current += 1;
+  streak.best = Math.max(streak.best, streak.current);
   w.correctStreak = (w.correctStreak||0) + 1;
   w.lastMistake   = 99;
   incScore(w, -1); saveScores();
@@ -273,6 +317,7 @@ function handleWrong(){
   const bottom = lettersHint(answer, revealed);
   updateHintsTopBottom(top,bottom);
 
+  streak.current = 0;
   w.correctStreak = 0;
   w.lastMistake   = 0;
   incScore(w, +1); saveScores();
@@ -303,6 +348,7 @@ async function onStartGame(){
 
     score=0; lives=3; isGameOver=false;
     Score.tracker.reset(); Typing.reset();
+    streak.current = 0; streak.best = 0;
     startedAt = performance.now(); updateHUD();
 
     idx = pickNextIndex();
@@ -317,6 +363,7 @@ function onRestart(){
   try { Score.overlay.hide(); } catch(_) {}
   score=0; lives=3; isGameOver=false;
   Typing.reset();
+  streak.current = 0; streak.best = 0;
   window.canvasGame?.setFlow({ started:true, gameOver:false, phase:"countdown" });
   updateHUD();
 }
@@ -324,6 +371,7 @@ function onReturnToTitle(){
   try { Score.overlay.hide(); } catch(_) {}
   score=0; lives=3; isGameOver=false;
   Typing.reset();
+  streak.current = 0; streak.best = 0;
   window.canvasGame?.resetScene?.();
   window.canvasGame?.setFlow({ started:true, gameOver:false, phase:"selectLevel" });
   window.canvasGame?.setHints("Hint: —", "");
@@ -360,12 +408,23 @@ window.addEventListener("meteorHitBase", ()=>{
       Score.tracker.record('SPEED_BONUS', speedBonus, { avgWPM: Math.round(avgWPM) });
       score = clamp0(score + speedBonus); updateHUD();
     }
+    const finalScore = Math.max(0, Math.round(Score.tracker.total()));
+    const pb = updatePersonalBest(finalScore);
     const meta = {
       gameName: 'LexiBlaster',
       levelName: currentLevel,
-      avgWPM, playTimeSec: (performance.now() - startedAt)/1000
+      mode: currentMode,
+      modeLabel: describeMode(currentMode),
+      avgWPM,
+      playTimeSec: (performance.now() - startedAt)/1000,
+      finalScore,
+      streak: { current: streak.current, best: streak.best },
+      personalBest: pb.isPersonalBest,
+      highestScore: pb.highestScore,
+      previousBest: pb.previousBest
     };
-    Score.overlay.show({ tracker: Score.tracker, meta, url: location.href});
+    const shareUrl = `${location.origin}${location.pathname}`;
+    Score.overlay.show({ tracker: Score.tracker, meta, url: shareUrl });
   } else {
     window.canvasGame?.spawnMeteor();
   }
@@ -395,6 +454,15 @@ async function waitForPixelFont(timeoutMs = 4000) {
       new Promise(res => setTimeout(res, timeoutMs))
     ]);
   } catch {}
+}
+
+function describeMode(modeKey){
+  switch(modeKey){
+    case 'en_jp': return 'EN→JP';
+    case 'jp_en': return 'JP→EN';
+    case 'en_en': return 'EN→EN';
+    default: return modeKey || '';
+  }
 }
 
 //

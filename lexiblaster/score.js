@@ -37,71 +37,53 @@
       return { correct, mistakes, attempts, accuracy };
     }
 
-    /** X共有用テキスト（情報多め＆自動で長さ調整。MISTAKEは内訳から除外） */
+    /** 共有用の1行テキスト（スコア/モード/連続正解などを含む） */
     toTweetText({
       gameName = 'LexiBlaster',
-      level = 'N/A',
-      avgWPM = 0,
-      playTimeSec,      // 任意: 総プレイ秒
-      band,             // 任意: 例 'C1'
-      maxCombo,         // 任意
-      showBreakdown = true, // falseで内訳省略
+      finalScore = 0,
+      levelName,
+      modeLabel,
+      mode,
+      streak = {},
+      personalBest = false,
+      highestScore,
     } = {}) {
-      const total = Math.max(0, this.total());
-      const { accuracy, correct, mistakes } = this.stats();
-      const accPct = (accuracy * 100).toFixed(1);
+      const score = Math.max(0, Math.round(Number(finalScore) || 0));
+      const modeText = (modeLabel || this._modeLabel(mode) || '').trim();
+      const streakCurrent = Math.max(0, Math.round(Number(streak.current) || 0));
+      const streakBest = Math.max(0, Math.round(Number(streak.best) || 0));
 
-      // 内訳（上位3つ、ミスは除外）
-      const top = this.grouped()
-        .filter(g => g.type !== 'MISTAKE' && g.sum > 0)
-        .slice(0, 3)
-        .map(g => `${this.label(g.type)}+${g.sum}`)
-        .join(' / ');
+      const headline = personalBest
+        ? `${gameName} 自己ベスト更新！`
+        : `${gameName} をプレイ`;
 
-      // 1行目：見出し
-      const line1 = `${gameName} でスコア ${total} pts`;
+      const segments = [headline];
+      segments.push(`スコア ${score} pts`);
+      if (levelName) segments.push(`Lv ${levelName}`);
+      if (modeText) segments.push(`モード ${modeText}`);
 
-      // 2行目：KPI
-      const chips = [
-        `Lv:${level}`,
-        band ? `Band:${band}` : null,
-        `Acc:${accPct}% (${correct}-${mistakes})`,
-        (maxCombo != null) ? `MaxC:${maxCombo}` : null,
-        `AvgWPM:${Math.round(avgWPM)}`
-      ].filter(Boolean).join(' | ');
-      const line2 = chips;
-
-      // 3行目：内訳（任意）
-      const line3 = (showBreakdown && top) ? `Bonus: ${top}` : '';
-
-      // 4行目：時間（任意）
-      const line4 = (typeof playTimeSec === 'number')
-        ? `Time:${Math.round(playTimeSec)}s`
-        : '';
-
-      const hashtags = `#LexiBlaster #英単語ゲーム`;
-
-      // 初期テキスト（URLはintentのurlパラメータで渡す前提）
-      let text = [line1, line2, line3, line4, hashtags].filter(Boolean).join('\n');
-
-      // 長さ調整（安全のため ~250文字目安にトリム）
-      const LIMIT = 250;
-
-      // まずボーナス行を落とす
-      if (text.length > LIMIT && line3) {
-        text = [line1, line2, line4, hashtags].filter(Boolean).join('\n');
+      let streakSegment = `連続正解 ${streakCurrent}`;
+      if (streakBest > 0 && streakBest > streakCurrent) {
+        streakSegment += ` (Max ${streakBest})`;
       }
-      // それでも長ければKPIを簡略化（AvgWPM → MaxC → Band を優先的にカット）
-      if (text.length > LIMIT) {
-        const simpleChips = [
-          `Lv:${level}`,
-          `Acc:${accPct}% (${correct}-${mistakes})`
-        ];
-        const fallback2 = [line1, simpleChips.join(' | '), line4, hashtags].filter(Boolean).join('\n');
-        text = (fallback2.length <= LIMIT) ? fallback2 : [line1, `Acc:${accPct}%`, hashtags].join('\n');
+      segments.push(streakSegment);
+
+      if (personalBest && highestScore && highestScore !== score) {
+        segments.push(`自己ベスト ${highestScore} pts`);
       }
 
-      return text;
+      segments.push('#LexiBlaster');
+
+      return segments.filter(Boolean).join(' | ');
+    }
+
+    _modeLabel(modeKey) {
+      switch (modeKey) {
+        case 'en_jp': return 'EN→JP';
+        case 'jp_en': return 'JP→EN';
+        case 'en_en': return 'EN→EN';
+        default: return modeKey || '';
+      }
     }
 
     label(type) {
@@ -156,12 +138,14 @@
       const css = `
       .lexi-sb-backdrop{position:fixed;inset:0;backdrop-filter:blur(6px);background:rgba(4,10,20,.55);display:grid;place-items:center;z-index:9999;}
       .lexi-sb-card{width:min(720px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;background:rgba(14,18,28,.9);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px;color:#eaf6ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.35);}
-      .lexi-sb-title{font-size:24px;font-weight:800;margin:0 0 8px;}
+      .lexi-sb-title{font-size:24px;font-weight:800;margin:0 0 8px;display:flex;align-items:center;gap:8px;}
       .lexi-sb-sub{font-size:13px;opacity:.8;margin:0 0 16px;}
       .lexi-sb-total{display:flex;align-items:baseline;gap:8px;margin:8px 0 16px;}
       .lexi-sb-total b{font-size:40px;letter-spacing:.5px;}
       .lexi-sb-kpis{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
       .lexi-chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);padding:8px 10px;border-radius:999px;font-size:12px;}
+      .lexi-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;background:linear-gradient(135deg,#ffe17d,#f9a825);color:#1a1c24;font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;box-shadow:0 2px 6px rgba(0,0,0,.3);}
+      #lb-badge-pb{margin-left:4px;}
       table.lexi-sb-table{width:100%;border-collapse:collapse;margin:6px 0 16px;}
       table.lexi-sb-table th,table.lexi-sb-table td{border-bottom:1px dashed rgba(255,255,255,.08);padding:8px 6px;font-size:13px;text-align:left;}
       table.lexi-sb-table th:nth-child(2),table.lexi-sb-table td:nth-child(2){text-align:right;white-space:nowrap;}
@@ -189,7 +173,7 @@
       wrap.style.display = 'none';
       wrap.innerHTML = `
         <div class="lexi-sb-card" role="dialog" aria-modal="true" aria-label="Score">
-          <h2 class="lexi-sb-title">Game Over</h2>
+          <h2 class="lexi-sb-title">Game Over <span class="lexi-badge" id="lb-badge-pb" hidden>PB</span></h2>
           <p class="lexi-sb-sub" id="lexi-meta"></p>
 
           <div class="lexi-sb-total">
@@ -224,7 +208,9 @@
         this.hide();
         this.onRestart?.();
       });
-      wrap.querySelector('#lexi-share').addEventListener('click', () => this._share());
+      wrap.querySelector('#lexi-share').addEventListener('click', () => {
+        this._share().catch(err => console.error('[ScoreboardOverlay] share failed', err));
+      });
     }
 
     /**
@@ -240,8 +226,22 @@
       const { accuracy, correct, mistakes } = tracker.stats();
 
       // メタ/合計
-      this.el.querySelector('#lexi-meta').textContent =
-        `Lv:${meta.levelName ?? 'N/A'} / AvgWPM:${Math.round(meta.avgWPM ?? 0)} / Time:${Math.round(meta.playTimeSec ?? 0)}s`;
+      const pbBadge = this.el.querySelector('#lb-badge-pb');
+      if (pbBadge) pbBadge.hidden = !meta.personalBest;
+
+      const metaEl = this.el.querySelector('#lexi-meta');
+      const avgWpm = Math.round(Number(meta.avgWPM) || 0);
+      const playTime = Math.round(Number(meta.playTimeSec) || 0);
+      const highestScore = Math.round(Number(meta.highestScore) || 0);
+      const modeLabel = (meta.modeLabel || meta.mode || '').trim();
+      const metaParts = [
+        `Lv:${meta.levelName ?? 'N/A'}`,
+        modeLabel ? `Mode:${modeLabel}` : null,
+        `AvgWPM:${avgWpm}`,
+        `Time:${playTime}s`
+      ];
+      if (highestScore > 0) metaParts.push(`PB:${highestScore}pts`);
+      metaEl.textContent = metaParts.filter(Boolean).join(' / ');
       this.el.querySelector('#lexi-total').textContent = total;
 
       // KPIチップ
@@ -250,6 +250,10 @@
       k.append(this._chip(`正解 ${correct}`));
       k.append(this._chip(`ミス ${mistakes}`));
       k.append(this._chip(`精度 ${(accuracy * 100).toFixed(1)}%`));
+      if (meta?.streak) {
+        const bestStreak = Math.max(0, Math.round(Number(meta.streak.best ?? meta.streak.current) || 0));
+        k.append(this._chip(`連続正解 ${bestStreak}`));
+      }
 
       // 内訳テーブル
       const tbody = this.el.querySelector('#lexi-table tbody');
@@ -294,25 +298,95 @@
 
     _label(t) { return (new ScoreTracker()).label(t); }
 
-    // ←← ここを「X へ直接共有」に固定
-    _share() {
+    async _share() {
+      const meta = this.meta || {};
+      const fallbackScore = Math.max(0, Math.round(this.tracker.total()));
       const text = this.tracker.toTweetText({
-        gameName: this.meta.gameName || 'LexiBlaster',
-        level: this.meta.levelName || 'N/A',
-        avgWPM: Math.round(this.meta.avgWPM || 0)
+        gameName: meta.gameName || 'LexiBlaster',
+        finalScore: meta.finalScore ?? fallbackScore,
+        levelName: meta.levelName,
+        modeLabel: meta.modeLabel,
+        mode: meta.mode,
+        streak: meta.streak,
+        personalBest: !!meta.personalBest,
+        highestScore: meta.highestScore
       });
 
-      const params = new URLSearchParams({
-        text,
-        url: this.url,
-        hashtags: ['LexiBlaster', '英単語ゲーム'].join(',')
-      });
+      const shareUrl = this._buildShareUrl();
+      const shareText = shareUrl ? `${text} ${shareUrl}` : text;
 
-      // X の投稿画面を直接開く（ブロックされたら twitter.com をフォールバック）
-      const xUrl  = 'https://x.com/intent/post?' + params.toString();
-      const twUrl = 'https://twitter.com/intent/tweet?' + params.toString();
-      const w = window.open(xUrl, '_blank', 'noopener,noreferrer');
-      if (!w) window.open(twUrl, '_blank', 'noopener,noreferrer');
+      if (navigator.share) {
+        try {
+          await navigator.share({ text, url: shareUrl || undefined });
+          return;
+        } catch (err) {
+          if (err && err.name === 'AbortError') return;
+          console.warn('[ScoreboardOverlay] navigator.share failed', err);
+        }
+      }
+
+      if (this._openXIntent(text, shareUrl)) return;
+
+      await this._copyToClipboard(shareText);
+    }
+
+    _buildShareUrl() {
+      if (!this.url) return '';
+      try {
+        const u = new URL(this.url, location.origin);
+        const allowAnalytics = !!window.lexiConsent?.allow?.('analytics');
+        const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
+        if (allowAnalytics) {
+          u.searchParams.set('utm_source', 'lexiblaster');
+          u.searchParams.set('utm_medium', 'share');
+          u.searchParams.set('utm_campaign', 'scoreboard');
+          u.searchParams.set('utm_content', 'overlay');
+        } else {
+          for (const key of utmKeys) u.searchParams.delete(key);
+        }
+        return u.toString();
+      } catch (err) {
+        console.warn('[ScoreboardOverlay] invalid share URL', err);
+        return this.url;
+      }
+    }
+
+    _openXIntent(text, url) {
+      try {
+        const params = new URLSearchParams();
+        params.set('text', text);
+        if (url) params.set('url', url);
+        const xUrl  = 'https://x.com/intent/post?' + params.toString();
+        const twUrl = 'https://twitter.com/intent/tweet?' + params.toString();
+        const w = window.open(xUrl, '_blank', 'noopener,noreferrer');
+        if (w) return true;
+        const fallback = window.open(twUrl, '_blank', 'noopener,noreferrer');
+        return !!fallback;
+      } catch (err) {
+        console.error('[ScoreboardOverlay] failed to open share intent', err);
+        return false;
+      }
+    }
+
+    async _copyToClipboard(text) {
+      if (navigator.clipboard?.writeText) {
+        try {
+          await navigator.clipboard.writeText(text);
+          alert('共有テキストをコピーしました！');
+          return;
+        } catch (err) {
+          console.error('[ScoreboardOverlay] clipboard write failed', err);
+        }
+      }
+      this._promptCopy(text);
+    }
+
+    _promptCopy(text) {
+      try {
+        window.prompt('共有に失敗しました。以下のテキストをコピーしてください。', text);
+      } catch (err) {
+        console.error('[ScoreboardOverlay] prompt copy failed', err);
+      }
     }
   }
 
