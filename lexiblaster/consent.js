@@ -60,6 +60,7 @@
     if (choice === 'reject') {
       try { localStorage.removeItem('lb_scores_v1'); } catch {}
       try { localStorage.removeItem('bgmMuted'); } catch {}
+      try { localStorage.removeItem('LBBackup'); } catch {}
     }
 
     // 必ず閉じる
