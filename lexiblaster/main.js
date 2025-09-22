@@ -372,8 +372,8 @@ function onReturnToTitle(){
   score=0; lives=3; isGameOver=false;
   Typing.reset();
   streak.current = 0; streak.best = 0;
+  window.canvasGame?.setFlow({ started:false, gameOver:false, phase:"title" });
   window.canvasGame?.resetScene?.();
-  window.canvasGame?.setFlow({ started:true, gameOver:false, phase:"selectLevel" });
   window.canvasGame?.setHints("Hint: —", "");
   window.canvasGame?.focusInput(false);
   updateHUD();
