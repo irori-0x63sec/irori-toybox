@@ -95,6 +95,31 @@
 
     /* 視認性向上 */
     .kbd{ font: 600 12px/1 system-ui, -apple-system, "Segoe UI", Roboto; padding:3px 6px; border:1px solid #2a3a48; border-radius:6px; background:#09121a; color:#cfe8ff; }
+
+    /* ヒーローをテキスト＋画像の2カラムに */
+    .hero-split{
+      display:grid; gap:16px; align-items:center;
+      grid-template-columns: 1.1fr .9fr;
+    }
+    @media (max-width: 860px){
+      .hero-split{ grid-template-columns: 1fr; }
+    }
+
+    /* スクショ枠の見た目 */
+    .hero-media{
+      display:block; border:1px solid var(--border); border-radius:14px;
+      background:var(--panel-2); padding:10px; box-shadow:0 10px 30px rgba(0,0,0,.28);
+    }
+    .hero-media picture, .hero-media img{
+      width:100%; display:block; border-radius:10px;
+    }
+    .hero-media img{
+      aspect-ratio: 4 / 3;        /* お好みで 16/9 でもOK */
+      object-fit: cover;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: pixelated; /* ドット感が活きる場合 */
+    }
+
   </style>
 
   <!-- 構造化データ（任意） -->
@@ -143,6 +168,13 @@
           <a class="btn primary" href="/lexiblaster/">▶ 今すぐプレイ</a>
           <a class="btn" href="/changelog/">📝 更新履歴</a>
         </div>
+          <a class="hero-media" href="/lexiblaster/" aria-label="Lexi Blaster をプレイ">
+        <picture>
+          <source srcset="/lexiblaster/social/hero.webp" type="image/webp">
+          <img src="/lexiblaster/social/hero.png"
+              alt="Lexi Blaster のゲーム画面（隕石が落ちる瞬間）"
+              loading="lazy" decoding="async">
+        </picture>
       </section>
 
       <!-- 右：更新 -->
