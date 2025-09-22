@@ -212,7 +212,6 @@ const toLoad = [
   ["boom","assets/boom.png"],
   ["back","assets/back.png"],
   ["heart","assets/heart.png"],
-  ["btn_blast","assets/btn_blast.png"],
   // damage overlays
   ["crack1","assets/base_crack1.png"],
   ["crack2","assets/base_crack2.png"],
