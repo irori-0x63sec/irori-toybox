@@ -785,6 +785,8 @@ function updateAndDraw(ts){
     drawLangSelect();
   } else if (model.phase === "countdown") {
     drawCountdown();
+  } else if (model.phase === "gameover") {
+    drawGameOver();
   }
 
   drawFooter();
@@ -831,6 +833,23 @@ function drawCountdown(){
   let label = "3";
   if (model.cdIndex >= 0 && model.cdIndex < model.cdLabels.length) label = model.cdLabels[model.cdIndex];
   drawPixelText(label, CANVAS_W/2, PLAYFIELD_H/2 - 30, 48, 'center', '#fff');
+}
+
+function getGameOverButtons(){
+  return {
+    restart: { x: CANVAS_W/2 - 180, y: PLAYFIELD_H/2 + 60, w: 160, h: 40 },
+    title:   { x: CANVAS_W/2 +  20, y: PLAYFIELD_H/2 + 60, w: 160, h: 40 },
+  };
+}
+
+function drawGameOver(){
+  const cx = CANVAS_W / 2;
+  const cy = PLAYFIELD_H / 2;
+  drawPixelText('GAME OVER', cx, cy - 40, 20, 'center', '#ffb35a');
+
+  const { restart, title } = getGameOverButtons();
+  drawRectButton(restart.x, restart.y, restart.w, restart.h, 'RESTART', true, false, 14);
+  drawRectButton(title.x,   title.y,   title.w,   title.h,   'TITLE',   false, false, 14);
 }
 
 // ---- 入力/クリック ----
@@ -883,10 +902,9 @@ canvas.addEventListener('mousedown', (e)=>{
     if (hitBox(UI.btnBlast, mx, my)) { model.onBlast && model.onBlast(model.input); }
     focusInput(true);
   } else if (model.phase === "gameover") {
-    const r1 = { x: CANVAS_W/2-180, y: PLAYFIELD_H/2+60, w:160, h:40 }; // RESTART
-    const r2 = { x: CANVAS_W/2+ 20, y: PLAYFIELD_H/2+60, w:160, h:40 }; // TITLE
-    if (hitBox(r1, mx, my)) { model.onRestart && model.onRestart(); }
-    else if (hitBox(r2, mx, my)) { model.onReturnToTitle && model.onReturnToTitle(); }
+    const { restart, title } = getGameOverButtons();
+    if (hitBox(restart, mx, my)) { model.onRestart && model.onRestart(); }
+    else if (hitBox(title, mx, my)) { model.onReturnToTitle && model.onReturnToTitle(); }
   }
 });
 
