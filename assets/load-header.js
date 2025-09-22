@@ -13,7 +13,10 @@
     hostHeader.innerHTML = `
       <div class="nav">
         <a class="brand" href="/"><div class="logo">IT</div><strong>Irori's Toybox</strong></a>
-        <nav><a class="link" href="/">Home</a></nav>
+        <nav>
+          <a class="link" href="/">Home</a>
+          <a class="link" href="/leaderboards/">ランキング</a>
+        </nav>
       </div>`;
     return;
   }

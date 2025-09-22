@@ -176,9 +176,23 @@
       .lb-status--success{color:#8ef59d;}
       .lb-status--error{color:#ff8e8e;}
       .lb-status--warning{color:#ffd27d;}
+      .lb-layout{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;}
+      .lb-primary{flex:1 1 320px;min-width:260px;}
+      .lb-vertical{flex:1 1 220px;min-width:200px;padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:10px;background:rgba(255,255,255,.03);}
+      .lb-vertical-heading{margin:0 0 6px;font-size:14px;font-weight:700;letter-spacing:.3px;color:#bcd9ff;}
+      .lb-vertical .lb-status{margin:0 0 8px 0;}
+      .lb-list{list-style:none;padding:0;margin:0;}
+      .lb-list li{display:flex;align-items:baseline;gap:8px;padding:6px 0;border-top:1px solid rgba(255,255,255,.08);font-size:13px;}
+      .lb-list li:first-child{border-top:none;}
+      .lb-list li .lb-rank{min-width:3.2em;}
+      .lb-rank{font-weight:700;margin-right:8px;}
+      .lb-name{margin-right:8px;flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+      .lb-score{color:#9ab6c9;}
       .lb-table th:nth-child(3),.lb-table td:nth-child(3){text-align:right;}
       .lb-table td:nth-child(2){max-width:220px;overflow:hidden;text-overflow:ellipsis;}
-      .lb-row-self{background:rgba(76,175,80,.18);}
+      .lb-table tr.lb-row-self td{background:rgba(92,212,255,.10);}
+      .lb-list li.lb-row-self{background:rgba(92,212,255,.10);border-radius:6px;padding:6px 10px;}
+      .lb-row-self{background:rgba(92,212,255,.10);border-radius:6px;}
       `;
       const st = document.createElement('style');
       st.id = 'lexi-scoreboard-style';
@@ -215,19 +229,28 @@
 
           <div class="lexi-leaderboard" id="lb-leaderboard" hidden>
             <h3>オンラインランキング</h3>
-            <p class="lb-status" id="lb-leaderboard-status" aria-live="polite">ハイスコアを登録してランキングに参加しよう！</p>
-            <form class="lexi-leaderboard-form" id="lb-leaderboard-form">
-              <label for="lb-leaderboard-name">ハンドルネーム（1〜12文字）</label>
-              <div class="lexi-leaderboard-inputs">
-                <input type="text" id="lb-leaderboard-name" name="name" maxlength="12" autocomplete="nickname" required />
-                <button type="submit" class="lexi-btn tertiary" id="lb-leaderboard-submit">スコア登録</button>
+            <div class="lb-layout">
+              <div class="lb-primary">
+                <p class="lb-status" id="lb-leaderboard-status" aria-live="polite">ハイスコアを登録してランキングに参加しよう！</p>
+                <form class="lexi-leaderboard-form" id="lb-leaderboard-form">
+                  <label for="lb-leaderboard-name">ハンドルネーム（1〜12文字）</label>
+                  <div class="lexi-leaderboard-inputs">
+                    <input type="text" id="lb-leaderboard-name" name="name" maxlength="12" autocomplete="nickname" required />
+                    <button type="submit" class="lexi-btn tertiary" id="lb-leaderboard-submit">スコア登録</button>
+                  </div>
+                </form>
+                <table class="lexi-sb-table lb-table" id="lb-leaderboard-table">
+                  <thead><tr><th>Rank</th><th>Name</th><th>Score</th></tr></thead>
+                  <tbody id="lb-leaderboard-body"></tbody>
+                </table>
+                <p class="lexi-note" id="lb-leaderboard-empty" hidden>まだ登録がありません。最初の挑戦者になろう！</p>
               </div>
-            </form>
-            <table class="lexi-sb-table lb-table" id="lb-leaderboard-table">
-              <thead><tr><th>Rank</th><th>Name</th><th>Score</th></tr></thead>
-              <tbody id="lb-leaderboard-body"></tbody>
-            </table>
-            <p class="lexi-note" id="lb-leaderboard-empty" hidden>まだ登録がありません。最初の挑戦者になろう！</p>
+              <aside id="lb-vertical" class="lb-vertical" hidden>
+                <p class="lb-vertical-heading">TOP 20</p>
+                <div id="lb-vertical-status" class="lb-status" hidden></div>
+                <ol id="lb-vertical-list" class="lb-list"></ol>
+              </aside>
+            </div>
           </div>
 
           <div class="lexi-sb-actions">
@@ -322,7 +345,7 @@
       this.el.style.display = 'grid';
 
       const leaderboardRoot = this.el.querySelector('#lb-leaderboard');
-      this._dispatchLeaderboard('show', { tracker, meta, total, root: leaderboardRoot });
+      this._dispatchLeaderboard('show', { tracker, meta, total, root: leaderboardRoot, limit: 20 });
     }
 
     hide() {

@@ -160,9 +160,10 @@
     setStatus('スコア送信中…', 'loading', { force: true });
 
     try {
-      await submitScore(name, score);
+      const submission = await submitScore(name, score);
       saveStoredName(name);
-      state.lastSubmission = { name, score };
+      const rankValue = Number.isFinite(submission?.rank) && submission.rank > 0 ? Math.floor(submission.rank) : null;
+      state.lastSubmission = { name, score, rank: rankValue };
       setStatus('ランキングに登録しました！', 'success', { force: true, holdMs: 5000 });
       await refreshLeaderboard({ silent: true });
     } catch (err) {
@@ -179,9 +180,30 @@
   async function refreshLeaderboard(options = {}){
     if (!state.mounted || !state.elements) return [];
     const limit = Number.isFinite(options.limit) && options.limit > 0 ? Math.floor(options.limit) : state.limit;
+    const highlight = state.lastSubmission ? { ...state.lastSubmission } : null;
+    const verticalRoot = state.elements.verticalRoot;
+    const verticalList = state.elements.verticalList;
+    const verticalStatus = state.elements.verticalStatus;
+
+    if (!options.silent && verticalStatus) {
+      if (verticalRoot) verticalRoot.hidden = false;
+      if (verticalList) verticalList.innerHTML = '';
+      applyStatus(verticalStatus, '読み込み中…', 'loading');
+    }
 
     if (!API_BASE) {
       updateTable([]);
+      state.cachedEntries = [];
+      if (verticalRoot || verticalStatus) {
+        renderVerticalList(verticalRoot, [], {
+          list: verticalList,
+          status: verticalStatus,
+          limit,
+          highlight,
+          emptyMessage: 'ランキングサーバーに接続できません。時間をおいて再度お試しください。',
+          emptyStatusType: 'warning'
+        });
+      }
       if (!options.silent) {
         setStatus('ランキングサーバーに接続できません。時間をおいて再度お試しください。', 'warning', { force: true, holdMs: 5000 });
       }
@@ -196,6 +218,14 @@
       const entries = await fetchLeaderboard(limit);
       state.cachedEntries = entries;
       updateTable(entries);
+      if (verticalRoot || verticalStatus) {
+        renderVerticalList(verticalRoot, entries, {
+          list: verticalList,
+          status: verticalStatus,
+          limit,
+          highlight,
+        });
+      }
       if (!options.silent) {
         const allowOverride = !state.statusLockUntil || Date.now() >= state.statusLockUntil;
         const message = entries.length === 0
@@ -207,6 +237,17 @@
     } catch (err) {
       console.error('[Leaderboard] fetch failed', err);
       updateTable([]);
+      state.cachedEntries = [];
+      if (verticalRoot || verticalStatus) {
+        renderVerticalList(verticalRoot, [], {
+          list: verticalList,
+          status: verticalStatus,
+          limit,
+          highlight,
+          emptyMessage: '取得に失敗しました。時間をおいて再度お試しください。',
+          emptyStatusType: 'error'
+        });
+      }
       setStatus('ランキングを取得できませんでした。時間をおいて再度お試しください。', 'error', { force: true, holdMs: 5000 });
       return [];
     }
@@ -231,7 +272,7 @@
     const fragment = document.createDocumentFragment();
     for (const entry of entries) {
       const tr = document.createElement('tr');
-      if (state.lastSubmission && entry.name === state.lastSubmission.name && entry.score === state.lastSubmission.score) {
+      if (isSelfEntry(entry)) {
         tr.classList.add('lb-row-self');
       }
 
@@ -249,6 +290,16 @@
     tableBody.appendChild(fragment);
   }
 
+  function isSelfEntry(entry){
+    if (!state.lastSubmission) return false;
+    const { name, score, rank } = state.lastSubmission;
+    if (!name) return false;
+    if (entry.name !== name) return false;
+    if (Number.isFinite(score) && entry.score !== score) return false;
+    if (Number.isFinite(rank) && rank > 0 && entry.rank !== rank) return false;
+    return true;
+  }
+
   function collectElements(root){
     return {
       root,
@@ -259,21 +310,32 @@
       table: root.querySelector('#lb-leaderboard-table'),
       tableBody: root.querySelector('#lb-leaderboard-body'),
       emptyMessage: root.querySelector('#lb-leaderboard-empty'),
+      verticalRoot: root.querySelector('#lb-vertical'),
+      verticalList: root.querySelector('#lb-vertical-list'),
+      verticalStatus: root.querySelector('#lb-vertical-status'),
     };
   }
 
-  function setStatus(message, type = 'info', { force = false, holdMs = 0 } = {}){
-    if (!state.elements?.status) return;
-    const el = state.elements.status;
+  function setStatus(message, type = 'info', { force = false, holdMs = 0, target = null } = {}){
+    const el = target ?? state.elements?.status;
+    if (!el) return;
+    const isMain = !target || el === state.elements?.status;
     const now = Date.now();
-    if (!force && state.statusLockUntil && now < state.statusLockUntil) {
+    if (isMain && !force && state.statusLockUntil && now < state.statusLockUntil) {
       return;
     }
-    state.statusLockUntil = holdMs > 0 ? now + holdMs : 0;
+    if (isMain) {
+      state.statusLockUntil = holdMs > 0 ? now + holdMs : 0;
+    }
+    applyStatus(el, message, type);
+  }
+
+  function applyStatus(el, message, type = 'info'){
+    if (!el) return;
     el.textContent = message || '';
-    el.hidden = false;
+    el.hidden = !message;
     for (const cls of STATUS_CLASSES) el.classList.remove(cls);
-    if (type) el.classList.add(`lb-status--${type}`);
+    if (message && type) el.classList.add(`lb-status--${type}`);
   }
 
   function sanitizeName(name){
@@ -391,6 +453,71 @@
     }
   }
 
+  function renderVerticalList(root, entries, options = {}){
+    const statusEl = options.status ?? root?.querySelector('.lb-status');
+    const listEl = options.list ?? root?.querySelector('ol, ul');
+    const limit = Number.isFinite(options.limit) && options.limit > 0 ? Math.floor(options.limit) : null;
+    const highlight = options.highlight ?? null;
+
+    if (root) {
+      root.hidden = false;
+    }
+    if (listEl) {
+      listEl.innerHTML = '';
+    }
+
+    if (!Array.isArray(entries) || entries.length === 0) {
+      const emptyMessage = options.emptyMessage ?? 'まだ登録がありません。最初の挑戦者になろう！';
+      const emptyType = options.emptyStatusType ?? 'info';
+      applyStatus(statusEl, emptyMessage, emptyType);
+      return;
+    }
+
+    applyStatus(statusEl, '', 'info');
+
+    const highlightName = highlight?.name ? sanitizeName(highlight.name) : '';
+    const highlightScore = Number.isFinite(highlight?.score) ? clampScore(highlight.score) : null;
+    const highlightRank = Number.isFinite(highlight?.rank) && highlight.rank > 0 ? Math.floor(highlight.rank) : null;
+
+    const fragment = document.createDocumentFragment();
+    const max = limit ? Math.min(limit, entries.length) : entries.length;
+
+    for (let i = 0; i < max; i++) {
+      const entry = entries[i];
+      const li = document.createElement('li');
+      const rankValue = Number.isFinite(entry?.rank) && entry.rank > 0 ? entry.rank : (i + 1);
+
+      const rankSpan = document.createElement('span');
+      rankSpan.className = 'lb-rank';
+      rankSpan.textContent = `${rankValue}位`;
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'lb-name';
+      nameSpan.textContent = entry?.displayName || '名無し';
+
+      const scoreSpan = document.createElement('span');
+      scoreSpan.className = 'lb-score';
+      scoreSpan.textContent = `${formatScore(entry?.score)}pt`;
+
+      li.append(rankSpan, nameSpan, scoreSpan);
+
+      if (highlightName) {
+        const matchName = entry?.name === highlightName;
+        const matchScore = highlightScore === null || entry?.score === highlightScore;
+        const matchRank = highlightRank === null || entry?.rank === highlightRank;
+        if (matchName && matchScore && matchRank) {
+          li.classList.add('lb-row-self');
+        }
+      }
+
+      fragment.appendChild(li);
+    }
+
+    if (listEl) {
+      listEl.appendChild(fragment);
+    }
+  }
+
   function sanitizeBase(value){
     if (!value) return '';
     try {
@@ -445,6 +572,8 @@
       fetchLeaderboard,
       sanitizeName,
       clampScore,
+      renderVerticalList: (root, entries, options) => renderVerticalList(root, entries, options),
+      setStatusElement: (el, message, type) => applyStatus(el, message, type),
       refresh: (limit) => refreshLeaderboard({ limit, silent: false }),
       getLastSubmission: () => state.lastSubmission ? { ...state.lastSubmission } : null,
       get apiBase(){ return API_BASE; },
