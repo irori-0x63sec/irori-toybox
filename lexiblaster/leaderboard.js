@@ -24,15 +24,31 @@
     return '';
   })();
 
+  const DEFAULT_GAME = 'lexi-blaster';
+  const DEFAULT_CONTEXT = Object.freeze({ game: DEFAULT_GAME, mode: 'en_en', level: 'A1' });
+  const ALLOWED_GAMES = Object.freeze([DEFAULT_GAME]);
+  const ALLOWED_MODES = Object.freeze(['en_en','jp_en','en_jp']);
+  const ALLOWED_LEVELS = Object.freeze(['A1','A2','A3','B1','B2','B3','C1','C2','C3']);
+  const MODE_LABELS = Object.freeze({
+    en_en: 'EN→EN',
+    jp_en: 'JP→EN',
+    en_jp: 'EN→JP',
+  });
+  const ALLOWED_GAME_SET = new Set(ALLOWED_GAMES);
+  const ALLOWED_MODE_SET = new Set(ALLOWED_MODES);
+  const ALLOWED_LEVEL_SET = new Set(ALLOWED_LEVELS);
+
   const state = {
     root: null,
     elements: null,
     mounted: false,
     finalScore: 0,
     meta: {},
+    context: null,
+    contextKey: '',
     statusLockUntil: 0,
     isSubmitting: false,
-    limit: 10,
+    limit: 20,
     lastSubmission: null,
     formHandler: null,
     cachedEntries: [],
@@ -48,8 +64,14 @@
     state.root = root;
     state.elements = collectElements(root);
     state.finalScore = clampScore(detail.total);
-    state.meta = detail.meta || {};
-    state.limit = Number.isFinite(detail.limit) && detail.limit > 0 ? Math.floor(detail.limit) : 10;
+    const incomingMeta = detail.meta && typeof detail.meta === 'object' ? detail.meta : {};
+    state.meta = { ...incomingMeta };
+    state.context = normalizeContext({ ...incomingMeta }, DEFAULT_CONTEXT, { strict: true });
+    state.contextKey = makeContextKey(state.context);
+    if (state.context && !state.meta.mode) state.meta.mode = state.context.mode;
+    if (state.context && !state.meta.levelName) state.meta.levelName = state.context.level;
+    if (!state.meta.modeLabel && state.meta.mode) state.meta.modeLabel = describeMode(state.meta.mode);
+    state.limit = Number.isFinite(detail.limit) && detail.limit > 0 ? Math.floor(detail.limit) : 20;
     mount();
   }
 
@@ -70,13 +92,15 @@
       state.elements.nameInput.value = savedName;
     }
 
-    const canSubmit = !!API_BASE && state.finalScore > 0;
+    updateHeadings();
+
+    const canSubmit = !!API_BASE && state.finalScore > 0 && !!state.context;
     prepareForm(canSubmit);
 
     if (state.finalScore <= 0) {
       setStatus('スコアが0のため登録できません。次回の挑戦をお待ちしています。', 'warning', { force: true, holdMs: 4000 });
-    } else if (!API_BASE) {
-      setStatus('ランキングサーバーに接続できません。時間をおいて再度お試しください。', 'warning', { force: true, holdMs: 5000 });
+    } else if (!API_BASE || !state.context) {
+      setStatus('ランキングを取得できませんでした。', 'error', { force: true, holdMs: 5000 });
     } else if (state.meta?.personalBest) {
       setStatus('自己ベスト更新！ランキングに登録してシェアしよう。', 'info', { force: true, holdMs: 4000 });
     } else {
@@ -109,6 +133,9 @@
     state.root = null;
     state.mounted = false;
     state.statusLockUntil = 0;
+    state.context = null;
+    state.contextKey = '';
+    state.meta = {};
   }
 
   function prepareForm(canSubmit){
@@ -136,14 +163,19 @@
     if (!state.mounted || !state.elements) return;
     if (state.isSubmitting) return;
 
-    if (!API_BASE) {
-      setStatus('現在ランキングサーバーに接続できません。時間をおいて再度お試しください。', 'error', { force: true, holdMs: 4000 });
+    if (!API_BASE || !state.context) {
+      setStatus('ランキングを取得できませんでした。', 'error', { force: true, holdMs: 4000 });
       return;
     }
 
     const nameRaw = state.elements.nameInput?.value ?? '';
     const name = sanitizeName(nameRaw);
     const score = clampScore(state.finalScore);
+    const context = resolveContext(null, { allowFallback: false, strict: true });
+    if (!context) {
+      setStatus('ランキングを取得できませんでした。', 'error', { force: true, holdMs: 4000 });
+      return;
+    }
 
     if (!name) {
       setStatus('ハンドルネームは1〜12文字で入力してください。', 'warning', { force: true, holdMs: 4000 });
@@ -160,10 +192,11 @@
     setStatus('スコア送信中…', 'loading', { force: true });
 
     try {
-      const submission = await submitScore(name, score);
+      const submission = await submitScore(name, score, context);
       saveStoredName(name);
       const rankValue = Number.isFinite(submission?.rank) && submission.rank > 0 ? Math.floor(submission.rank) : null;
-      state.lastSubmission = { name, score, rank: rankValue };
+      const contextKey = makeContextKey(context);
+      state.lastSubmission = { name, score, rank: rankValue, contextKey };
       setStatus('ランキングに登録しました！', 'success', { force: true, holdMs: 5000 });
       await refreshLeaderboard({ silent: true });
     } catch (err) {
@@ -179,8 +212,18 @@
 
   async function refreshLeaderboard(options = {}){
     if (!state.mounted || !state.elements) return [];
+    updateHeadings();
+
     const limit = Number.isFinite(options.limit) && options.limit > 0 ? Math.floor(options.limit) : state.limit;
-    const highlight = state.lastSubmission ? { ...state.lastSubmission } : null;
+    const context = resolveContext(null, { allowFallback: false, strict: true });
+    const contextKey = makeContextKey(context);
+    if (context) {
+      state.context = context;
+      state.contextKey = contextKey;
+    }
+    const highlight = (state.lastSubmission && state.lastSubmission.contextKey && state.lastSubmission.contextKey === contextKey)
+      ? { name: state.lastSubmission.name, score: state.lastSubmission.score, rank: state.lastSubmission.rank }
+      : null;
     const verticalRoot = state.elements.verticalRoot;
     const verticalList = state.elements.verticalList;
     const verticalStatus = state.elements.verticalStatus;
@@ -188,10 +231,10 @@
     if (!options.silent && verticalStatus) {
       if (verticalRoot) verticalRoot.hidden = false;
       if (verticalList) verticalList.innerHTML = '';
-      applyStatus(verticalStatus, '読み込み中…', 'loading');
+      applyStatus(verticalStatus, 'ランキングを読み込み中…', 'loading');
     }
 
-    if (!API_BASE) {
+    if (!API_BASE || !context) {
       updateTable([]);
       state.cachedEntries = [];
       if (verticalRoot || verticalStatus) {
@@ -200,12 +243,12 @@
           status: verticalStatus,
           limit,
           highlight,
-          emptyMessage: 'ランキングサーバーに接続できません。時間をおいて再度お試しください。',
-          emptyStatusType: 'warning'
+          emptyMessage: 'ランキングを取得できませんでした。',
+          emptyStatusType: 'error'
         });
       }
       if (!options.silent) {
-        setStatus('ランキングサーバーに接続できません。時間をおいて再度お試しください。', 'warning', { force: true, holdMs: 5000 });
+        setStatus('ランキングを取得できませんでした。', 'error', { force: true, holdMs: 5000 });
       }
       return [];
     }
@@ -215,7 +258,7 @@
     }
 
     try {
-      const entries = await fetchLeaderboard(limit);
+      const entries = await fetchLeaderboard(limit, context, { allowFallback: false, strict: true });
       state.cachedEntries = entries;
       updateTable(entries);
       if (verticalRoot || verticalStatus) {
@@ -244,11 +287,11 @@
           status: verticalStatus,
           limit,
           highlight,
-          emptyMessage: '取得に失敗しました。時間をおいて再度お試しください。',
+          emptyMessage: 'ランキングを取得できませんでした。',
           emptyStatusType: 'error'
         });
       }
-      setStatus('ランキングを取得できませんでした。時間をおいて再度お試しください。', 'error', { force: true, holdMs: 5000 });
+      setStatus('ランキングを取得できませんでした。', 'error', { force: true, holdMs: 5000 });
       return [];
     }
   }
@@ -292,6 +335,7 @@
 
   function isSelfEntry(entry){
     if (!state.lastSubmission) return false;
+    if (state.lastSubmission.contextKey && state.lastSubmission.contextKey !== state.contextKey) return false;
     const { name, score, rank } = state.lastSubmission;
     if (!name) return false;
     if (entry.name !== name) return false;
@@ -304,6 +348,7 @@
     return {
       root,
       status: root.querySelector('#lb-leaderboard-status'),
+      heading: root.querySelector('#lb-leaderboard-heading'),
       form: root.querySelector('#lb-leaderboard-form'),
       nameInput: root.querySelector('#lb-leaderboard-name'),
       submitButton: root.querySelector('#lb-leaderboard-submit'),
@@ -313,7 +358,26 @@
       verticalRoot: root.querySelector('#lb-vertical'),
       verticalList: root.querySelector('#lb-vertical-list'),
       verticalStatus: root.querySelector('#lb-vertical-status'),
+      verticalHeading: root.querySelector('#lb-vertical-heading'),
     };
+  }
+
+  function updateHeadings(){
+    if (!state.elements) return;
+    const heading = state.elements.heading;
+    const verticalHeading = state.elements.verticalHeading;
+    const context = state.context;
+    const levelLabel = context?.level || state.meta?.levelName || '';
+    const modeLabel = state.meta?.modeLabel || (context?.mode ? describeMode(context.mode) : '');
+    const combined = levelLabel && modeLabel
+      ? `${levelLabel} / ${modeLabel}`
+      : (levelLabel || modeLabel || '');
+    if (heading) {
+      heading.textContent = combined ? `ランキング（${combined}）` : 'ランキング';
+    }
+    if (verticalHeading) {
+      verticalHeading.textContent = combined ? `TOP 20（${combined}）` : 'TOP 20';
+    }
   }
 
   function setStatus(message, type = 'info', { force = false, holdMs = 0, target = null } = {}){
@@ -352,8 +416,73 @@
     return Math.min(num, MAX_SCORE);
   }
 
-  async function submitScore(name, score){
+  function resolveContext(metaOverride = null, options = {}){
+    const allowFallback = !!options.allowFallback;
+    const strict = options.strict !== undefined ? !!options.strict : true;
+    const fallback = allowFallback ? DEFAULT_CONTEXT : state.context;
+    const normalized = normalizeContext(metaOverride || {}, fallback, { strict });
+    if (normalized) return normalized;
+    if (allowFallback) {
+      const fallbackNormalized = normalizeContext(DEFAULT_CONTEXT, DEFAULT_CONTEXT, { strict: false });
+      if (fallbackNormalized) return fallbackNormalized;
+    }
+    return null;
+  }
+
+  function normalizeContext(meta = {}, fallback = DEFAULT_CONTEXT, { strict = false } = {}){
+    const fallbackGame = sanitizeGame(fallback?.game) || DEFAULT_GAME;
+    const fallbackMode = sanitizeMode(fallback?.mode);
+    const fallbackLevel = sanitizeLevel(fallback?.level);
+
+    const rawGame = sanitizeGame(meta?.game);
+    const rawMode = sanitizeMode(meta?.mode);
+    const rawLevel = sanitizeLevel(meta?.level);
+
+    const mode = rawMode || (!strict ? fallbackMode : '');
+    const level = rawLevel || (!strict ? fallbackLevel : '');
+    if (!mode || !level) return null;
+
+    const game = rawGame || fallbackGame || DEFAULT_GAME;
+    if (!ALLOWED_GAME_SET.has(game)) return null;
+    return { game, mode, level };
+  }
+
+  function sanitizeGame(value){
+    if (typeof value !== 'string') return '';
+    const normalized = value.trim().toLowerCase();
+    if (!normalized) return '';
+    return ALLOWED_GAME_SET.has(normalized) ? normalized : '';
+  }
+
+  function sanitizeMode(value){
+    if (typeof value !== 'string') return '';
+    const normalized = value.trim().toLowerCase();
+    return ALLOWED_MODE_SET.has(normalized) ? normalized : '';
+  }
+
+  function sanitizeLevel(value){
+    if (typeof value !== 'string') return '';
+    const normalized = value.trim().toUpperCase();
+    return ALLOWED_LEVEL_SET.has(normalized) ? normalized : '';
+  }
+
+  function describeMode(modeKey){
+    if (!modeKey) return '';
+    return MODE_LABELS[modeKey] || modeKey.toUpperCase().replace('_', '→');
+  }
+
+  function makeContextKey(context){
+    if (!context) return '';
+    return `${context.game}::${context.mode}::${context.level}`;
+  }
+
+  async function submitScore(name, score, metaOverride = null, options = {}){
+    const context = resolveContext(metaOverride, { allowFallback: !!options.allowFallback, strict: options.strict !== undefined ? !!options.strict : true });
+    if (!context) throw new Error('CONTEXT_REQUIRED');
     const payload = {
+      game: context.game,
+      mode: context.mode,
+      level: context.level,
       name: sanitizeName(name),
       score: clampScore(score)
     };
@@ -378,10 +507,16 @@
     }
   }
 
-  async function fetchLeaderboard(limit = 10){
+  async function fetchLeaderboard(limit = 10, metaOverride = null, options = {}){
+    const context = resolveContext(metaOverride, { allowFallback: !!options.allowFallback, strict: options.strict !== undefined ? !!options.strict : true });
+    if (!context) throw new Error('CONTEXT_REQUIRED');
     const url = new URL(buildUrl('/top'));
+    url.searchParams.set('game', context.game);
+    url.searchParams.set('mode', context.mode);
+    url.searchParams.set('level', context.level);
     if (Number.isFinite(limit) && limit > 0) {
-      url.searchParams.set('limit', Math.floor(limit));
+      const capped = Math.min(Math.floor(limit), 100);
+      url.searchParams.set('limit', capped);
     }
     const res = await fetch(url.toString(), {
       method: 'GET',
@@ -576,6 +711,12 @@
       setStatusElement: (el, message, type) => applyStatus(el, message, type),
       refresh: (limit) => refreshLeaderboard({ limit, silent: false }),
       getLastSubmission: () => state.lastSubmission ? { ...state.lastSubmission } : null,
+      describeMode,
+      normalizeContext: (meta, fallback, opts) => normalizeContext(meta, fallback, opts),
+      get defaultContext(){ return { ...DEFAULT_CONTEXT }; },
+      get allowedModes(){ return [...ALLOWED_MODES]; },
+      get allowedLevels(){ return [...ALLOWED_LEVELS]; },
+      get allowedGames(){ return [...ALLOWED_GAMES]; },
       get apiBase(){ return API_BASE; },
       get maxNameLength(){ return MAX_NAME_LENGTH; },
       get maxScore(){ return MAX_SCORE; }

@@ -1,0 +1,264 @@
+<!doctype html><html lang="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ランキング – Irori's Toybox</title>
+<meta name="description" content="英単語タイピングゲーム Lexi Blaster のオンラインランキング。モードと言語レベル別のトップスコアをチェックしよう。">
+<link rel="canonical" href="https://irori-toybox.com/leaderboard/">
+<meta property="og:title" content="ランキング – Irori's Toybox">
+<meta property="og:description" content="英単語タイピングゲーム Lexi Blaster のオンラインランキング。モードと言語レベル別のトップスコアをチェックしよう。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://irori-toybox.com/leaderboard/">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/load-header.js" defer></script>
+<style>
+:root{ --bg:#0b1520; --panel:#121c28; --panel2:#0f1d2a; --txt:#e6f2ff; --muted:#9ab6c9; --acc:#5cd4ff; --border:#203447 }
+*{ box-sizing:border-box }
+body{ margin:0; background:var(--bg); color:var(--txt); font:16px/1.7 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+a{ color:var(--acc); text-decoration:none } a:hover{ text-decoration:underline }
+main{ width:min(980px,92vw); margin:28px auto 84px }
+.hero{ background:linear-gradient(180deg,rgba(18,28,40,.92),rgba(12,22,34,.92)); border:1px solid var(--border); border-radius:18px; padding:32px; margin-bottom:26px; box-shadow:0 18px 40px rgba(0,0,0,.32) }
+.hero h1{ margin:0 0 12px; font-size:clamp(26px,4vw,34px); letter-spacing:.03em }
+.hero p{ margin:0; color:var(--muted); font-size:15px }
+.card{ background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:26px; margin-bottom:28px; box-shadow:0 18px 36px rgba(0,0,0,.3) }
+.card h2{ margin:0 0 10px; font-size:22px; letter-spacing:.02em }
+.card .lead{ margin:0 0 18px; color:var(--muted); font-size:15px }
+.lb-games{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px }
+.lb-game-btn{ appearance:none; border:1px solid rgba(92,212,255,.4); background:rgba(92,212,255,.12); color:var(--txt); border-radius:999px; padding:8px 16px; font-size:14px; font-weight:600; letter-spacing:.3px; cursor:default }
+.lb-filters{ display:flex; flex-wrap:wrap; gap:18px; margin-bottom:18px }
+.lb-filter{ display:flex; flex-direction:column; gap:8px; }
+.lb-filter-label{ font-size:13px; letter-spacing:.25px; text-transform:uppercase; color:var(--muted) }
+.lb-filter-buttons{ display:flex; flex-wrap:wrap; gap:8px; }
+.lb-filter-btn{ appearance:none; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.06); color:var(--txt); border-radius:999px; padding:7px 14px; font-size:13px; letter-spacing:.2px; cursor:pointer; transition:background .2s,border-color .2s,color .2s,box-shadow .2s }
+.lb-filter-btn:hover{ border-color:rgba(92,212,255,.6); box-shadow:0 4px 12px rgba(92,212,255,.25); }
+.lb-filter-btn.is-active{ background:var(--acc); color:#0b1520; border-color:rgba(92,212,255,.85); box-shadow:0 8px 18px rgba(92,212,255,.35); font-weight:700 }
+.lb-vertical{ padding:18px; border:1px solid rgba(255,255,255,.12); border-radius:14px; background:var(--panel2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.04) }
+.lb-vertical h3{ margin:0 0 10px; font-size:16px; letter-spacing:.3px; color:#c6e6ff }
+.lb-status{ font-size:14px; margin:0 0 12px; }
+.lb-status--info{ color:#bcd9ff }
+.lb-status--loading{ color:#9ad0ff }
+.lb-status--success{ color:#8ef59d }
+.lb-status--error{ color:#ff8e8e }
+.lb-status--warning{ color:#ffd27d }
+.lb-list{ list-style:none; padding:0; margin:0 }
+.lb-list li{ display:flex; align-items:baseline; gap:10px; padding:8px 4px; border-top:1px solid rgba(255,255,255,.08); font-size:14px }
+.lb-list li:first-child{ border-top:none }
+.lb-list .lb-rank{ font-weight:700; min-width:3.4em }
+.lb-list .lb-name{ flex:1 1 auto; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.lb-list .lb-score{ color:var(--muted) }
+.lb-list li.lb-row-self{ background:rgba(92,212,255,.10); border-radius:8px; padding:8px 12px }
+.lb-note{ font-size:13px; color:var(--muted); margin:16px 0 0 }
+.lb-note a{ color:var(--acc) }
+footer{ margin-top:46px; padding-top:20px; border-top:1px solid var(--border); color:var(--muted); display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; font-size:14px }
+footer .links a{ margin-right:16px }
+@media (max-width:720px){
+  .hero{ padding:26px }
+  .card{ padding:22px }
+  .lb-filter-buttons{ gap:6px }
+  .lb-filter-btn{ padding:6px 12px; font-size:12px }
+  .lb-vertical{ padding:16px }
+  .lb-vertical h3{ font-size:15px }
+  .lb-list li{ font-size:13px }
+}
+</style>
+</head><body>
+<header class="site" id="site-header" hidden></header>
+<main>
+  <section class="hero">
+    <h1>ランキング – Irori's Toybox</h1>
+    <p>Lexi Blaster のオンラインランキングを言語モードとレベル別に集約。自分に近い条件のトッププレイヤーをチェックしよう。</p>
+  </section>
+
+  <section class="card" data-game="lexi-blaster">
+    <h2>Lexi Blaster ランキング</h2>
+    <p class="lead">英単語タイピングゲームのハイスコアをモードと言語レベル別に表示します。まずは条件を選んでTOP20を確認！</p>
+
+    <div class="lb-games" role="tablist" aria-label="ゲーム選択">
+      <button type="button" class="lb-game-btn" aria-selected="true">Lexi Blaster</button>
+    </div>
+
+    <div class="lb-filters" aria-label="ランキング条件">
+      <div class="lb-filter" data-filter="mode">
+        <span class="lb-filter-label">モード</span>
+        <div class="lb-filter-buttons" role="group" aria-label="モードの選択">
+          <button type="button" class="lb-filter-btn" data-mode="en_en">EN→EN</button>
+          <button type="button" class="lb-filter-btn" data-mode="jp_en">JP→EN</button>
+        </div>
+      </div>
+      <div class="lb-filter" data-filter="level">
+        <span class="lb-filter-label">レベル</span>
+        <div class="lb-filter-buttons" role="group" aria-label="レベルの選択">
+          <button type="button" class="lb-filter-btn" data-level="A1">A1</button>
+          <button type="button" class="lb-filter-btn" data-level="A2">A2</button>
+          <button type="button" class="lb-filter-btn" data-level="A3">A3</button>
+          <button type="button" class="lb-filter-btn" data-level="B1">B1</button>
+          <button type="button" class="lb-filter-btn" data-level="B2">B2</button>
+          <button type="button" class="lb-filter-btn" data-level="B3">B3</button>
+          <button type="button" class="lb-filter-btn" data-level="C1">C1</button>
+          <button type="button" class="lb-filter-btn" data-level="C2">C2</button>
+          <button type="button" class="lb-filter-btn" data-level="C3">C3</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="lb-embed" class="lb-vertical" hidden>
+      <h3 id="lb-embed-heading">ランキング（A1 / EN→EN）</h3>
+      <div id="lb-embed-status" class="lb-status" hidden></div>
+      <ol id="lb-embed-list" class="lb-list"></ol>
+    </div>
+
+    <p class="lb-note">※ 登録したハンドルネームとスコアは公開されます。不正や誤登録を見つけた場合は <a href="/contact/">お問い合わせフォーム</a> までご連絡ください。</p>
+  </section>
+
+  <footer>
+    <div class="links">
+      <a href="/leaderboard/">ランキング</a>
+      <a href="/lexiblaster/">Lexi Blaster</a>
+      <a href="/changelog/">更新履歴</a>
+      <a href="/contact/">お問い合わせ</a>
+    </div>
+    <div>&copy; <span id="lb-year"></span> Irori</div>
+  </footer>
+</main>
+
+<script>window.LEXI_LEADERBOARD_BASE = 'https://lb.irori-toybox.com';</script>
+<script src="/lexiblaster/leaderboard.js" defer></script>
+<script>
+(function(){
+  const limit = 20;
+  const root = document.getElementById('lb-embed');
+  const statusEl = document.getElementById('lb-embed-status');
+  const listEl = document.getElementById('lb-embed-list');
+  const headingEl = document.getElementById('lb-embed-heading');
+  const modeButtons = Array.from(document.querySelectorAll('[data-mode]'));
+  const levelButtons = Array.from(document.querySelectorAll('[data-level]'));
+
+  const setYear = () => {
+    const el = document.getElementById('lb-year');
+    if (el) el.textContent = new Date().getFullYear();
+  };
+  setYear();
+
+  function ready(){
+    const lb = window.lexiLeaderboard;
+    if (!lb || !root || !statusEl || !listEl || !headingEl) return;
+
+    const defaultCtx = lb.defaultContext;
+    let currentMode = defaultCtx.mode;
+    let currentLevel = defaultCtx.level;
+    let requestSeq = 0;
+
+    function applyQuery(){
+      try {
+        const params = new URLSearchParams(location.search);
+        const ctx = lb.normalizeContext({
+          game: defaultCtx.game,
+          mode: params.get('mode'),
+          level: params.get('level')
+        }, defaultCtx, { strict: false });
+        if (ctx) {
+          currentMode = ctx.mode;
+          currentLevel = ctx.level;
+        }
+      } catch {}
+    }
+
+    function updateHeading(){
+      const label = `${currentLevel} / ${lb.describeMode(currentMode)}`;
+      headingEl.textContent = `ランキング（${label}）`;
+    }
+
+    function updateButtons(){
+      const toggle = (buttons, attr, value) => {
+        for (const btn of buttons) {
+          const key = btn.dataset[attr];
+          const active = key === value;
+          btn.classList.toggle('is-active', active);
+          btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+        }
+      };
+      toggle(modeButtons, 'mode', currentMode);
+      toggle(levelButtons, 'level', currentLevel);
+    }
+
+    function updateQuery(){
+      try {
+        const url = new URL(location.href);
+        url.searchParams.set('mode', currentMode);
+        url.searchParams.set('level', currentLevel);
+        history.replaceState(null, '', url.toString());
+      } catch {}
+    }
+
+    async function load(){
+      const seq = ++requestSeq;
+      root.hidden = false;
+      listEl.innerHTML = '';
+      lb.setStatusElement(statusEl, 'ランキングを読み込み中…', 'loading');
+      const context = { game: defaultCtx.game, mode: currentMode, level: currentLevel };
+      try {
+        const entries = await lb.fetchLeaderboard(limit, context, { allowFallback: false, strict: true });
+        if (seq !== requestSeq) return;
+        lb.renderVerticalList(root, entries, {
+          list: listEl,
+          status: statusEl,
+          limit,
+          emptyMessage: 'まだ登録がありません。最初の挑戦者になろう！',
+          emptyStatusType: 'info'
+        });
+      } catch (err) {
+        console.error('[leaderboard] fetch failed', err);
+        if (seq !== requestSeq) return;
+        lb.renderVerticalList(root, [], {
+          list: listEl,
+          status: statusEl,
+          limit,
+          emptyMessage: 'ランキングを取得できませんでした。',
+          emptyStatusType: 'error'
+        });
+      }
+    }
+
+    function handleModeClick(event){
+      const value = event.currentTarget?.dataset?.mode;
+      if (!value || value === currentMode || !Array.isArray(lb.allowedModes) || !lb.allowedModes.includes(value)) return;
+      currentMode = value;
+      updateHeading();
+      updateButtons();
+      updateQuery();
+      load();
+    }
+
+    function handleLevelClick(event){
+      const value = event.currentTarget?.dataset?.level;
+      if (!value || value === currentLevel || !Array.isArray(lb.allowedLevels) || !lb.allowedLevels.includes(value)) return;
+      currentLevel = value;
+      updateHeading();
+      updateButtons();
+      updateQuery();
+      load();
+    }
+
+    modeButtons.forEach(btn => btn.addEventListener('click', handleModeClick));
+    levelButtons.forEach(btn => btn.addEventListener('click', handleLevelClick));
+
+    window.addEventListener('popstate', () => {
+      applyQuery();
+      updateHeading();
+      updateButtons();
+      load();
+    });
+
+    applyQuery();
+    updateHeading();
+    updateButtons();
+    updateQuery();
+    load();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ready, { once: true });
+  } else {
+    ready();
+  }
+})();
+</script>
+</body></html>
