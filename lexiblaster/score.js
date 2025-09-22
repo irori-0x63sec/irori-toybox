@@ -161,7 +161,7 @@
       .lexi-miss code{font-weight:700;}
 
       .lexi-leaderboard{margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);}
-      .lexi-leaderboard h3{margin:0 0 8px;font-size:16px;}
+      .lexi-leaderboard h3{margin:0 0 8px;font-size:16px;letter-spacing:.3px;}
       .lexi-leaderboard label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;letter-spacing:.2px;}
       .lexi-leaderboard-form{margin-bottom:14px;}
       .lexi-leaderboard-inputs{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
@@ -228,7 +228,7 @@
           </div>
 
           <div class="lexi-leaderboard" id="lb-leaderboard" hidden>
-            <h3>オンラインランキング</h3>
+            <h3 id="lb-leaderboard-heading">ランキング（A1 / EN→EN）</h3>
             <div class="lb-layout">
               <div class="lb-primary">
                 <p class="lb-status" id="lb-leaderboard-status" aria-live="polite">ハイスコアを登録してランキングに参加しよう！</p>
@@ -244,9 +244,10 @@
                   <tbody id="lb-leaderboard-body"></tbody>
                 </table>
                 <p class="lexi-note" id="lb-leaderboard-empty" hidden>まだ登録がありません。最初の挑戦者になろう！</p>
+                <p class="lexi-note" id="lb-leaderboard-note">※ 登録したハンドルネームとスコアはランキングページに公開されます。</p>
               </div>
               <aside id="lb-vertical" class="lb-vertical" hidden>
-                <p class="lb-vertical-heading">TOP 20</p>
+                <p class="lb-vertical-heading" id="lb-vertical-heading">TOP 20（A1 / EN→EN）</p>
                 <div id="lb-vertical-status" class="lb-status" hidden></div>
                 <ol id="lb-vertical-list" class="lb-list"></ol>
               </aside>
