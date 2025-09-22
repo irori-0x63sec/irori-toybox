@@ -96,28 +96,27 @@
     /* 視認性向上 */
     .kbd{ font: 600 12px/1 system-ui, -apple-system, "Segoe UI", Roboto; padding:3px 6px; border:1px solid #2a3a48; border-radius:6px; background:#09121a; color:#cfe8ff; }
 
-    /* ヒーローをテキスト＋画像の2カラムに */
-    .hero-split{
-      display:grid; gap:16px; align-items:center;
-      grid-template-columns: 1.1fr .9fr;
-    }
-    @media (max-width: 860px){
-      .hero-split{ grid-template-columns: 1fr; }
+    /* テキスト + 小サムネ（右端固定幅） */
+    .hero-compact{
+      display:grid; gap:14px; align-items:center;
+      grid-template-columns: 1fr auto;   /* 右を“auto”で小さく */
     }
 
-    /* スクショ枠の見た目 */
-    .hero-media{
-      display:block; border:1px solid var(--border); border-radius:14px;
-      background:var(--panel-2); padding:10px; box-shadow:0 10px 30px rgba(0,0,0,.28);
+    /* サムネの見た目＆サイズ（超軽量） */
+    .hero-thumb{
+      display:block; width:220px;        /* ★ここでサイズ調整（200–260px推奨） */
+      border:1px solid var(--border);
+      border-radius:12px; background:var(--panel-2);
+      padding:8px; box-shadow:0 8px 22px rgba(0,0,0,.22);
     }
-    .hero-media picture, .hero-media img{
-      width:100%; display:block; border-radius:10px;
+    .hero-thumb picture, .hero-thumb img{
+      display:block; width:100%; height:auto; border-radius:8px;
     }
-    .hero-media img{
-      aspect-ratio: 4 / 3;        /* お好みで 16/9 でもOK */
-      object-fit: cover;
-      image-rendering: -moz-crisp-edges;
-      image-rendering: pixelated; /* ドット感が活きる場合 */
+
+    /* モバイルは縦並び＆さらに小さく */
+    @media (max-width: 760px){
+      .hero-compact{ grid-template-columns: 1fr; }
+      .hero-thumb{ width:160px; margin-top:6px; }
     }
 
   </style>
@@ -168,13 +167,15 @@
           <a class="btn primary" href="/lexiblaster/">▶ 今すぐプレイ</a>
           <a class="btn" href="/changelog/">📝 更新履歴</a>
         </div>
-          <a class="hero-media" href="/lexiblaster/" aria-label="Lexi Blaster をプレイ">
-        <picture>
-          <source srcset="/lexiblaster/social/hero.webp" type="image/webp">
-          <img src="/lexiblaster/social/hero.png"
-              alt="Lexi Blaster のゲーム画面（隕石が落ちる瞬間）"
-              loading="lazy" decoding="async">
-        </picture>
+        <a class="hero-thumb" href="/lexiblaster/" aria-label="Lexi Blaster をプレイ">
+          <picture>
+            <source srcset="/lexiblaster/social/hero.webp" type="image/webp">
+            <img src="/lexiblaster/social/hero.png"
+                alt="Lexi Blaster のサムネイル"
+                width="240" height="180"
+                loading="lazy" decoding="async" />
+          </picture>
+        </a>
       </section>
 
       <!-- 右：更新 -->
