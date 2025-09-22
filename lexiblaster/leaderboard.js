@@ -13,7 +13,7 @@
     scriptEl?.dataset?.endpoint,
     scriptEl?.dataset?.base,
     typeof location !== 'undefined' ? `${location.origin}/api/leaderboard` : null,
-    'https://lexiblaster-leaderboard.irori-toybox.workers.dev'
+    'https://lb.irori-toybox.com'
   ].filter(Boolean);
 
   const API_BASE = (function pickBase(){
