@@ -33,7 +33,6 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6056438145584303"crossorigin="anonymous"></script>
   <link rel="stylesheet" href="/assets/site.css">
   <script src="/assets/load-header.js" defer></script>
-  <script sr="/lexiblaster/leaderboard.js" defer></script>
 </head>
 <body>
   <link rel="stylesheet" href="/assets/site.css">
@@ -180,10 +179,12 @@
   <!-- 2) ゲーム本体は常に読み込む（順序保証のため defer＋記述順） -->
   <script src="score.js" defer></script>
   <script src="canvas.js" defer></script>
+  <script>window.LEXI_LEADERBOARD_BASE = 'https://lb.irori-toybox.com';</script>
   <script src="leaderboard.js" defer></script>
   <script src="main.js" defer></script>
   <script src="ads-loader.js" defer></script>
 </body>
 </html>
+
 
 
