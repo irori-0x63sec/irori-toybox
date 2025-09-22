@@ -897,7 +897,6 @@ document.addEventListener('keydown', (e)=>{
   const k = e.key;
   if (model.phase === "selectLang" && k === "Escape") { model.phase = "selectLevel"; e.preventDefault(); return; }
   if (model.phase === "gameover") {
-    if (k === "r" || k === "R") { model.onRestart && model.onRestart(); e.preventDefault(); return; }
     if (k === "Escape") { model.onReturnToTitle && model.onReturnToTitle(); e.preventDefault(); return; }
   }
   if (model.phase === "playing") {
@@ -935,3 +934,4 @@ window.canvasGame = {
   // getter
   getInput
 };
+
