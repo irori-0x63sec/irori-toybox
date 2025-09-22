@@ -46,10 +46,14 @@
       band,             // 任意: 例 'C1'
       maxCombo,         // 任意
       showBreakdown = true, // falseで内訳省略
+      streakCurrent = 0,
+      streakBest = 0,
     } = {}) {
       const total = Math.max(0, this.total());
       const { accuracy, correct, mistakes } = this.stats();
       const accPct = (accuracy * 100).toFixed(1);
+      const streakCur = Math.max(0, Math.floor(Number(streakCurrent) || 0));
+      const streakBestSafe = Math.max(streakCur, Math.floor(Number(streakBest) || 0));
 
       // 内訳（上位3つ、ミスは除外）
       const top = this.grouped()
@@ -67,7 +71,8 @@
         band ? `Band:${band}` : null,
         `Acc:${accPct}% (${correct}-${mistakes})`,
         (maxCombo != null) ? `MaxC:${maxCombo}` : null,
-        `AvgWPM:${Math.round(avgWPM)}`
+        `AvgWPM:${Math.round(avgWPM)}`,
+        `Streak:${streakCur}/${streakBestSafe}d`
       ].filter(Boolean).join(' | ');
       const line2 = chips;
 
@@ -95,10 +100,16 @@
       if (text.length > LIMIT) {
         const simpleChips = [
           `Lv:${level}`,
-          `Acc:${accPct}% (${correct}-${mistakes})`
+          `Acc:${accPct}% (${correct}-${mistakes})`,
+          `Streak:${streakCur}/${streakBestSafe}d`
         ];
         const fallback2 = [line1, simpleChips.join(' | '), line4, hashtags].filter(Boolean).join('\n');
-        text = (fallback2.length <= LIMIT) ? fallback2 : [line1, `Acc:${accPct}%`, hashtags].join('\n');
+        if (fallback2.length <= LIMIT) {
+          text = fallback2;
+        } else {
+          const minimal = `Acc:${accPct}% | Streak:${streakCur}/${streakBestSafe}d`;
+          text = [line1, minimal, hashtags].join('\n');
+        }
       }
 
       return text;
@@ -168,6 +179,7 @@
       .lexi-sb-actions{display:flex;gap:10px;flex-wrap:wrap;}
       .lexi-btn{appearance:none;border:none;padding:10px 14px;border-radius:10px;background:#1d9bf0;color:#fff;font-weight:700;cursor:pointer;}
       .lexi-btn.secondary{background:rgba(255,255,255,.10);color:#eaf6ff;}
+      .lexi-streak{margin:16px 0 0;padding-top:12px;border-top:1px dashed rgba(255,255,255,.12);font-size:13px;opacity:.88;}
       .lexi-note{font-size:12px;opacity:.75;margin-top:8px;}
 
       .lexi-miss{margin-top:12px;background:rgba(255,255,255,.05);padding:10px;border-radius:12px;max-height:180px;overflow:auto;}
@@ -213,6 +225,8 @@
             <button class="lexi-btn" id="lexi-share">X で共有</button>
             <button class="lexi-btn secondary" id="lexi-restart">もう一度</button>
           </div>
+
+          <div class="lexi-streak" id="lexi-streak" hidden></div>
 
           <div class="lexi-note">※ スコアは今後調整される場合があります。</div>
         </div>
@@ -278,6 +292,18 @@
         }
       }
 
+      const streakBox = this.el.querySelector('#lexi-streak');
+      if (streakBox) {
+        if (meta && meta.streak) {
+          const cur = Math.max(0, Math.floor(Number(meta.streak.current) || 0));
+          const best = Math.max(cur, Math.floor(Number(meta.streak.best) || 0));
+          streakBox.textContent = `連続 ${cur} 日（最高 ${best} 日）`;
+          streakBox.hidden = false;
+        } else {
+          streakBox.hidden = true;
+        }
+      }
+
       this.el.style.display = 'grid';
     }
 
@@ -299,7 +325,9 @@
       const text = this.tracker.toTweetText({
         gameName: this.meta.gameName || 'LexiBlaster',
         level: this.meta.levelName || 'N/A',
-        avgWPM: Math.round(this.meta.avgWPM || 0)
+        avgWPM: Math.round(this.meta.avgWPM || 0),
+        streakCurrent: Math.max(0, Math.floor(Number(this.meta?.streak?.current) || 0)),
+        streakBest: Math.max(Math.floor(Number(this.meta?.streak?.best) || 0), Math.max(0, Math.floor(Number(this.meta?.streak?.current) || 0)))
       });
 
       const params = new URLSearchParams({

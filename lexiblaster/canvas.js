@@ -5,6 +5,17 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+const streakPill = (() => {
+  const existing = document.getElementById('streak-pill');
+  if (existing) return existing;
+  const el = document.createElement('div');
+  el.id = 'streak-pill';
+  el.hidden = true;
+  const wrap = document.getElementById('wrap');
+  (wrap || document.body).appendChild(el);
+  return el;
+})();
+
 /* ==== Help Button & Overlay ===================================== */
 const HELP = {
   visible: false,
@@ -337,7 +348,26 @@ const model = {
   onToggleWeak:  null,
   onReturnToTitle: null,
   onInputChange: null,
+
+  streakCurrent: 0,
+  streakBest: 0,
+  streakLastPlayed: null,
 };
+
+const STREAK_VISIBLE_PHASES = new Set(['title', 'selectLevel', 'selectLang', 'countdown', 'playing']);
+function refreshStreakPill(){
+  if (!streakPill) return;
+  const current = Math.max(0, model.streakCurrent | 0);
+  const best = Math.max(current, model.streakBest | 0);
+  const hasHistory = (current > 0) || (best > 0) || (typeof model.streakLastPlayed === 'string' && model.streakLastPlayed);
+  if (!hasHistory) {
+    streakPill.hidden = true;
+    return;
+  }
+  streakPill.textContent = `連続 ${current} 日（最高 ${best} 日）`;
+  const shouldShow = STREAK_VISIBLE_PHASES.has(model.phase) && !(model.phase === 'gameover' || model.gameOver);
+  streakPill.hidden = !shouldShow;
+}
 
 // ---- API for main.js ----
 function setHUD(score, lives){ model.score = score; model.lives = lives; }
@@ -349,10 +379,19 @@ function setFlow(data){
   const prevPhase    = model.phase;
   const prevGameOver = model.gameOver;
   Object.assign(model, data);
+  refreshStreakPill();
   if ((!prevGameOver && model.gameOver) || (prevPhase !== 'gameover' && model.phase === 'gameover')) {
     try { sfx.gameover.currentTime = 0; sfx.gameover.play(); } catch(_){}
   }
   if (prevPhase !== 'countdown' && model.phase === 'countdown') beginCountdown();
+}
+function setStreak(streak = {}){
+  const current = Number.isFinite(Number(streak.current)) ? Math.max(0, Math.floor(Number(streak.current))) : 0;
+  const bestVal = Number.isFinite(Number(streak.best)) ? Math.max(0, Math.floor(Number(streak.best))) : 0;
+  model.streakCurrent = current;
+  model.streakBest = Math.max(current, bestVal);
+  model.streakLastPlayed = (typeof streak.lastPlayed === 'string' && streak.lastPlayed) ? streak.lastPlayed : null;
+  refreshStreakPill();
 }
 function bindCallbacks(cbs){ Object.assign(model, cbs); }
 
@@ -742,6 +781,7 @@ function updateAndDraw(ts){
         model.cdIndex += 1; model.cdTimer += 1.0;
         if (model.cdIndex >= model.cdLabels.length) {
           model.phase = "playing";
+          refreshStreakPill();
           model.onStartGame && model.onStartGame();
         }
       }
@@ -847,6 +887,7 @@ canvas.addEventListener('mousedown', (e)=>{
 
   if (model.phase === "title") {
     model.phase = "selectLevel";
+    refreshStreakPill();
     return;
   }
 
@@ -856,6 +897,7 @@ canvas.addEventListener('mousedown', (e)=>{
         model.selectedLevel = b.key;
         model.onSelectLevel && model.onSelectLevel(b.key);
         model.phase = "selectLang";
+        refreshStreakPill();
         return;
       }
     }
@@ -868,13 +910,18 @@ canvas.addEventListener('mousedown', (e)=>{
       }
     }
   } else if (model.phase === "selectLang") {
-    if (hitBox(BTN_BACK, mx, my)) { model.phase = "selectLevel"; return; }
+    if (hitBox(BTN_BACK, mx, my)) {
+      model.phase = "selectLevel";
+      refreshStreakPill();
+      return;
+    }
     // ★ 一元化した配列で判定
     for (const b of MODE_BTNS) {
       if (hitBox(b, mx, my)) {
         model.selectedLang = b.key;
         model.onSelectLang && model.onSelectLang(b.key);
         model.phase = "countdown";
+        refreshStreakPill();
         beginCountdown();
         return;
       }
@@ -895,7 +942,12 @@ canvas.addEventListener('pointerup', ()=>{ if (model.phase==='playing') focusInp
 
 document.addEventListener('keydown', (e)=>{
   const k = e.key;
-  if (model.phase === "selectLang" && k === "Escape") { model.phase = "selectLevel"; e.preventDefault(); return; }
+  if (model.phase === "selectLang" && k === "Escape") {
+    model.phase = "selectLevel";
+    refreshStreakPill();
+    e.preventDefault();
+    return;
+  }
   if (model.phase === "gameover") {
     if (k === "r" || k === "R") { model.onRestart && model.onRestart(); e.preventDefault(); return; }
     if (k === "Escape") { model.onReturnToTitle && model.onReturnToTitle(); e.preventDefault(); return; }
@@ -931,7 +983,7 @@ window.canvasGame = {
   // scene utils
   resetScene, baseHitFlash, setMeteorSprite,
   // ui link
-  setHUD, setHints, setInput, focusInput, setFlow, bindCallbacks,
+  setHUD, setHints, setInput, focusInput, setFlow, setStreak, bindCallbacks,
   // getter
   getInput
 };

@@ -35,6 +35,20 @@ let isGameOver = false;
 let revealed = [];
 let startedAt = 0;
 
+let streakState = { current: 0, best: 0, lastPlayed: null };
+function normalizeStreak(streak = {}){
+  const current = Number.isFinite(Number(streak.current)) ? Math.max(0, Math.floor(Number(streak.current))) : 0;
+  const bestVal = Number.isFinite(Number(streak.best)) ? Math.max(0, Math.floor(Number(streak.best))) : 0;
+  const best = Math.max(current, bestVal);
+  const lastPlayed = (typeof streak.lastPlayed === 'string' && streak.lastPlayed) ? streak.lastPlayed : null;
+  return { current, best, lastPlayed };
+}
+function applyStreakState(streak){
+  streakState = normalizeStreak(streak);
+  try { window.canvasGame?.setStreak?.(streakState); } catch {}
+  return streakState;
+}
+
 /* =========================================================
    BGM manager (WebAudioでサンプル精度ループ)
 ========================================================= */
@@ -340,7 +354,7 @@ function onBlast(inputStr){
 
 //
 // ---- Baseヒット → GameOver ----
-window.addEventListener("meteorHitBase", ()=>{
+window.addEventListener("meteorHitBase", async ()=>{
   if(isGameOver) return;
   lives = clamp0(lives-1); updateHUD();
   Score.tracker.record('LIFE_LOST', 0, { lives });
@@ -360,10 +374,20 @@ window.addEventListener("meteorHitBase", ()=>{
       Score.tracker.record('SPEED_BONUS', speedBonus, { avgWPM: Math.round(avgWPM) });
       score = clamp0(score + speedBonus); updateHUD();
     }
+    let streakMeta = streakState;
+    if (window.LBStreak && typeof window.LBStreak.markPlayedToday === 'function') {
+      try {
+        const updated = await window.LBStreak.markPlayedToday();
+        if (updated) streakMeta = applyStreakState(updated);
+      } catch (err) {
+        console.warn('[LBStreak] markPlayedToday failed', err);
+      }
+    }
     const meta = {
       gameName: 'LexiBlaster',
       levelName: currentLevel,
-      avgWPM, playTimeSec: (performance.now() - startedAt)/1000
+      avgWPM, playTimeSec: (performance.now() - startedAt)/1000,
+      streak: { ...streakMeta }
     };
     Score.overlay.show({ tracker: Score.tracker, meta, url: location.href});
   } else {
@@ -416,10 +440,18 @@ async function waitForPixelFont(timeoutMs = 4000) {
     onReturnToTitle,
   });
 
+  applyStreakState(streakState);
+
   await window.canvasGame.start();
   await waitForPixelFont(4000);
 
   window.canvasGame.setFlow({ started: false, gameOver: false, phase: 'title' });
+  try {
+    const initial = await window.LBStreak?.getStreak?.();
+    if (initial) applyStreakState(initial);
+  } catch (e) {
+    console.warn('[LBStreak] getStreak failed', e);
+  }
   showCanvas();
 
   try { await initBGM(); startBGM(); } catch (e) { console.warn('[BGM] init/start failed', e); }

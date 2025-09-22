@@ -13,12 +13,31 @@ html, body {
   margin: 24px auto;
   border: 1px solid #193044;
   box-shadow: 0 0 18px rgba(0,0,0,0.5);
+  position: relative;
 }
 #gameCanvas {
   display: block;
   background: #081018;
   /* 初期は main.js が visibility を制御（フォント/アセット待ち） */
   visibility: hidden;
+}
+#streak-pill {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(92, 212, 255, 0.5);
+  background: rgba(12, 24, 36, 0.82);
+  color: #aee;
+  font: 12px "Press Start 2P", monospace;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+  text-transform: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+#streak-pill[hidden] {
+  display: none !important;
 }
 /* === Cookie Overlay === */
 .cookie-footer-btn{
