@@ -297,7 +297,7 @@
     };
     if (!payload.name) throw new Error('NAME_REQUIRED');
     if (!(payload.score > 0)) throw new Error('SCORE_REQUIRED');
-    const res = await fetch(buildUrl('/submit'), {
+    const res = await fetch(buildUrl('/score'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
