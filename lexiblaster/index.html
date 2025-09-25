@@ -16,46 +16,45 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:type" content="image/png" />
 
-  <!-- X(Twitter) Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Lexi Blaster" />
-  <meta name="twitter:description" content="英単語タイピングゲーム Lexi Blaster" />
-  <meta name="twitter:image" content="https://irori-toybox.com/lexiblaster/social/lexi-blaster-og.png" />
+  <!-- Favicon（404対策：/lexiblaster/favicon.ico を用意した場合はこちらを使う） -->
+  <link rel="icon" href="/lexiblaster/favicon.ico" />
 
-  <link rel="icon" href="/favicon.ico" />
-
-  <!-- ドット調フォント -->
+  <!-- フォント/サイト共通CSS/ヘッダー注入 -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/site.css" />
+  <script src="/assets/load-header.js" defer></script>
+
+  <!-- ゲーム固有CSS -->
   <link rel="stylesheet" href="style.css" />
 
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6056438145584303"crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="/assets/site.css">
-  <script src="/assets/load-header.js" defer></script>
+  <!-- AdSense：ページで一度だけ -->
+  <script
+    async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6056438145584303"
+    crossorigin="anonymous"
+  ></script>
 </head>
 <body>
-  <link rel="stylesheet" href="/assets/site.css">
+  <!-- 共通ヘッダー。load-header.js が中身を差し込む -->
   <header class="site" id="site-header" hidden></header>
-  <script src="/assets/load-header.js" defer></script>
 
   <div id="wrap">
     <canvas id="gameCanvas" width="800" height="720"></canvas>
   </div>
 
-  <!-- 共有ボタン（X と LINE）。ゲーム終了時に表示される -->
+  <!-- 共有ボタン（ゲーム終了時に表示） -->
   <button id="shareXBtn" class="share-x-btn" hidden>🡕 Xで共有</button>
   <button id="shareLineBtn" class="share-line-btn" hidden>🟩 LINEで共有</button>
 
-  <!-- Cookie 同意オーバーレイ（必要なときだけ開く／デフォルトは非表示） -->
+  <!-- Cookie 同意オーバーレイ -->
   <div id="cookie-overlay" class="cookie-overlay" hidden>
     <div class="cookie-card">
       <h2>Cookieの使用について</h2>
       <p class="cookie-lead">
-        サイト体験の改善や計測のためにCookieを使用します。
-        目的に応じて選択できます。ゲームの起動は同意に関わらず可能です。
+        サイト体験の改善や計測のためにCookieを使用します。ゲームの起動は同意に関わらず可能です。
       </p>
-
       <details class="cookie-details">
         <summary>詳細を表示</summary>
         <ul>
@@ -64,127 +63,99 @@
           <li><strong>広告/トラッキング</strong>（パーソナライズ広告・測定）</li>
         </ul>
       </details>
-
       <div class="cookie-actions">
         <button id="cookie-accept-all" class="btn primary">同意する（すべて許可）</button>
         <button id="cookie-accept-essential" class="btn">必須のみ同意する</button>
         <button id="cookie-reject-all" class="btn ghost">一切拒否する</button>
       </div>
-
       <p class="cookie-note">
-        選択内容は端末に保存され、いつでもページ下部の
-        <em>Cookie設定</em>リンクから変更できます。
+        選択内容は端末に保存され、ページ下部の<em>Cookie設定</em>リンクから変更できます。
       </p>
     </div>
   </div>
 
-  <!-- フッタに小さな「Cookie設定」リンク（再表示用） -->
+  <!-- フッタ：Cookie設定の再表示 -->
   <div id="cookie-footer-link" class="cookie-footer-link">
     <button id="cookie-open-settings" class="linklike">Cookie設定</button>
   </div>
 
-  <!-- ▼▼▼ ここから広告エリア ▼▼▼ -->
+  <!-- 広告プレースホルダ（中身は後で管理画面のタグを入れる） -->
   <div class="ad-area" aria-label="広告エリア">
     <div class="ad-row">
-      <!-- 左広告枠（プレースホルダー）。AdSenseや他社タグをこの中に入れる -->
-      <div class="ad-slot" id="ad-left">
-        <!-- 例: 後でここに <ins class="adsbygoogle" ...></ins> を入れる -->
-        <span class="ad-ph">AD 300×250 / 320×50 / 728×90 など</span>
-      </div>
-      <!-- 右広告枠 -->
-      <div class="ad-slot" id="ad-right">
-        <span class="ad-ph">AD 300×250 / 320×50 / 728×90 など</span>
-      </div>
+      <div class="ad-slot" id="ad-left"><span class="ad-ph">AD 300×250 / 320×50 / 728×90 など</span></div>
+      <div class="ad-slot" id="ad-right"><span class="ad-ph">AD 300×250 / 320×50 / 728×90 など</span></div>
     </div>
   </div>
-  <!-- ▲▲▲ 広告エリア終わり ▲▲▲ -->
 
-
-  <!-- 1) 同意管理は軽量JSに集約 -->
-  <script src="consent.js" defer></script>
   <!-- モバイル非対応オーバーレイ -->
   <div id="unsupported-overlay" class="unsupported-overlay" hidden>
     <div class="unsupported-card" role="dialog" aria-modal="true" aria-label="Unsupported">
       <h2>このゲームはモバイルに未対応です</h2>
-      <p>
-        現在はPC（キーボード操作）向けのみ提供しています。<br>
-        お手数ですが、PCからアクセスしてください。
-      </p>
+      <p>現在はPC（キーボード操作）向けのみ提供しています。PCからアクセスしてください。</p>
       <div class="unsupported-actions">
-        <!-- 任意: 自己責任で続行できるボタンを出す（不要なら丸ごと削除） -->
         <button id="unsupported-continue" class="unsupported-btn">とりあえず続行</button>
         <button id="unsupported-home" class="unsupported-btn primary" onclick="location.href='/'">Irori-toybox Homeへ</button>
       </div>
     </div>
   </div>
+
+  <!-- モバイル判定（必要なら無効化できるよう sessionStorage でオーバーライド） -->
   <script>
-/* mobile-gate: モバイル/タブレット等を検出してゲーム起動を止める */
-  (function(){
-    function isMobileLike(){
-      // 画面の物理的な小ささ or ポインタの粗さで一次判定
-      const coarse = matchMedia('(pointer:coarse)').matches;
-      const narrow = Math.min(window.innerWidth, window.innerHeight) <= 820; // iPad縦含む
-      // UAの補助（将来互換のため軽めに）
-      const ua = navigator.userAgent || '';
-      const uaMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
-      return (coarse && narrow) || (uaMobile && narrow);
-    }
-
-    function showGate(on){
-      const ov = document.getElementById('unsupported-overlay');
-      if (!ov) return;
-      if (on){
-        ov.hidden = false; ov.style.display = 'grid';
-        window.__MOBILE_BLOCKED__ = true;
-        // ゲームCanvasを隠して誤操作を避ける
-        const c = document.getElementById('gameCanvas'); if (c) c.style.visibility = 'hidden';
-      } else {
-        ov.hidden = true; ov.style.display = 'none';
-        window.__MOBILE_BLOCKED__ = false;
-        const c = document.getElementById('gameCanvas'); if (c) c.style.visibility = 'visible';
+    (function(){
+      function isMobileLike(){
+        const coarse = matchMedia('(pointer:coarse)').matches;
+        const narrow = Math.min(innerWidth, innerHeight) <= 820;
+        const ua = navigator.userAgent || '';
+        const uaMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+        return (coarse && narrow) || (uaMobile && narrow);
       }
-    }
-
-    function updateGate(){ showGate(isMobileLike()); }
-
-    // リサイズ/向き変更でも再評価
-    addEventListener('resize', updateGate);
-    addEventListener('orientationchange', updateGate);
-    // 初期
-    (document.readyState === 'loading')
-      ? addEventListener('DOMContentLoaded', updateGate)
-      : updateGate();
-
-    // 「とりあえず続行」を押したら、今回のセッションだけ解除
-    addEventListener('DOMContentLoaded', function(){
-      const btn = document.getElementById('unsupported-continue');
-      if (!btn) return;
-      btn.addEventListener('click', function(e){
-        e.preventDefault();
-        sessionStorage.setItem('lb_mobile_override', '1');
-        showGate(false);
-      });
-    });
-
-    // セッションオーバーライドがあれば解除
-    if (sessionStorage.getItem('lb_mobile_override') === '1') {
+      function showGate(on){
+        const ov = document.getElementById('unsupported-overlay');
+        if (!ov) return;
+        if (on){
+          ov.hidden = false; ov.style.display = 'grid';
+          const c = document.getElementById('gameCanvas'); if (c) c.style.visibility = 'hidden';
+        } else {
+          ov.hidden = true; ov.style.display = 'none';
+          const c = document.getElementById('gameCanvas'); if (c) c.style.visibility = 'visible';
+        }
+      }
+      function updateGate(){ showGate(isMobileLike()); }
+      addEventListener('resize', updateGate);
+      addEventListener('orientationchange', updateGate);
       (document.readyState === 'loading')
-        ? addEventListener('DOMContentLoaded', () => showGate(false))
-        : showGate(false);
-    }
-  })();
+        ? addEventListener('DOMContentLoaded', updateGate)
+        : updateGate();
+
+      addEventListener('DOMContentLoaded', function(){
+        const btn = document.getElementById('unsupported-continue');
+        if (btn) btn.addEventListener('click', function(e){
+          e.preventDefault();
+          sessionStorage.setItem('lb_mobile_override', '1');
+          showGate(false);
+        });
+      });
+      if (sessionStorage.getItem('lb_mobile_override') === '1') {
+        (document.readyState === 'loading')
+          ? addEventListener('DOMContentLoaded', () => showGate(false))
+          : showGate(false);
+      }
+    })();
   </script>
 
-
-  <!-- 2) ゲーム本体は常に読み込む（順序保証のため defer＋記述順） -->
+  <!-- 同意管理・ゲーム本体（順序保証のため defer で下に配置） -->
+  <script src="consent.js" defer></script>
   <script src="score.js" defer></script>
   <script src="canvas.js" defer></script>
-  <!-- lexiblaster のページで読み込むやつをこれに -->
-  <script src="/lexiblaster/leaderboard.js?v=20250925a"data-api-base="https://lb.irori-toybox.com"></script>
+
+  <!-- ランキング（スペース抜け修正・defer 追加。キャッシュ破りのクエリ更新推奨） -->
+  <script
+    src="/lexiblaster/leaderboard.js?v=20250925b"
+    data-api-base="https://lb.irori-toybox.com"
+    defer
+  ></script>
+
   <script src="main.js" defer></script>
   <script src="ads-loader.js" defer></script>
 </body>
 </html>
-
-
-
