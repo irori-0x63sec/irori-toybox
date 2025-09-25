@@ -179,8 +179,8 @@
   <!-- 2) ゲーム本体は常に読み込む（順序保証のため defer＋記述順） -->
   <script src="score.js" defer></script>
   <script src="canvas.js" defer></script>
-  <script>window.LEXI_LEADERBOARD_BASE = 'https://lb.irori-toybox.com';</script>
-  <script src="/lexiblaster/leaderboard.js" defer></script>
+  <!-- lexiblaster のページで読み込むやつをこれに -->
+  <script src="/lexiblaster/leaderboard.js?v=20250925a"data-api-base="https://lb.irori-toybox.com"></script>
   <script src="main.js" defer></script>
   <script src="ads-loader.js" defer></script>
 </body>
