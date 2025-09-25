@@ -269,5 +269,185 @@
     } else {
       initIfElementsExist();
     }
+
+    // ====== ゲーム内オーバーレイ連携（lb:leaderboard:show / hide） ======
+(function () {
+  if (typeof window === 'undefined' || !window.lexiLeaderboard) return;
+
+  const lb = window.lexiLeaderboard;
+
+  // root（結果画面のコンテナ）配下で使う要素を収集
+  function collect(root) {
+    if (!root) return null;
+    return {
+      root,
+      status: root.querySelector('#lb-leaderboard-status'),
+      form: root.querySelector('#lb-leaderboard-form'),
+      name: root.querySelector('#lb-leaderboard-name'),
+      submit: root.querySelector('#lb-leaderboard-submit'),
+      table: root.querySelector('#lb-leaderboard-table'),
+      tbody: root.querySelector('#lb-leaderboard-body'),
+      empty: root.querySelector('#lb-leaderboard-empty'),
+      // あるかもしれない現在モード/レベルの表示
+      modeEl: root.querySelector('[data-mode-current]'),
+      levelEl: root.querySelector('[data-level-current]'),
+    };
+  }
+
+  function getModeLevel(root) {
+    // root の data-* / 要素 / グローバルを総合して取得（無ければ既定値）
+    const mode =
+      root?.dataset?.mode ||
+      root?.querySelector('#lb-mode')?.value ||
+      root?.querySelector('[data-mode-current]')?.dataset?.modeCurrent ||
+      lb.defaultContext.mode;
+
+    const level =
+      root?.dataset?.level ||
+      root?.querySelector('#lb-level')?.value ||
+      root?.querySelector('[data-level-current]')?.dataset?.levelCurrent ||
+      lb.defaultContext.level;
+
+    // 正当性チェック
+    const validMode = lb.allowedModes.includes(mode) ? mode : lb.defaultContext.mode;
+    const validLevel = lb.allowedLevels.includes(level) ? level : lb.defaultContext.level;
+    return { mode: validMode, level: validLevel };
+  }
+
+  async function renderTop(elems, ctx, limit = 10) {
+    if (!elems) return;
+    const { status, tbody, table, empty } = elems;
+
+    // 縦表示UIと同等の簡易レンダラ
+    try {
+      lb.setStatusElement(status, 'ランキングを読み込み中…', 'loading');
+      const items = await lb.fetchLeaderboard(limit, ctx);
+
+      // テーブル系がないページもあるので、縦リストの簡易レンダで代替
+      if (!tbody) {
+        const list = elems.root.querySelector('#lb-embed-list');
+        const status2 = elems.root.querySelector('#lb-embed-status') || status;
+        if (list) {
+          lb.renderVerticalList(elems.root, items, {
+            list,
+            status: status2,
+            limit,
+            emptyMessage: 'まだ登録がありません。最初の挑戦者になろう！',
+            emptyStatusType: 'info'
+          });
+          return;
+        }
+      }
+
+      // テーブルがある場合の描画
+      if (tbody) tbody.innerHTML = '';
+      if (!items || items.length === 0) {
+        if (table) table.style.display = 'none';
+        if (empty) empty.hidden = false;
+        lb.setStatusElement(status, 'まだ登録がありません。最初の挑戦者になろう！', 'info');
+        return;
+      }
+      if (table) table.style.display = '';
+      if (empty) empty.hidden = true;
+
+      const frag = document.createDocumentFragment();
+      for (const row of items) {
+        const tr = document.createElement('tr');
+        const tdRank  = document.createElement('td'); tdRank.textContent  = `${row.rank ?? ''}`;
+        const tdName  = document.createElement('td'); tdName.textContent  = row.name || '名無し';
+        const tdScore = document.createElement('td'); tdScore.textContent = Number(row.score||0).toLocaleString('ja-JP');
+        tr.append(tdRank, tdName, tdScore);
+        frag.appendChild(tr);
+      }
+      if (tbody) tbody.appendChild(frag);
+      lb.setStatusElement(status, '最新のランキングを表示しています。', 'info');
+    } catch (err) {
+      console.error('[lb overlay] fetch failed', err);
+      lb.setStatusElement(elems?.status, 'ランキングを取得できませんでした。', 'error');
+      if (elems?.table) elems.table.style.display = 'none';
+      if (elems?.empty) elems.empty.hidden = false;
+    }
+  }
+
+  function bindForm(elems, finalScore, ctx) {
+    if (!elems?.form) return;
+    const { form, name, status, submit } = elems;
+
+    // ボタン活性/非活性
+    if (submit) submit.disabled = !(finalScore > 0);
+
+    const onSubmit = async (ev) => {
+      ev.preventDefault();
+      const handle = (name?.value ?? '').trim();
+      if (!handle) {
+        lb.setStatusElement(status, 'ハンドルネームを入力してください。', 'warning');
+        name?.focus();
+        return;
+      }
+      if (!(finalScore > 0)) {
+        lb.setStatusElement(status, 'スコアが0のため登録できません。', 'warning');
+        return;
+      }
+      lb.setStatusElement(status, 'スコア送信中…', 'loading');
+      try {
+        await lb.submitScore(handle, finalScore, ctx.mode, ctx.level);
+        lb.setStatusElement(status, 'ランキングに登録しました！', 'success');
+        await renderTop(elems, ctx, 10);
+      } catch (e) {
+        console.error('[lb overlay] submit failed', e);
+        // エラーメッセージの代表例に合わせる
+        const msg = /NAME_REQUIRED/.test(String(e?.message)) ?
+          'ハンドルネームを入力してください。' :
+          '送信に失敗しました。通信環境をご確認ください。';
+        lb.setStatusElement(status, msg, /NAME_REQUIRED/.test(String(e?.message)) ? 'warning' : 'error');
+      }
+    };
+
+    form.addEventListener('submit', onSubmit, { passive: false });
+  }
+
+  // 表示イベント
+  window.addEventListener('lb:leaderboard:show', (ev) => {
+    const detail = ev?.detail || {};
+    const root   = detail.root;               // ゲーム側が渡すコンテナ要素
+    const score  = Math.max(0, Number(detail.total) || 0);
+    if (!root) return;                        // root が無いなら何もしない
+
+    const elems = collect(root);
+    if (elems?.root) {
+      elems.root.hidden = false;
+      elems.root.setAttribute('data-active', '1');
+    }
+
+    const ctx = getModeLevel(root);
+    // 見出しがあるなら更新（任意）
+    const heading = root.querySelector('#lb-embed-heading');
+    if (heading) heading.textContent = `ランキング（${ctx.level} / ${lb.describeMode(ctx.mode)}）`;
+
+    // 初期ステータス
+    lb.setStatusElement(elems?.status,
+      score > 0 ? 'ハイスコアを登録してランキングに参加しよう！' : 'スコアが0のため登録できません。',
+      score > 0 ? 'info' : 'warning'
+    );
+
+    // ランキング読み込み & フォーム紐付け
+    renderTop(elems, ctx, 10);
+    bindForm(elems, score, ctx);
+
+    // フォーカス誘導
+    setTimeout(() => elems?.name?.focus?.(), 150);
+  });
+
+  // 非表示イベント
+  window.addEventListener('lb:leaderboard:hide', (ev) => {
+    const root = ev?.detail?.root;
+    const panel = root || document.querySelector('#lb-panel,#lb-embed');
+    if (panel) {
+      panel.hidden = true;
+      panel.removeAttribute('data-active');
+    }
+  });
+})();
+
   }
 })();
