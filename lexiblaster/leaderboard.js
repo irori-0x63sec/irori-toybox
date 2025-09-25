@@ -315,17 +315,19 @@
     return Math.min(num, MAX_SCORE);
   }
 
-  async function submitScore({ name, score, mode, level, weak, game }){
+  async function submitScore(name, score){
     const payload = {
       name: sanitizeName(name),
       score: clampScore(score),
-      mode: String(mode || ''),
-      level: String(level || ''),
-      weak: !!weak,
-      game: String(game || 'lexi-blaster')
+      // 追加: ゲームから渡されているメタを一緒に保存
+      mode:  typeof state?.meta?.mode  === 'string' ? state.meta.mode  : '',
+      level: typeof state?.meta?.level === 'string' ? state.meta.level : '',
+      weak:  !!state?.meta?.weak,
+      lang:  typeof state?.meta?.lang  === 'string' ? state.meta.lang  : undefined
     };
     if (!payload.name) throw new Error('NAME_REQUIRED');
     if (!(payload.score > 0)) throw new Error('SCORE_REQUIRED');
+
     const res = await fetch(buildUrl('/score'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -344,6 +346,7 @@
       return { ok: true };
     }
   }
+
 
   async function fetchLeaderboard({ limit = 10, game = 'lexi-blaster', mode = '', level = '' } = {}){
     const u = new URL(buildUrl('/top'));

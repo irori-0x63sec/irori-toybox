@@ -123,142 +123,170 @@ footer .links a{ margin-right:16px }
 <script src="/lexiblaster/leaderboard.js" defer></script>
 <script>
 (function(){
+  'use strict';
+
   const limit = 20;
   const root = document.getElementById('lb-embed');
   const statusEl = document.getElementById('lb-embed-status');
   const listEl = document.getElementById('lb-embed-list');
   const headingEl = document.getElementById('lb-embed-heading');
-  const modeButtons = Array.from(document.querySelectorAll('[data-mode]'));
+
+  const modeButtons  = Array.from(document.querySelectorAll('[data-mode]'));
   const levelButtons = Array.from(document.querySelectorAll('[data-level]'));
 
-  const setYear = () => {
+  const ALLOWED_MODES  = ['en_en','jp_en'];
+  const ALLOWED_LEVELS = ['A1','A2','A3','B1','B2','B3','C1','C2','C3'];
+
+  // API ベースは window 変数 or ゲーム用JSから拝借
+  function getApiBase(){
+    const lb = window.lexiLeaderboard;
+    return window.LEXI_LEADERBOARD_BASE || (lb && lb.apiBase) || 'https://lb.irori-toybox.com';
+  }
+
+  function setYear(){
     const el = document.getElementById('lb-year');
     if (el) el.textContent = new Date().getFullYear();
-  };
+  }
   setYear();
 
-  function ready(){
-    const lb = window.lexiLeaderboard;
-    if (!lb || !root || !statusEl || !listEl || !headingEl) return;
+  function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[m])); }
 
-    const defaultCtx = lb.defaultContext;
-    let currentMode = defaultCtx.mode;
-    let currentLevel = defaultCtx.level;
-    let requestSeq = 0;
+  function status(text, type){
+    statusEl.hidden = !text;
+    statusEl.textContent = text || '';
+    statusEl.className = 'lb-status' + (type ? ` lb-status--${type}` : '');
+  }
 
-    function applyQuery(){
-      try {
-        const params = new URLSearchParams(location.search);
-        const ctx = lb.normalizeContext({
-          game: defaultCtx.game,
-          mode: params.get('mode'),
-          level: params.get('level')
-        }, defaultCtx, { strict: false });
-        if (ctx) {
-          currentMode = ctx.mode;
-          currentLevel = ctx.level;
-        }
-      } catch {}
-    }
+  function render(items){
+    const html = (items && items.length)
+      ? items.map((it, i) => {
+          const rank  = Number.isFinite(it.rank) ? it.rank : (i + 1);
+          const name  = escapeHtml(it?.name ?? '名無し');
+          const score = Number(it?.score ?? 0).toLocaleString('ja-JP');
+          const mode  = it?.mode  ?? 'ALL';
+          const level = it?.level ?? 'ALL';
+          return `<li><span class="lb-rank">${rank}位</span><span class="lb-name">${name}</span><span class="lb-score">${score}pt</span><span class="meta" style="margin-left:8px;color:#9ab6c9">${mode}/${level}</span></li>`;
+        }).join('')
+      : '<li>まだ登録がありません。最初の挑戦者になろう！</li>';
+    listEl.innerHTML = html;
+  }
 
-    function updateHeading(){
-      const label = `${currentLevel} / ${lb.describeMode(currentMode)}`;
-      headingEl.textContent = `ランキング（${label}）`;
-    }
+  function applyQuery(current){
+    const p = new URLSearchParams(location.search);
+    const mode  = p.get('mode');
+    const level = p.get('level');
+    if (mode && ALLOWED_MODES.includes(mode))   current.mode  = mode;
+    if (level && ALLOWED_LEVELS.includes(level)) current.level = level;
+  }
 
-    function updateButtons(){
-      const toggle = (buttons, attr, value) => {
-        for (const btn of buttons) {
-          const key = btn.dataset[attr];
-          const active = key === value;
-          btn.classList.toggle('is-active', active);
-          btn.setAttribute('aria-pressed', active ? 'true' : 'false');
-        }
-      };
-      toggle(modeButtons, 'mode', currentMode);
-      toggle(levelButtons, 'level', currentLevel);
-    }
+  function updateQuery(current){
+    try{
+      const url = new URL(location.href);
+      url.searchParams.set('mode',  current.mode);
+      url.searchParams.set('level', current.level);
+      history.replaceState(null, '', url.toString());
+    }catch{}
+  }
 
-    function updateQuery(){
-      try {
-        const url = new URL(location.href);
-        url.searchParams.set('mode', currentMode);
-        url.searchParams.set('level', currentLevel);
-        history.replaceState(null, '', url.toString());
-      } catch {}
-    }
+  function updateHeading(current){
+    const modeLabel = (current.mode === 'en_en') ? 'EN→EN'
+                     : (current.mode === 'jp_en') ? 'JP→EN'
+                     : current.mode;
+    headingEl.textContent = `ランキング（${current.level} / ${modeLabel}）`;
+  }
 
-    async function load(){
-      const seq = ++requestSeq;
+  function updateButtons(current){
+    const mark = (btns, key, val) => {
+      for (const b of btns){
+        const isActive = (b.dataset[key] === val);
+        b.classList.toggle('is-active', isActive);
+        b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      }
+    };
+    mark(modeButtons,  'mode',  current.mode);
+    mark(levelButtons, 'level', current.level);
+  }
+
+  async function fetchAllTop(){
+    const base = getApiBase();
+    const url  = new URL('/top', base);
+    url.searchParams.set('limit', '200'); // サーバは items に mode/level を含めて返す
+    const res = await fetch(url, { headers:{Accept:'application/json'}, mode:'cors' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json().catch(()=>({}));
+    return Array.isArray(data.items) ? data.items : [];
+  }
+
+  function filterRank(items, current){
+    // mode/level で絞ったうえでスコア降順→時間昇順でランク再付与
+    const filtered = (items||[]).filter(it =>
+      (!current.mode  || it.mode  === current.mode) &&
+      (!current.level || it.level === current.level)
+    );
+    filtered.sort((a,b)=> (b.score - a.score) || (a.ts - b.ts));
+    for (let i=0;i<filtered.length;i++) filtered[i].rank = i + 1;
+    return filtered.slice(0, limit);
+  }
+
+  async function loadAndRender(current){
+    try{
       root.hidden = false;
       listEl.innerHTML = '';
-      lb.setStatusElement(statusEl, 'ランキングを読み込み中…', 'loading');
-      const context = { game: defaultCtx.game, mode: currentMode, level: currentLevel };
-      try {
-        const entries = await lb.fetchLeaderboard(limit, context, { allowFallback: false, strict: true });
-        if (seq !== requestSeq) return;
-        lb.renderVerticalList(root, entries, {
-          list: listEl,
-          status: statusEl,
-          limit,
-          emptyMessage: 'まだ登録がありません。最初の挑戦者になろう！',
-          emptyStatusType: 'info'
-        });
-      } catch (err) {
-        console.error('[leaderboard] fetch failed', err);
-        if (seq !== requestSeq) return;
-        lb.renderVerticalList(root, [], {
-          list: listEl,
-          status: statusEl,
-          limit,
-          emptyMessage: 'ランキングを取得できませんでした。',
-          emptyStatusType: 'error'
-        });
-      }
+      status('ランキングを読み込み中…', 'loading');
+      const all = await fetchAllTop();
+      const view = filterRank(all, current);
+      render(view);
+      status('', null);
+    }catch(e){
+      console.error(e);
+      render([]);
+      status('ランキングを取得できませんでした。', 'error');
     }
+  }
 
-    function handleModeClick(event){
-      const value = event.currentTarget?.dataset?.mode;
-      if (!value || value === currentMode || !Array.isArray(lb.allowedModes) || !lb.allowedModes.includes(value)) return;
-      currentMode = value;
-      updateHeading();
-      updateButtons();
-      updateQuery();
-      load();
+  function main(){
+    if (!root || !statusEl || !listEl || !headingEl) return;
+
+    const current = { mode:'en_en', level:'A1' };
+    applyQuery(current);
+    updateHeading(current);
+    updateButtons(current);
+    updateQuery(current);
+    loadAndRender(current);
+
+    function onModeClick(e){
+      const val = e.currentTarget?.dataset?.mode;
+      if (!val || val === current.mode || !ALLOWED_MODES.includes(val)) return;
+      current.mode = val;
+      updateHeading(current);
+      updateButtons(current);
+      updateQuery(current);
+      loadAndRender(current);
     }
-
-    function handleLevelClick(event){
-      const value = event.currentTarget?.dataset?.level;
-      if (!value || value === currentLevel || !Array.isArray(lb.allowedLevels) || !lb.allowedLevels.includes(value)) return;
-      currentLevel = value;
-      updateHeading();
-      updateButtons();
-      updateQuery();
-      load();
+    function onLevelClick(e){
+      const val = e.currentTarget?.dataset?.level;
+      if (!val || val === current.level || !ALLOWED_LEVELS.includes(val)) return;
+      current.level = val;
+      updateHeading(current);
+      updateButtons(current);
+      updateQuery(current);
+      loadAndRender(current);
     }
+    modeButtons.forEach(b=> b.addEventListener('click', onModeClick));
+    levelButtons.forEach(b=> b.addEventListener('click', onLevelClick));
 
-    modeButtons.forEach(btn => btn.addEventListener('click', handleModeClick));
-    levelButtons.forEach(btn => btn.addEventListener('click', handleLevelClick));
-
-    window.addEventListener('popstate', () => {
-      applyQuery();
-      updateHeading();
-      updateButtons();
-      load();
+    window.addEventListener('popstate', ()=>{
+      applyQuery(current);
+      updateHeading(current);
+      updateButtons(current);
+      loadAndRender(current);
     });
-
-    applyQuery();
-    updateHeading();
-    updateButtons();
-    updateQuery();
-    load();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', ready, { once: true });
-  } else {
-    ready();
-  }
+  (document.readyState === 'loading')
+    ? document.addEventListener('DOMContentLoaded', main, { once:true })
+    : main();
 })();
 </script>
+
 </body></html>
