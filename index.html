@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <title>Irori's Toybox — 小さな作品たちの置き場</title>
+  <title>Irori's Toybox｜英単語タイピングゲーム「Lexi Blaster」など小さな作品たちの置き場</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="個人開発のミニゲームや学習ツールを置いていく実験箱。おすすめは英単語タイピングゲーム『Lexi Blaster』。" />
   <link rel="canonical" href="https://irori-toybox.com/">
@@ -10,7 +10,7 @@
 
   <!-- OG/Twitter -->
   <meta property="og:title" content="Irori's Toybox" />
-  <meta property="og:description" content="個人開発のミニゲームや学習ツールの置き場。英単語ゲーム『Lexi Blaster』公開中。" />
+  <meta property="og:description" content="個人開発のミニゲームや学習ツールの置き場。英単語タイピングゲーム『Lexi Blaster』公開中。" />
   <meta property="og:url" content="https://irori-toybox.com/" />
   <meta property="og:image" content="https://irori-toybox.com/ogp.png" />
   <meta property="og:type" content="website" />
@@ -49,6 +49,28 @@
     }
     nav a{ margin-left:14px; color:var(--muted); }
     nav a:hover{ color:var(--txt); }
+
+    .hero-lb{
+      margin: 30px 0 12px;
+      padding: 26px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background: linear-gradient(180deg, rgba(18,28,40,.9), rgba(15,29,42,.9));
+      box-shadow: 0 20px 50px rgba(0,0,0,.35);
+    }
+    .hero-lb h1{ margin:0 0 10px; font-size: clamp(26px, 5vw, 34px); letter-spacing:.04em; }
+    .hero-lb p{ margin:0; color:var(--muted); font-size:15px; }
+    .hero-lb a{ color:var(--acc); font-weight:600; }
+
+    .top-links{
+      list-style:none;
+      padding:0;
+      margin:16px 0 32px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+    .top-links a{ color:var(--acc); font-weight:600; }
 
     .hero{
       margin: 6px 0 24px;
@@ -138,8 +160,18 @@
 </head>
 <body>
   <header class="site" id="site-header" hidden></header>
+    <section class="hero-lb">
+      <h1>Irori's Toybox</h1>
+      <p>ブラウザで気軽に遊べる小さなゲームを公開中。おすすめは「<a href="/lexiblaster/">英単語タイピングゲーム『Lexi Blaster』</a>」。無料で遊べて語彙力アップ、<a href="/leaderboard/">ランキング</a>にも対応！</p>
+    </section>
+
+    <ul class="top-links">
+      <li><a href="/lexiblaster/">英単語タイピングゲーム｜Lexi Blaster</a></li>
+      <li><a href="/leaderboard/">Lexi Blaster ランキング（モード・レベル別）</a></li>
+    </ul>
+
     <section class="hero">
-      <h1>小さな作品たちの置き場へようこそ。</h1>
+      <h2>小さな作品たちの置き場へようこそ。</h2>
       <div class="cta-row">
         <a class="btn primary" href="/lexiblaster/">
           ▶ 今すぐプレイ

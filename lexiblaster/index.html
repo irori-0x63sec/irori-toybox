@@ -2,19 +2,25 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>Lexi Blaster</title>
+  <title>英単語タイピングゲーム｜Lexi Blaster - 無料で遊べる英語学習ブラウザゲーム</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="英単語タイピングゲーム『Lexi Blaster』は、無料で遊べる英語学習ブラウザゲーム。英単語をタイピングして敵を撃ち抜きながら語彙力アップ！ランキング機能付きで全国のプレイヤーと競える。" />
+  <link rel="canonical" href="https://irori-toybox.com/lexiblaster/" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Lexi Blaster" />
-  <meta property="og:description" content="英単語で敵を撃ち抜け！ハイスコアを目指せ。" />
-  <meta property="og:image" content="https://irori-toybox.com/lexiblaster/social/lexi-blaster-og.png" />
-  <meta property="og:url" content="https://irori-toybox.com/lexiblaster/" />
+  <meta property="og:title" content="英単語タイピングゲーム｜Lexi Blaster" />
+  <meta property="og:description" content="無料で遊べる英語学習ブラウザゲーム。英単語をタイピングして敵を撃ち抜け！ランキング対応。" />
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Lexi Blaster" />
+  <meta property="og:url" content="https://irori-toybox.com/lexiblaster/" />
+  <meta property="og:image" content="https://irori-toybox.com/lexiblaster/social/lexi-blaster-og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:type" content="image/png" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="英単語タイピングゲーム｜Lexi Blaster" />
+  <meta name="twitter:description" content="無料で遊べる英語学習ブラウザゲーム。ランキング対応。" />
+  <meta name="twitter:image" content="https://irori-toybox.com/lexiblaster/social/lexi-blaster-og.png" />
 
   <!-- Favicon（404対策：/lexiblaster/favicon.ico を用意した場合はこちらを使う） -->
   <link rel="icon" href="/lexiblaster/favicon.ico" />
@@ -29,11 +35,35 @@
   <!-- ゲーム固有CSS -->
   <link rel="stylesheet" href="style.css" />
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "Lexi Blaster",
+    "url": "https://irori-toybox.com/lexiblaster/",
+    "description": "英単語タイピングゲーム『Lexi Blaster』は、無料で遊べる英語学習ブラウザゲーム。英単語をタイピングして敵を撃ち抜きながら語彙力アップ！ランキング機能付きで全国のプレイヤーと競える。",
+    "genre": ["Educational", "Typing", "English Learning"],
+    "operatingSystem": "Web Browser",
+    "applicationCategory": "Game",
+    "image": "https://irori-toybox.com/lexiblaster/social/lexi-blaster-og.png",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Irori"
+    }
+  }
+  </script>
 
 </head>
 <body>
   <!-- 共通ヘッダー。load-header.js が中身を差し込む -->
   <header class="site" id="site-header" hidden></header>
+
+  <h1>英単語タイピングゲーム「Lexi Blaster」</h1>
+  <h2>無料で遊べる英語学習・タイピング練習ブラウザゲーム</h2>
+  <nav class="lb-internal-links">
+    <a href="/leaderboard/">Lexi Blaster ランキング（言語モード・レベル別）</a> /
+    <a href="/">Irori's Toybox トップへ</a>
+  </nav>
 
   <div id="wrap">
     <canvas id="gameCanvas" width="800" height="720"></canvas>
