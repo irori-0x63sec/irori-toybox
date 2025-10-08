@@ -413,6 +413,7 @@ window.addEventListener("meteorHitBase", ()=>{
     const meta = {
       gameName: 'LexiBlaster',
       levelName: currentLevel,
+      level: currentLevel,
       mode: currentMode,
       modeLabel: describeMode(currentMode),
       avgWPM,
