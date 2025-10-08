@@ -7,14 +7,6 @@
   const DEFAULT_LEVEL = 'A1';
   const ALLOWED_MODES  = ['en_en', 'jp_en'];
   const ALLOWED_LEVELS = ['A1','A2','A3','B1','B2','B3','C1','C2','C3'];
-  const MODE_LABEL = { en_en: 'EN→EN', jp_en: 'JP→EN', en_jp: 'EN→JP' };
-
-  function describeMode(key) {
-    const normalized = typeof key === 'string' ? key.trim().toLowerCase() : '';
-    if (normalized && MODE_LABEL[normalized]) return MODE_LABEL[normalized];
-    if (normalized) return normalized;
-    return MODE_LABEL[DEFAULT_MODE] || DEFAULT_MODE;
-  }
 
   // ===== API ベース URL 決定（安全な優先順位）=====
   const scriptEl = document.currentScript;
@@ -205,7 +197,15 @@
         return submitScoreInternal(name, score, ctx);
       },
       // 表示補助
-      describeMode: (m) => describeMode(pickMode(m)),
+      describeMode: (m) => {
+        const key = pickMode(m);
+        switch (key) {
+          case 'en_jp': return 'EN→JP';
+          case 'jp_en': return 'JP→EN';
+          case 'en_en': return 'EN→EN';
+          default: return key || '';
+        }
+      },
       allowedModes:  [...ALLOWED_MODES],
       allowedLevels: [...ALLOWED_LEVELS],
       defaultContext: { game:'lexi-blaster', mode: DEFAULT_MODE, level: DEFAULT_LEVEL },
@@ -386,19 +386,6 @@
     return { mode, level };
   }
 
-  function updateHeading(elems, ctx) {
-    if (elems?.heading) {
-      const levelLabel = ctx?.level || DEFAULT_LEVEL;
-      const modeLabel = describeMode(ctx?.mode || DEFAULT_MODE);
-      elems.heading.textContent = `ランキング（${levelLabel} / ${modeLabel}）`;
-    }
-    if (elems?.verticalHeading) {
-      const levelLabel = ctx?.level || DEFAULT_LEVEL;
-      const modeLabel = describeMode(ctx?.mode || DEFAULT_MODE);
-      elems.verticalHeading.textContent = `TOP 20（${levelLabel} / ${modeLabel}）`;
-    }
-  }
-
   async function renderTop(elems, ctx, limit = 10) {
     if (!elems) return;
     const { status, tbody, table, empty } = elems;
@@ -509,7 +496,9 @@
       elems.root.dataset.mode = ctx.mode;
       elems.root.dataset.level = ctx.level;
     }
-    updateHeading(elems, ctx);
+    // 見出しがあるなら更新（任意）
+    const heading = root.querySelector('#lb-embed-heading');
+    if (heading) heading.textContent = `ランキング（${ctx.level} / ${lb.describeMode(ctx.mode)}）`;
 
     // 初期ステータス
     lb.setStatusElement(elems?.status,
