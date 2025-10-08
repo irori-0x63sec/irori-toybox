@@ -5,6 +5,8 @@
   const MAX_NAME_LENGTH = 12;
   const DEFAULT_MODE  = 'en_en';
   const DEFAULT_LEVEL = 'A1';
+  const ALLOWED_MODES  = ['en_en', 'jp_en'];
+  const ALLOWED_LEVELS = ['A1','A2','A3','B1','B2','B3','C1','C2','C3'];
 
   // ===== API ベース URL 決定（安全な優先順位）=====
   const scriptEl = document.currentScript;
@@ -68,12 +70,46 @@
     catch { return String(n ?? 0); }
   }
 
+  function pickMode(primary, secondary) {
+    const candidates = [primary, secondary, DEFAULT_MODE];
+    for (const cand of candidates) {
+      if (typeof cand !== 'string') continue;
+      const normalized = cand.trim().toLowerCase();
+      if (!normalized) continue;
+      if (ALLOWED_MODES.includes(normalized)) return normalized;
+    }
+    return DEFAULT_MODE;
+  }
+
+  function pickLevel(primary, secondary) {
+    const candidates = [primary, secondary, DEFAULT_LEVEL];
+    for (const cand of candidates) {
+      if (typeof cand !== 'string') continue;
+      const normalized = cand.trim().toUpperCase();
+      if (!normalized) continue;
+      if (ALLOWED_LEVELS.includes(normalized)) return normalized;
+    }
+    return DEFAULT_LEVEL;
+  }
+
+  function clampScoreValue(value) {
+    const num = Math.floor(Number(value) || 0);
+    if (!Number.isFinite(num) || num <= 0) return 0;
+    return Math.min(num, 999999);
+  }
+
   // ===== API クライアント =====
-  async function fetchTop(limit = 20, context = {}) {
+  async function fetchLeaderboardInternal(limit = 20, context = {}) {
     const url = new URL(buildUrl('/top'));
-    url.searchParams.set('limit', Math.min(Math.max(1, limit|0), 100));
-    if (context.mode)  url.searchParams.set('mode',  String(context.mode));
-    if (context.level) url.searchParams.set('level', String(context.level));
+    const safeLimit = Number.isFinite(limit)
+      ? Math.max(1, Math.min(100, Math.floor(limit)))
+      : Math.max(1, Math.min(100, Math.floor(Number(limit) || 20)));
+    url.searchParams.set('limit', safeLimit);
+
+    const mode = pickMode(context?.mode);
+    const level = pickLevel(context?.level);
+    url.searchParams.set('mode', mode);
+    url.searchParams.set('level', level);
 
     const res = await fetch(url.toString(), {
       method: 'GET',
@@ -84,17 +120,47 @@
     });
     if (!res.ok) throw new Error(`Fetch failed (${res.status})`);
     const json = await res.json().catch(() => ({}));
-    return Array.isArray(json.items) ? json.items : [];
+    const rawItems = Array.isArray(json.items)
+      ? json.items
+      : Array.isArray(json.results)
+        ? json.results
+        : [];
+
+    return rawItems.map((item, idx) => {
+      const fallbackMode = pickMode(item?.mode, mode);
+      const fallbackLevel = pickLevel(item?.level, level);
+      const tsValue = Number(item?.ts);
+      const tsFallback = Number(item?.timestamp);
+      const timestamp = Number.isFinite(tsValue)
+        ? tsValue
+        : Number.isFinite(tsFallback)
+          ? tsFallback
+          : null;
+      const rankValue = Number(item?.rank);
+      const scoreValue = clampScoreValue(item?.score);
+      const fallbackScore = Math.max(0, Math.floor(Number(item?.score) || 0));
+      return {
+        rank: Number.isFinite(rankValue) && rankValue > 0 ? rankValue : idx + 1,
+        name: typeof item?.name === 'string' ? item.name : '',
+        score: scoreValue > 0 ? scoreValue : fallbackScore,
+        mode: fallbackMode,
+        level: fallbackLevel,
+        weak: !!item?.weak,
+        ts: timestamp,
+        timestamp
+      };
+    });
   }
 
-  async function postScore({ name, score, mode, level }) {
+  async function submitScoreInternal(name, score, context = {}) {
     const payload = {
       name: sanitizeName(name),
-      score: Math.min(Math.max(1, Number(score)|0), 999999),
-      mode:  String(mode || DEFAULT_MODE),
-      level: String(level || DEFAULT_LEVEL),
+      score: clampScoreValue(score),
+      mode: pickMode(context?.mode),
+      level: pickLevel(context?.level),
     };
-    if (!payload.name) return { ok:false, error:'NAME_REQUIRED' };
+    if (!payload.name) return { ok: false, error: 'NAME_REQUIRED' };
+    if (!(payload.score > 0)) return { ok: false, error: 'SCORE_REQUIRED' };
 
     const res = await fetch(buildUrl('/score'), {
       method: 'POST',
@@ -108,7 +174,7 @@
       const text = await res.text().catch(() => '');
       throw new Error(`Submit failed (${res.status}) ${text}`.trim());
     }
-    return await res.json().catch(() => ({ ok:true }));
+    return await res.json().catch(() => ({ ok: true }));
   }
 
   // ===== window.lexiLeaderboard を先に公開 =====
@@ -116,12 +182,32 @@
     window.lexiLeaderboard = {
       // API
       apiBase: API_BASE,
-      fetchLeaderboard: fetchTop,
-      submitScore: (name, score, mode, level) => postScore({ name, score, mode, level }),
+      fetchLeaderboard(limit, context, level) {
+        let ctx = context;
+        if (!ctx || typeof ctx !== 'object' || Array.isArray(ctx)) {
+          ctx = { mode: context, level };
+        }
+        return fetchLeaderboardInternal(limit, ctx);
+      },
+      submitScore(name, score, context, level) {
+        let ctx = context;
+        if (!ctx || typeof ctx !== 'object' || Array.isArray(ctx)) {
+          ctx = { mode: context, level };
+        }
+        return submitScoreInternal(name, score, ctx);
+      },
       // 表示補助
-      describeMode: (m) => (m === 'jp_en' ? 'JP→EN' : 'EN→EN'),
-      allowedModes:  ['en_en','jp_en'],
-      allowedLevels: ['A1','A2','A3','B1','B2','B3','C1','C2','C3'],
+      describeMode: (m) => {
+        const key = pickMode(m);
+        switch (key) {
+          case 'en_jp': return 'EN→JP';
+          case 'jp_en': return 'JP→EN';
+          case 'en_en': return 'EN→EN';
+          default: return key || '';
+        }
+      },
+      allowedModes:  [...ALLOWED_MODES],
+      allowedLevels: [...ALLOWED_LEVELS],
       defaultContext: { game:'lexi-blaster', mode: DEFAULT_MODE, level: DEFAULT_LEVEL },
       // デバッグ
       getEffectiveName: () => {
@@ -151,12 +237,10 @@
       },
       normalizeContext(input, fallback, opt = {}) {
         const ctx = Object.assign({}, fallback || {});
-        if (input?.mode)  ctx.mode  = String(input.mode);
-        if (input?.level) ctx.level = String(input.level);
-        // strictのときは不正値を弾いて既定値に戻す
+        ctx.mode = pickMode(input?.mode, ctx.mode);
+        ctx.level = pickLevel(input?.level, ctx.level);
         if (opt.strict) {
-          if (!this.allowedModes.includes(ctx.mode))   ctx.mode  = DEFAULT_MODE;
-          if (!this.allowedLevels.includes(ctx.level)) ctx.level = DEFAULT_LEVEL;
+          return { mode: ctx.mode, level: ctx.level };
         }
         return ctx;
       }
@@ -179,7 +263,7 @@
       $('select[name="mode"]') ||
       $('[data-mode-current]');
     const val = el?.value || el?.dataset?.modeCurrent;
-    return (val && typeof val === 'string') ? val : DEFAULT_MODE;
+    return pickMode(val);
   }
   function getLevelValue() {
     const el =
@@ -187,12 +271,11 @@
       $('select[name="level"]') ||
       $('[data-level-current]');
     const val = el?.value || el?.dataset?.levelCurrent;
-    return (val && typeof val === 'string') ? val : DEFAULT_LEVEL;
+    return pickLevel(val);
   }
   function getScoreValue() {
     const el = $('#lb-score') || $('input[name="score"]');
-    const n = Math.round(Number(el?.value || 0));
-    return Number.isFinite(n) && n > 0 ? Math.min(n, 999999) : 0;
+    return clampScoreValue(el?.value);
     // ゲーム側から別途渡すならここは未使用でもOK
   }
 
@@ -212,7 +295,7 @@
       if (panel) panel.hidden = false;
       setStatus(status, 'ランキングを読み込み中…', 'loading');
       try {
-        const items = await fetchTop(20, { mode: getModeValue(), level: getLevelValue() });
+        const items = await fetchLeaderboardInternal(20, { mode: getModeValue(), level: getLevelValue() });
         window.lexiLeaderboard.renderVerticalList(panel || document, items, {
           list, status,
           emptyMessage: 'まだ登録がありません。最初の挑戦者になろう！',
@@ -245,7 +328,7 @@
       }
       setStatus(status, 'スコア送信中…', 'loading');
       try {
-        const result = await postScore({ name, score, mode: getModeValue(), level: getLevelValue() });
+        const result = await submitScoreInternal(name, score, { mode: getModeValue(), level: getLevelValue() });
         if (result && result.ok === false && result.error === 'NAME_REQUIRED') {
           setStatus(status, 'ハンドルネームを入力してください。', 'warning');
           return;
@@ -294,24 +377,11 @@
     };
   }
 
-  function getModeLevel(root) {
-    // root の data-* / 要素 / グローバルを総合して取得（無ければ既定値）
-    const mode =
-      root?.dataset?.mode ||
-      root?.querySelector('#lb-mode')?.value ||
-      root?.querySelector('[data-mode-current]')?.dataset?.modeCurrent ||
-      lb.defaultContext.mode;
-
-    const level =
-      root?.dataset?.level ||
-      root?.querySelector('#lb-level')?.value ||
-      root?.querySelector('[data-level-current]')?.dataset?.levelCurrent ||
-      lb.defaultContext.level;
-
-    // 正当性チェック
-    const validMode = lb.allowedModes.includes(mode) ? mode : lb.defaultContext.mode;
-    const validLevel = lb.allowedLevels.includes(level) ? level : lb.defaultContext.level;
-    return { mode: validMode, level: validLevel };
+  function resolveContext(detail, root) {
+    const meta = detail?.meta || {};
+    const mode = pickMode(meta.mode, root?.dataset?.mode || lb.defaultContext.mode);
+    const level = pickLevel(meta.level, root?.dataset?.level || lb.defaultContext.level);
+    return { mode, level };
   }
 
   async function renderTop(elems, ctx, limit = 10) {
@@ -390,7 +460,7 @@
       }
       lb.setStatusElement(status, 'スコア送信中…', 'loading');
       try {
-        await lb.submitScore(handle, finalScore, ctx.mode, ctx.level);
+        await lb.submitScore(handle, finalScore, ctx);
         lb.setStatusElement(status, 'ランキングに登録しました！', 'success');
         await renderTop(elems, ctx, 10);
       } catch (e) {
@@ -419,7 +489,11 @@
       elems.root.setAttribute('data-active', '1');
     }
 
-    const ctx = getModeLevel(root);
+    const ctx = resolveContext(detail, root);
+    if (elems?.root) {
+      elems.root.dataset.mode = ctx.mode;
+      elems.root.dataset.level = ctx.level;
+    }
     // 見出しがあるなら更新（任意）
     const heading = root.querySelector('#lb-embed-heading');
     if (heading) heading.textContent = `ランキング（${ctx.level} / ${lb.describeMode(ctx.mode)}）`;
@@ -431,7 +505,10 @@
     );
 
     // ランキング読み込み & フォーム紐付け
-    renderTop(elems, ctx, 10);
+    let limit = Number(detail.limit);
+    if (!Number.isFinite(limit) || limit <= 0) limit = 10;
+    limit = Math.max(1, Math.min(100, Math.floor(limit)));
+    renderTop(elems, ctx, limit);
     bindForm(elems, score, ctx);
 
     // フォーカス誘導
