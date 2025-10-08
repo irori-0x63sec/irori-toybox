@@ -1,11 +1,13 @@
 const DEFAULT_GAME = 'lexi-blaster';
 const ALLOWED_GAMES = [DEFAULT_GAME];
-const ALLOWED_MODES = ['en_en', 'jp_en', 'en_jp'];
+const DEFAULT_MODE = 'en_en';
+const DEFAULT_LEVEL = 'A1';
+const ALLOWED_MODES = ['en_en', 'jp_en'];
 const ALLOWED_LEVELS = ['A1','A2','A3','B1','B2','B3','C1','C2','C3'];
 
 const MAX_NAME_LENGTH = 12;
 const MAX_SCORE = 999999;
-const DEFAULT_LIMIT = 20;
+const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 100;
 const STORAGE_LIMIT = 5000;
 const RATE_LIMIT_MAX = 3;
@@ -56,13 +58,17 @@ async function handleGetTop(request, env){
     const key = buildKey(context.value);
     const records = await readEntries(kv, key);
     const sorted = sortEntries(records);
-    const top = sorted.slice(0, limit).map((entry, idx) => ({
+    const items = sorted.slice(0, limit).map((entry, idx) => ({
+      rank: idx + 1,
       name: entry.name,
       score: entry.score,
-      timestamp: entry.timestamp,
-      rank: idx + 1
+      mode: context.value.mode,
+      level: context.value.level,
+      weak: !!entry.weak,
+      ts: entry.timestamp ?? null,
+      timestamp: entry.timestamp ?? null
     }));
-    return jsonResponse({ results: top }, 200, request, env, { 'Cache-Control': 'no-store' });
+    return jsonResponse({ ok: true, items, results: items }, 200, request, env, { 'Cache-Control': 'no-store' });
   } catch (err) {
     console.error('[leaderboard] GET /top failed', err);
     return jsonResponse({ error: 'INTERNAL_ERROR' }, 500, request, env);
@@ -112,6 +118,8 @@ async function handlePostScore(request, env, ctx){
       id: crypto.randomUUID(),
       name,
       score,
+      mode: context.value.mode,
+      level: context.value.level,
       timestamp: Date.now()
     };
 
@@ -125,7 +133,17 @@ async function handlePostScore(request, env, ctx){
     const storePromise = kv.put(key, JSON.stringify(updated));
     ctx.waitUntil(storePromise);
 
-    return jsonResponse({ ok: true, rank, entry: { name: entry.name, score: entry.score, timestamp: entry.timestamp } }, 200, request, env);
+    return jsonResponse({
+      ok: true,
+      rank,
+      entry: {
+        name: entry.name,
+        score: entry.score,
+        mode: entry.mode,
+        level: entry.level,
+        timestamp: entry.timestamp
+      }
+    }, 200, request, env);
   } catch (err) {
     console.error('[leaderboard] POST /score failed', err);
     return jsonResponse({ error: 'INTERNAL_ERROR' }, 500, request, env);
@@ -152,15 +170,22 @@ function clampLimit(value){
 }
 
 function normalizeContext(meta, { strict = false } = {}){
-  const game = sanitizeGame(meta?.game) || (strict ? '' : DEFAULT_GAME);
-  const mode = sanitizeMode(meta?.mode);
-  const level = sanitizeLevel(meta?.level);
+  const rawGame = typeof meta?.game === 'string' ? meta.game : null;
+  const rawMode = typeof meta?.mode === 'string' ? meta.mode : null;
+  const rawLevel = typeof meta?.level === 'string' ? meta.level : null;
+
+  const game = sanitizeGame(rawGame) || DEFAULT_GAME;
+  const mode = sanitizeMode(rawMode);
+  const level = sanitizeLevel(rawLevel);
+
+  const finalMode = mode || (rawMode == null || rawMode === '' ? DEFAULT_MODE : '');
+  const finalLevel = level || (rawLevel == null || rawLevel === '' ? DEFAULT_LEVEL : '');
 
   if (!game) return { ok: false, error: 'INVALID_GAME' };
-  if (!mode) return { ok: false, error: 'INVALID_MODE' };
-  if (!level) return { ok: false, error: 'INVALID_LEVEL' };
+  if (!finalMode) return { ok: false, error: 'INVALID_MODE' };
+  if (!finalLevel) return { ok: false, error: 'INVALID_LEVEL' };
 
-  return { ok: true, value: { game, mode, level } };
+  return { ok: true, value: { game, mode: finalMode, level: finalLevel } };
 }
 
 function sanitizeGame(value){
@@ -216,6 +241,9 @@ async function readEntries(kv, key){
       id: item?.id || crypto.randomUUID(),
       name: sanitizeName(item?.name),
       score: clampScore(item?.score),
+      mode: sanitizeMode(item?.mode) || DEFAULT_MODE,
+      level: sanitizeLevel(item?.level) || DEFAULT_LEVEL,
+      weak: !!item?.weak,
       timestamp: Number.isFinite(item?.timestamp) ? item.timestamp : null
     }));
   } catch {

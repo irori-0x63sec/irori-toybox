@@ -228,7 +228,7 @@
           </div>
 
           <div class="lexi-leaderboard" id="lb-leaderboard" hidden>
-            <h3 id="lb-leaderboard-heading">ランキング（A1 / EN→EN）</h3>
+            <h3 id="lb-leaderboard-heading"></h3>
             <div class="lb-layout">
               <div class="lb-primary">
                 <p class="lb-status" id="lb-leaderboard-status" aria-live="polite">ハイスコアを登録してランキングに参加しよう！</p>
@@ -346,6 +346,12 @@
       this.el.style.display = 'grid';
 
       const leaderboardRoot = this.el.querySelector('#lb-leaderboard');
+      if (leaderboardRoot) {
+        const modeKey = typeof meta.mode === 'string' ? meta.mode : '';
+        const levelKey = typeof meta.level === 'string' ? meta.level : (typeof meta.levelName === 'string' ? meta.levelName : '');
+        if (modeKey) leaderboardRoot.dataset.mode = modeKey;
+        if (levelKey) leaderboardRoot.dataset.level = levelKey;
+      }
       this._dispatchLeaderboard('show', { tracker, meta, total, root: leaderboardRoot, limit: 20 });
     }
 
