@@ -58,49 +58,109 @@
   <!-- 共通ヘッダー。load-header.js が中身を差し込む -->
   <header class="site" id="site-header" hidden></header>
 
-  <h1>英単語タイピングゲーム「Lexi Blaster」</h1>
-  <h2>無料で遊べる英語学習・タイピング練習ブラウザゲーム</h2>
-  <nav class="lb-internal-links">
-    <a href="/leaderboard/">Lexi Blaster ランキング（言語モード・レベル別）</a> /
-    <a href="/">Irori's Toybox トップへ</a>
-  </nav>
+  <main id="lexi-main">
+    <section id="game">
+      <div class="lexi-headline">
+        <h1>英単語タイピングゲーム「Lexi Blaster」</h1>
+        <p>完全無料・登録不要で遊べる英語学習タイピングゲーム。CEFR A1〜C1 を中心に <strong>約5,000語</strong>を収録しています。</p>
+        <p class="lexi-links"><a href="/">Irori's Toybox トップへ</a> / <a href="#leaderboard">ランキングを見る</a></p>
+      </div>
+      <div id="wrap">
+        <canvas id="gameCanvas" width="800" height="720"></canvas>
+      </div>
+    </section>
 
-  <div id="wrap">
-    <canvas id="gameCanvas" width="800" height="720"></canvas>
-  </div>
+    <section id="ad" aria-label="ad-section">
+      <div class="ad-area">
+        <div class="ad-row">
+          <div class="ad-slot">
+            <div class="ad-ph" aria-hidden="true">広告枠（準備中）</div>
+          </div>
+          <div class="ad-slot">
+            <div class="ad-ph" aria-hidden="true">広告枠（準備中）</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <div class="tabs-container">
-    <div class="tabs">
-      <button class="tab-button active" data-tab="about">About</button>
-      <button class="tab-button" data-tab="howto">操作説明</button>
-    </div>
+    <section id="leaderboard">
+      <div class="lb-card" data-game="lexi-blaster">
+        <h2>ランキング</h2>
+        <p class="lb-lead">英単語タイピングゲームのハイスコアをモードと言語レベル別に表示します。まずは条件を選んで TOP20 を確認！</p>
 
-    <div id="about" class="tab-content active">
-      <h3>Lexi Blaster とは？</h3>
-      <p>
-        Lexi Blaster は、英語の語彙をゲームで楽しく学べる無料Webアプリです。<br>
-        CEFR A1〜C1 を中心に、<strong>約5,000語</strong>を収録。タイピングで隕石を撃ち落とすプレイにより、
-        想起 → 綴り → 即時フィードバックのサイクルを短時間で回せるように設計されています。
-      </p>
-      <ul>
-        <li><strong>完全無料・登録不要</strong></li>
-        <li>収録単語数：<strong>約5,000語</strong>（今後拡張予定）</li>
-        <li>ランキング機能（レベル帯/モードに対応）</li>
-        <li>アップデート予定：熟語・例文・発音練習モードの拡張</li>
-      </ul>
-    </div>
+        <div class="lb-games" role="tablist" aria-label="ゲーム選択">
+          <button type="button" class="lb-game-btn" aria-selected="true">Lexi Blaster</button>
+        </div>
 
-    <div id="howto" class="tab-content">
-      <h3>操作説明</h3>
-      <ol>
-        <li>スタートボタンでゲーム開始</li>
-        <li>表示された意味/ヒントに合う英単語を正確にタイプ</li>
-        <li>正解で撃破＆コンボ加算／ミスでスコア減少</li>
-        <li>終了後にスコア送信 → ランキング登録</li>
-      </ol>
-      <p>※ PC推奨。モバイルは表示・説明の閲覧を中心に対応中です。</p>
-    </div>
-  </div>
+        <div class="lb-filters" aria-label="ランキング条件">
+          <div class="lb-filter" data-filter="mode">
+            <span class="lb-filter-label">モード</span>
+            <div class="lb-filter-buttons" role="group" aria-label="モードの選択">
+              <button type="button" class="lb-filter-btn" data-mode="en_en">EN→EN</button>
+              <button type="button" class="lb-filter-btn" data-mode="jp_en">JP→EN</button>
+            </div>
+          </div>
+          <div class="lb-filter" data-filter="level">
+            <span class="lb-filter-label">レベル</span>
+            <div class="lb-filter-buttons" role="group" aria-label="レベルの選択">
+              <button type="button" class="lb-filter-btn" data-level="A1">A1</button>
+              <button type="button" class="lb-filter-btn" data-level="A2">A2</button>
+              <button type="button" class="lb-filter-btn" data-level="A3">A3</button>
+              <button type="button" class="lb-filter-btn" data-level="B1">B1</button>
+              <button type="button" class="lb-filter-btn" data-level="B2">B2</button>
+              <button type="button" class="lb-filter-btn" data-level="B3">B3</button>
+              <button type="button" class="lb-filter-btn" data-level="C1">C1</button>
+              <button type="button" class="lb-filter-btn" data-level="C2">C2</button>
+              <button type="button" class="lb-filter-btn" data-level="C3">C3</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="lb-embed" class="lb-vertical" hidden>
+          <h3 id="lb-embed-heading">ランキング（A1 / EN→EN）</h3>
+          <div id="lb-embed-status" class="lb-status" hidden></div>
+          <ol id="lb-embed-list" class="lb-list"></ol>
+        </div>
+
+        <p class="lb-note">※ 登録したハンドルネームとスコアは公開されます。不正や誤登録を見つけた場合は <a href="/contact/">お問い合わせフォーム</a> までご連絡ください。</p>
+      </div>
+    </section>
+
+    <section id="info">
+      <div class="tabs-container">
+        <div class="tabs">
+          <button class="tab-button active" data-tab="about">About</button>
+          <button class="tab-button" data-tab="howto">操作説明</button>
+        </div>
+
+        <div id="about" class="tab-content active">
+          <h3>Lexi Blaster とは？</h3>
+          <p>
+            Lexi Blaster は、英語の語彙をゲームで楽しく学べる無料Webアプリです。<br>
+            CEFR A1〜C1 を中心に、<strong>約5,000語</strong>を収録。タイピングで隕石を撃ち落とすプレイにより、
+            想起 → 綴り → 即時フィードバックのサイクルを短時間で回せるように設計されています。
+          </p>
+          <ul>
+            <li><strong>完全無料・登録不要</strong></li>
+            <li>収録単語数：<strong>約5,000語</strong>（今後拡張予定）</li>
+            <li>ランキング機能（レベル帯/モードに対応）</li>
+            <li>アップデート予定：熟語・例文・発音練習モードの拡張</li>
+          </ul>
+        </div>
+
+        <div id="howto" class="tab-content">
+          <h3>操作説明</h3>
+          <ol>
+            <li>スタートボタンでゲーム開始</li>
+            <li>表示された意味/ヒントに合う英単語を正確にタイプ</li>
+            <li>正解で撃破＆コンボ加算／ミスでスコア減少</li>
+            <li>終了後にスコア送信 → ランキング登録</li>
+          </ol>
+          <p>※ PC推奨。モバイルは表示・説明の閲覧を中心に対応中です。</p>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <!-- 共有ボタン（ゲーム終了時に表示） -->
   <button id="shareXBtn" class="share-x-btn" hidden>🡕 Xで共有</button>
@@ -136,9 +196,6 @@
   <div id="cookie-footer-link" class="cookie-footer-link">
     <button id="cookie-open-settings" class="linklike">Cookie設定</button>
   </div>
-
-  <!-- 審査中プレースホルダ（表示は最小限） -->
-  <div class="ad-placeholder" aria-hidden="true" style="display:none;"></div>
 
   <!-- モバイル非対応オーバーレイ -->
   <div id="unsupported-overlay" class="unsupported-overlay" hidden>
@@ -208,13 +265,295 @@
     defer
   ></script>
 
+  <script>
+  (function(){
+    'use strict';
+
+    const limit = 20;
+    const root = document.getElementById('lb-embed');
+    const statusEl = document.getElementById('lb-embed-status');
+    const listEl = document.getElementById('lb-embed-list');
+    const headingEl = document.getElementById('lb-embed-heading');
+
+    const modeButtons  = Array.from(document.querySelectorAll('[data-mode]'));
+    const levelButtons = Array.from(document.querySelectorAll('[data-level]'));
+
+    const ALLOWED_MODES  = ['en_en','jp_en'];
+    const ALLOWED_LEVELS = ['A1','A2','A3','B1','B2','B3','C1','C2','C3'];
+
+    function getApiBase(){
+      const lb = window.lexiLeaderboard;
+      return window.LEXI_LEADERBOARD_BASE || (lb && lb.apiBase) || 'https://lb.irori-toybox.com';
+    }
+
+    function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[m])); }
+
+    function status(text, type){
+      statusEl.hidden = !text;
+      statusEl.textContent = text || '';
+      statusEl.className = 'lb-status' + (type ? ` lb-status--${type}` : '');
+    }
+
+    function render(items){
+      const html = (items && items.length)
+        ? items.map((it, i) => {
+            const rank  = Number.isFinite(it.rank) ? it.rank : (i + 1);
+            const name  = escapeHtml(it?.name ?? '名無し');
+            const score = Number(it?.score ?? 0).toLocaleString('ja-JP');
+            const mode  = it?.mode  ?? 'ALL';
+            const level = it?.level ?? 'ALL';
+            return `<li><span class="lb-rank">${rank}位</span><span class="lb-name">${name}</span><span class="lb-score">${score}pt</span><span class="meta" style="margin-left:8px;color:#9ab6c9">${mode}/${level}</span></li>`;
+          }).join('')
+        : '<li>まだ登録がありません。最初の挑戦者になろう！</li>';
+      listEl.innerHTML = html;
+    }
+
+    function applyQuery(current){
+      const p = new URLSearchParams(location.search);
+      const mode  = p.get('mode');
+      const level = p.get('level');
+      if (mode && ALLOWED_MODES.includes(mode))   current.mode  = mode;
+      if (level && ALLOWED_LEVELS.includes(level)) current.level = level;
+    }
+
+    function updateQuery(current){
+      try{
+        const url = new URL(location.href);
+        url.searchParams.set('mode',  current.mode);
+        url.searchParams.set('level', current.level);
+        history.replaceState(null, '', url.toString());
+      }catch{}
+    }
+
+    function updateHeading(current){
+      const modeLabel = (current.mode === 'en_en') ? 'EN→EN'
+                       : (current.mode === 'jp_en') ? 'JP→EN'
+                       : current.mode;
+      headingEl.textContent = `ランキング（${current.level} / ${modeLabel}）`;
+    }
+
+    function updateButtons(current){
+      const mark = (btns, key, val) => {
+        for (const b of btns){
+          const isActive = (b.dataset[key] === val);
+          b.classList.toggle('is-active', isActive);
+          b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        }
+      };
+      mark(modeButtons,  'mode',  current.mode);
+      mark(levelButtons, 'level', current.level);
+    }
+
+    async function fetchAllTop(){
+      const base = getApiBase();
+      const url  = new URL('/top', base);
+      url.searchParams.set('limit', '200');
+      const res = await fetch(url, { headers:{Accept:'application/json'}, mode:'cors' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json().catch(()=>({}));
+      return Array.isArray(data.items) ? data.items : [];
+    }
+
+    function filterRank(items, current){
+      const filtered = (items||[]).filter(it =>
+        (!current.mode  || it.mode  === current.mode) &&
+        (!current.level || it.level === current.level)
+      );
+      filtered.sort((a,b)=> (b.score - a.score) || (a.ts - b.ts));
+      for (let i=0;i<filtered.length;i++) filtered[i].rank = i + 1;
+      return filtered.slice(0, limit);
+    }
+
+    async function loadAndRender(current){
+      try{
+        root.hidden = false;
+        listEl.innerHTML = '';
+        status('ランキングを読み込み中…', 'loading');
+        const all = await fetchAllTop();
+        const view = filterRank(all, current);
+        render(view);
+        status('', null);
+      }catch(e){
+        console.error(e);
+        render([]);
+        status('ランキングを取得できませんでした。', 'error');
+      }
+    }
+
+    function main(){
+      if (!root || !statusEl || !listEl || !headingEl) return;
+
+      const current = { mode:'en_en', level:'A1' };
+      applyQuery(current);
+      updateHeading(current);
+      updateButtons(current);
+      updateQuery(current);
+      loadAndRender(current);
+
+      function onModeClick(e){
+        const val = e.currentTarget?.dataset?.mode;
+        if (!val || val === current.mode || !ALLOWED_MODES.includes(val)) return;
+        current.mode = val;
+        updateHeading(current);
+        updateButtons(current);
+        updateQuery(current);
+        loadAndRender(current);
+      }
+      function onLevelClick(e){
+        const val = e.currentTarget?.dataset?.level;
+        if (!val || val === current.level || !ALLOWED_LEVELS.includes(val)) return;
+        current.level = val;
+        updateHeading(current);
+        updateButtons(current);
+        updateQuery(current);
+        loadAndRender(current);
+      }
+      modeButtons.forEach(b=> b.addEventListener('click', onModeClick));
+      levelButtons.forEach(b=> b.addEventListener('click', onLevelClick));
+
+      window.addEventListener('popstate', ()=>{
+        applyQuery(current);
+        updateHeading(current);
+        updateButtons(current);
+        loadAndRender(current);
+      });
+    }
+
+    (document.readyState === 'loading')
+      ? document.addEventListener('DOMContentLoaded', main, { once:true })
+      : main();
+  })();
+  </script>
+
   <script src="main.js" defer></script>
 
   <style>
+    #lexi-main {
+      width: min(960px, 96vw);
+      margin: 24px auto 96px;
+      color: #e6f2ff;
+      font: 16px/1.7 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    #lexi-main a { color: #5cd4ff; text-decoration: none; }
+    #lexi-main a:hover { text-decoration: underline; }
+    #lexi-main section { margin-top: 24px; }
+    #lexi-main section:first-of-type { margin-top: 0; }
+    .lexi-headline h1 {
+      margin: 0 0 12px;
+      font-family: "Press Start 2P", monospace;
+      font-size: clamp(22px, 4vw, 30px);
+      letter-spacing: .03em;
+    }
+    .lexi-headline p { margin: 8px 0 0; color: #cfe8ff; }
+    .lexi-links { margin-top: 10px; font-size: 14px; color: #9ab6c9; }
+    .lexi-links a { color: inherit; }
+
+    #leaderboard .lb-card {
+      background: linear-gradient(180deg, rgba(18,28,40,.92), rgba(12,22,34,.92));
+      border: 1px solid #203447;
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 18px 40px rgba(0,0,0,.32);
+    }
+    #leaderboard h2 { margin: 0 0 12px; font-size: 24px; letter-spacing: .02em; }
+    .lb-lead { margin: 0 0 18px; color: #9ab6c9; font-size: 15px; }
+    .lb-games { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+    .lb-game-btn {
+      appearance: none;
+      border: 1px solid rgba(92,212,255,.4);
+      background: rgba(92,212,255,.12);
+      color: #e6f2ff;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: .3px;
+      cursor: default;
+    }
+    .lb-filters { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 18px; }
+    .lb-filter { display: flex; flex-direction: column; gap: 8px; }
+    .lb-filter-label { font-size: 13px; letter-spacing: .25px; text-transform: uppercase; color: #9ab6c9; }
+    .lb-filter-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+    .lb-filter-btn {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: #e6f2ff;
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 13px;
+      letter-spacing: .2px;
+      cursor: pointer;
+      transition: background .2s, border-color .2s, color .2s, box-shadow .2s;
+    }
+    .lb-filter-btn:hover {
+      border-color: rgba(92,212,255,.6);
+      box-shadow: 0 4px 12px rgba(92,212,255,.25);
+    }
+    .lb-filter-btn.is-active {
+      background: #5cd4ff;
+      color: #0b1520;
+      border-color: rgba(92,212,255,.85);
+      box-shadow: 0 8px 18px rgba(92,212,255,.35);
+      font-weight: 700;
+    }
+    .lb-vertical {
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      background: rgba(15,29,42,.9);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+    }
+    .lb-vertical h3 { margin: 0 0 10px; font-size: 16px; letter-spacing: .3px; color: #c6e6ff; }
+    .lb-status { font-size: 14px; margin: 0 0 12px; }
+    .lb-status--info { color: #bcd9ff; }
+    .lb-status--loading { color: #9ad0ff; }
+    .lb-status--success { color: #8ef59d; }
+    .lb-status--error { color: #ff8e8e; }
+    .lb-status--warning { color: #ffd27d; }
+    .lb-list { list-style: none; padding: 0; margin: 0; }
+    .lb-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 8px 4px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      font-size: 14px;
+    }
+    .lb-list li:first-child { border-top: none; }
+    .lb-rank { font-weight: 700; min-width: 3.4em; }
+    .lb-name { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .lb-score { color: #9ab6c9; }
+    .lb-note { font-size: 13px; color: #9ab6c9; margin: 16px 0 0; }
+    .lb-note a { color: #5cd4ff; }
+
+    @media (max-width: 920px) {
+      #lexi-main { width: 92vw; margin: 20px auto 80px; }
+      .lb-filter-buttons { gap: 6px; }
+      .lb-filter-btn { padding: 6px 12px; font-size: 12px; }
+      .lb-vertical { padding: 16px; }
+      .lb-vertical h3 { font-size: 15px; }
+      .lb-list li { font-size: 13px; }
+    }
+
     .tabs-container { margin-top: 20px; }
     .tabs { display: flex; gap: 10px; flex-wrap: wrap; }
-    .tab-button { padding: 8px 16px; border-radius: 6px; border: 1px solid #ddd; background: #f4f4f4; cursor: pointer; }
-    .tab-button.active { background: #4c8bf5; color: #fff; border-color: #4c8bf5; }
+    .tab-button {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      color: #e6f2ff;
+      cursor: pointer;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+    .tab-button:hover { border-color: rgba(92,212,255,.6); }
+    .tab-button.active {
+      background: #5cd4ff;
+      color: #0b1520;
+      border-color: rgba(92,212,255,.85);
+      font-weight: 700;
+    }
     .tab-content { display: none; margin-top: 16px; }
     .tab-content.active { display: block; }
   </style>
