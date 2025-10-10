@@ -15,7 +15,11 @@
         <a class="brand" href="/"><div class="logo">IT</div><strong>Irori's Toybox</strong></a>
         <nav>
           <a class="link" href="/">Home</a>
+          <a class="link" href="/lexiblaster/">Lexi Blaster</a>
           <a class="link" href="/leaderboard/">ランキング</a>
+          <a class="link" href="/terms/">Terms</a>
+          <a class="link" href="/privacy/">プライバシー</a>
+          <a class="link" href="/contact/">お問い合わせ</a>
         </nav>
       </div>`;
     return;
