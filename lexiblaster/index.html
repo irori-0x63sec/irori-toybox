@@ -63,7 +63,6 @@
       <div class="lexi-headline">
         <h1>英単語タイピングゲーム「Lexi Blaster」</h1>
         <p>完全無料・登録不要で遊べる英語学習タイピングゲーム。CEFR A1〜C1 を中心に <strong>約5,000語</strong>を収録しています。</p>
-        <p class="lexi-links"><a href="/">Irori's Toybox トップへ</a> / <a href="#leaderboard">ランキングを見る</a></p>
       </div>
       <div id="wrap">
         <canvas id="gameCanvas" width="800" height="720"></canvas>
@@ -83,54 +82,12 @@
       </div>
     </section>
 
-    <section id="leaderboard">
-      <div class="lb-card" data-game="lexi-blaster">
-        <h2>ランキング</h2>
-        <p class="lb-lead">英単語タイピングゲームのハイスコアをモードと言語レベル別に表示します。まずは条件を選んで TOP20 を確認！</p>
-
-        <div class="lb-games" role="tablist" aria-label="ゲーム選択">
-          <button type="button" class="lb-game-btn" aria-selected="true">Lexi Blaster</button>
-        </div>
-
-        <div class="lb-filters" aria-label="ランキング条件">
-          <div class="lb-filter" data-filter="mode">
-            <span class="lb-filter-label">モード</span>
-            <div class="lb-filter-buttons" role="group" aria-label="モードの選択">
-              <button type="button" class="lb-filter-btn" data-mode="en_en">EN→EN</button>
-              <button type="button" class="lb-filter-btn" data-mode="jp_en">JP→EN</button>
-            </div>
-          </div>
-          <div class="lb-filter" data-filter="level">
-            <span class="lb-filter-label">レベル</span>
-            <div class="lb-filter-buttons" role="group" aria-label="レベルの選択">
-              <button type="button" class="lb-filter-btn" data-level="A1">A1</button>
-              <button type="button" class="lb-filter-btn" data-level="A2">A2</button>
-              <button type="button" class="lb-filter-btn" data-level="A3">A3</button>
-              <button type="button" class="lb-filter-btn" data-level="B1">B1</button>
-              <button type="button" class="lb-filter-btn" data-level="B2">B2</button>
-              <button type="button" class="lb-filter-btn" data-level="B3">B3</button>
-              <button type="button" class="lb-filter-btn" data-level="C1">C1</button>
-              <button type="button" class="lb-filter-btn" data-level="C2">C2</button>
-              <button type="button" class="lb-filter-btn" data-level="C3">C3</button>
-            </div>
-          </div>
-        </div>
-
-        <div id="lb-embed" class="lb-vertical" hidden>
-          <h3 id="lb-embed-heading">ランキング（A1 / EN→EN）</h3>
-          <div id="lb-embed-status" class="lb-status" hidden></div>
-          <ol id="lb-embed-list" class="lb-list"></ol>
-        </div>
-
-        <p class="lb-note">※ 登録したハンドルネームとスコアは公開されます。不正や誤登録を見つけた場合は <a href="/contact/">お問い合わせフォーム</a> までご連絡ください。</p>
-      </div>
-    </section>
-
     <section id="info">
       <div class="tabs-container">
         <div class="tabs">
           <button class="tab-button active" data-tab="about">About</button>
           <button class="tab-button" data-tab="howto">操作説明</button>
+          <button class="tab-button" data-tab="leaderboard">ランキング</button>
         </div>
 
         <div id="about" class="tab-content active">
@@ -157,6 +114,50 @@
             <li>終了後にスコア送信 → ランキング登録</li>
           </ol>
           <p>※ PC推奨。モバイルは表示・説明の閲覧を中心に対応中です。</p>
+        </div>
+
+
+        <div id="leaderboard" class="tab-content" aria-labelledby="tab-leaderboard">
+          <div class="lb-card" data-game="lexi-blaster">
+            <h3>ランキング</h3>
+            <p class="lb-lead">英単語タイピングゲームのハイスコアをモードと言語レベル別に表示します。まずは条件を選んで TOP20 を確認！</p>
+        
+            <div class="lb-games" role="tablist" aria-label="ゲーム選択">
+              <button type="button" class="lb-game-btn" aria-selected="true">Lexi Blaster</button>
+            </div>
+        
+            <div class="lb-filters" aria-label="ランキング条件">
+              <div class="lb-filter" data-filter="mode">
+                <span class="lb-filter-label">モード</span>
+                <div class="lb-filter-buttons" role="group" aria-label="モードの選択">
+                  <button type="button" class="lb-filter-btn" data-mode="en_en">EN→EN</button>
+                  <button type="button" class="lb-filter-btn" data-mode="jp_en">JP→EN</button>
+                </div>
+              </div>
+              <div class="lb-filter" data-filter="level">
+                <span class="lb-filter-label">レベル</span>
+                <div class="lb-filter-buttons" role="group" aria-label="レベルの選択">
+                  <button type="button" class="lb-filter-btn" data-level="A1">A1</button>
+                  <button type="button" class="lb-filter-btn" data-level="A2">A2</button>
+                  <button type="button" class="lb-filter-btn" data-level="A3">A3</button>
+                  <button type="button" class="lb-filter-btn" data-level="B1">B1</button>
+                  <button type="button" class="lb-filter-btn" data-level="B2">B2</button>
+                  <button type="button" class="lb-filter-btn" data-level="B3">B3</button>
+                  <button type="button" class="lb-filter-btn" data-level="C1">C1</button>
+                  <button type="button" class="lb-filter-btn" data-level="C2">C2</button>
+                  <button type="button" class="lb-filter-btn" data-level="C3">C3</button>
+                </div>
+              </div>
+            </div>
+        
+            <div id="lb-embed" class="lb-vertical" hidden>
+              <h4 id="lb-embed-heading">ランキング（A1 / EN→EN）</h4>
+              <div id="lb-embed-status" class="lb-status" hidden></div>
+              <ol id="lb-embed-list" class="lb-list"></ol>
+            </div>
+        
+            <p class="lb-note">※ 登録したハンドルネームとスコアは公開されます。不正や誤登録を見つけた場合は <a href="/contact/">お問い合わせフォーム</a> までご連絡ください。</p>
+          </div>
         </div>
       </div>
     </section>
@@ -259,6 +260,7 @@
   <script src="canvas.js" defer></script>
 
   <!-- ランキング（スペース抜け修正・defer 追加。キャッシュ破りのクエリ更新推奨） -->
+
   <script
     src="/lexiblaster/leaderboard.js?v=20250925b"
     data-api-base="https://lb.irori-toybox.com"
@@ -557,20 +559,49 @@
     .tab-content { display: none; margin-top: 16px; }
     .tab-content.active { display: block; }
   </style>
-
+  
   <script>
     (function () {
-      var buttons = document.querySelectorAll('.tab-button');
-      var contents = document.querySelectorAll('.tab-content');
-      buttons.forEach(function(btn){
-        btn.addEventListener('click', function(){
-          buttons.forEach(function(b){ b.classList.remove('active'); });
-          contents.forEach(function(c){ c.classList.remove('active'); });
-          btn.classList.add('active');
-          document.getElementById(btn.dataset.tab).classList.add('active');
+      const buttons  = Array.from(document.querySelectorAll('.tab-button'));
+      const contents = Array.from(document.querySelectorAll('.tab-content'));
+  
+      function activate(name){
+        buttons.forEach(b => {
+          const on = b.dataset.tab === name;
+          b.classList.toggle('active', on);
+          b.setAttribute('aria-selected', on ? 'true' : 'false');
         });
+        contents.forEach(c => {
+          const on = c.id === name;
+          c.classList.toggle('active', on);
+          c.hidden = !on;
+        });
+        // ハッシュ更新（#tab=xxx）
+        try {
+          const url = new URL(location.href);
+          url.hash = `tab=${name}`;
+          history.replaceState(null, '', url.toString());
+        } catch {}
+      }
+  
+      // クリックで切替
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => activate(btn.dataset.tab));
+      });
+  
+      // 初期：ハッシュ指定 or デフォルト=about
+      function parseInitial(){
+        const m = (location.hash || '').match(/tab=(about|howto|leaderboard)/);
+        return (m && m[1]) ? m[1] : 'about';
+      }
+      activate(parseInitial());
+  
+      // 戻る/進む対応
+      window.addEventListener('hashchange', () => {
+        const current = parseInitial();
+        activate(current);
       });
     })();
   </script>
-</body>
+  </body>
 </html>
