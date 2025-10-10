@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <title>英単語タイピングゲーム｜Lexi Blaster - 無料で遊べる英語学習ブラウザゲーム</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="英単語タイピングゲーム『Lexi Blaster』は、無料で遊べる英語学習ブラウザゲーム。英単語をタイピングして敵を撃ち抜きながら語彙力アップ！ランキング機能付きで全国のプレイヤーと競える。" />
+  <meta name="description" content="英単語約5,000語を収録する英単語タイピングゲーム『Lexi Blaster』。完全無料・登録不要で遊べる英語学習ブラウザゲーム。ランキング機能付きで全国のプレイヤーと競える。" />
   <link rel="canonical" href="https://irori-toybox.com/lexiblaster/" />
 
   <!-- Open Graph -->
   <meta property="og:title" content="英単語タイピングゲーム｜Lexi Blaster" />
-  <meta property="og:description" content="無料で遊べる英語学習ブラウザゲーム。英単語をタイピングして敵を撃ち抜け！ランキング対応。" />
+  <meta property="og:description" content="約5,000語を収録した無料の英単語タイピングゲーム。英単語をタイピングして敵を撃ち抜け！ランキング対応。" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://irori-toybox.com/lexiblaster/" />
   <meta property="og:image" content="https://irori-toybox.com/lexiblaster/social/lexi-blaster-og.png" />
@@ -19,7 +19,7 @@
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="英単語タイピングゲーム｜Lexi Blaster" />
-  <meta name="twitter:description" content="無料で遊べる英語学習ブラウザゲーム。ランキング対応。" />
+  <meta name="twitter:description" content="約5,000語を収録した無料の英単語タイピングゲーム。ランキング対応。" />
   <meta name="twitter:image" content="https://irori-toybox.com/lexiblaster/social/lexi-blaster-og.png" />
 
   <!-- Favicon（404対策：/lexiblaster/favicon.ico を用意した場合はこちらを使う） -->
@@ -41,7 +41,7 @@
     "@type": "VideoGame",
     "name": "Lexi Blaster",
     "url": "https://irori-toybox.com/lexiblaster/",
-    "description": "英単語タイピングゲーム『Lexi Blaster』は、無料で遊べる英語学習ブラウザゲーム。英単語をタイピングして敵を撃ち抜きながら語彙力アップ！ランキング機能付きで全国のプレイヤーと競える。",
+    "description": "英単語約5,000語を収録する無料の英語学習タイピングゲーム。英単語をタイピングして敵を撃ち抜きながら語彙力アップ！ランキング機能付きで全国のプレイヤーと競える。",
     "genre": ["Educational", "Typing", "English Learning"],
     "operatingSystem": "Web Browser",
     "applicationCategory": "Game",
@@ -67,6 +67,39 @@
 
   <div id="wrap">
     <canvas id="gameCanvas" width="800" height="720"></canvas>
+  </div>
+
+  <div class="tabs-container">
+    <div class="tabs">
+      <button class="tab-button active" data-tab="about">About</button>
+      <button class="tab-button" data-tab="howto">操作説明</button>
+    </div>
+
+    <div id="about" class="tab-content active">
+      <h3>Lexi Blaster とは？</h3>
+      <p>
+        Lexi Blaster は、英語の語彙をゲームで楽しく学べる無料Webアプリです。<br>
+        CEFR A1〜C1 を中心に、<strong>約5,000語</strong>を収録。タイピングで隕石を撃ち落とすプレイにより、
+        想起 → 綴り → 即時フィードバックのサイクルを短時間で回せるように設計されています。
+      </p>
+      <ul>
+        <li><strong>完全無料・登録不要</strong></li>
+        <li>収録単語数：<strong>約5,000語</strong>（今後拡張予定）</li>
+        <li>ランキング機能（レベル帯/モードに対応）</li>
+        <li>アップデート予定：熟語・例文・発音練習モードの拡張</li>
+      </ul>
+    </div>
+
+    <div id="howto" class="tab-content">
+      <h3>操作説明</h3>
+      <ol>
+        <li>スタートボタンでゲーム開始</li>
+        <li>表示された意味/ヒントに合う英単語を正確にタイプ</li>
+        <li>正解で撃破＆コンボ加算／ミスでスコア減少</li>
+        <li>終了後にスコア送信 → ランキング登録</li>
+      </ol>
+      <p>※ PC推奨。モバイルは表示・説明の閲覧を中心に対応中です。</p>
+    </div>
   </div>
 
   <!-- 共有ボタン（ゲーム終了時に表示） -->
@@ -104,13 +137,8 @@
     <button id="cookie-open-settings" class="linklike">Cookie設定</button>
   </div>
 
-  <!-- 広告プレースホルダ（中身は後で管理画面のタグを入れる） -->
-  <div class="ad-area" aria-label="広告エリア">
-    <div class="ad-row">
-      <div class="ad-slot" id="ad-left"><span class="ad-ph">AD 300×250 / 320×50 / 728×90 など</span></div>
-      <div class="ad-slot" id="ad-right"><span class="ad-ph">AD 300×250 / 320×50 / 728×90 など</span></div>
-    </div>
-  </div>
+  <!-- 審査中プレースホルダ（表示は最小限） -->
+  <div class="ad-placeholder" aria-hidden="true" style="display:none;"></div>
 
   <!-- モバイル非対応オーバーレイ -->
   <div id="unsupported-overlay" class="unsupported-overlay" hidden>
@@ -181,6 +209,29 @@
   ></script>
 
   <script src="main.js" defer></script>
-  <script src="ads-loader.js" defer></script>
+
+  <style>
+    .tabs-container { margin-top: 20px; }
+    .tabs { display: flex; gap: 10px; flex-wrap: wrap; }
+    .tab-button { padding: 8px 16px; border-radius: 6px; border: 1px solid #ddd; background: #f4f4f4; cursor: pointer; }
+    .tab-button.active { background: #4c8bf5; color: #fff; border-color: #4c8bf5; }
+    .tab-content { display: none; margin-top: 16px; }
+    .tab-content.active { display: block; }
+  </style>
+
+  <script>
+    (function () {
+      var buttons = document.querySelectorAll('.tab-button');
+      var contents = document.querySelectorAll('.tab-content');
+      buttons.forEach(function(btn){
+        btn.addEventListener('click', function(){
+          buttons.forEach(function(b){ b.classList.remove('active'); });
+          contents.forEach(function(c){ c.classList.remove('active'); });
+          btn.classList.add('active');
+          document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
