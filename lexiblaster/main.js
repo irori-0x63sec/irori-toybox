@@ -29,6 +29,8 @@ let wordList   = [];
 let activeList = [];
 let idx = 0;
 
+let customSession = null;   // {tag, words:[...]} カスタムモード進行中の単語セット（null=通常モード）
+
 let score = 0;
 let lives = 3;
 let isGameOver = false;
@@ -266,6 +268,11 @@ function getQA(w){
   const jaAns  = (w.answer_jp || w.answer_ja || "").toLowerCase();
   const hintEN = (w.hint_en || w.hint || "").trim();
   const hintJA = (w.hint_ja || "").trim();
+  if (currentMode === "custom") {
+    // 単語ごとに利用可能なヒントで出題（JP→EN / EN→EN 混在に対応）
+    const top = hintJA ? `ヒント: ${hintJA}` : `Hint: ${hintEN || "—"}`;
+    return { top, answer: enAns };
+  }
   return (currentMode==="jp_en") ? { top:`ヒント: ${hintJA || "—"}`, answer: enAns }
        : (currentMode==="en_jp") ? { top:`Hint: ${hintEN || "—"}`,   answer: jaAns }
                                  : { top:`Hint: ${hintEN || "—"}`,   answer: enAns };
@@ -330,9 +337,36 @@ function onSelectLang(key){ currentMode = key; }
 function onToggleWeak(on){ weakOnly = !!on; }
 function onToggleSRS(on){  srsMode  = !!on; }
 
+function startRound(){
+  score=0; lives=3; isGameOver=false;
+  Score.tracker.reset(); Typing.reset();
+  streak.current = 0; streak.best = 0;
+  startedAt = performance.now(); updateHUD();
+  idx = pickNextIndex();
+  loadWord();
+}
+
 async function onStartGame(){
   try{
     loadScores();
+
+    // ---- カスタムモード（ユーザー登録単語・ファイル取得なし） ----
+    if (customSession && Array.isArray(customSession.words) && customSession.words.length){
+      currentBand  = "CUSTOM";
+      currentMode  = "custom";
+      currentLevel = customSession.tag;
+      wordList = customSession.words.map(w => ({
+        ...w,
+        band: "CUSTOM",
+        level: customSession.tag,
+        correctStreak: 0,
+        lastMistake: 99,
+      }));
+      buildActiveList();
+      startRound();
+      return;
+    }
+
     const path = VOCAB_FILES[currentBand] || VOCAB_FILES.A;
     const res  = await fetch(path);
     if (!res.ok) { updateHintsTopBottom("Hint: (load error)", ""); return; }
@@ -345,19 +379,26 @@ async function onStartGame(){
       if(!w.level) w.level = `${currentBand}1`;
     }
     buildActiveList();
-
-    score=0; lives=3; isGameOver=false;
-    Score.tracker.reset(); Typing.reset();
-    streak.current = 0; streak.best = 0;
-    startedAt = performance.now(); updateHUD();
-
-    idx = pickNextIndex();
-    loadWord();
+    startRound();
   }catch(e){
     console.error("[onStartGame] error", e);
     updateHintsTopBottom("Hint: (load error)", "");
   }
 }
+
+// ---- カスタムモード起動（custom.js から呼ばれる） ----
+function startCustom(words, tag){
+  if (!Array.isArray(words) || !words.length) return false;
+  customSession = { tag: String(tag || 'CUSTOM'), words: words.slice() };
+  const useJa = words.some(w => (w.hint_ja || '').trim());
+  window.canvasGame?.setFlow({
+    selectedLevel: customSession.tag,
+    selectedLang: useJa ? 'jp_en' : 'en_en',  // フッターのヒント文字サイズ用
+    started: true, gameOver: false, phase: 'countdown'
+  });
+  return true;
+}
+window.lexiGame = Object.assign(window.lexiGame || {}, { startCustom });
 
 function onRestart(){
   try { Score.overlay.hide(); } catch(_) {}
@@ -369,6 +410,7 @@ function onRestart(){
 }
 function onReturnToTitle(){
   try { Score.overlay.hide(); } catch(_) {}
+  customSession = null;   // カスタムを終了し通常モードに戻す
   score=0; lives=3; isGameOver=false;
   Typing.reset();
   streak.current = 0; streak.best = 0;
@@ -410,9 +452,10 @@ window.addEventListener("meteorHitBase", ()=>{
     }
     const finalScore = Math.max(0, Math.round(Score.tracker.total()));
     const pb = updatePersonalBest(finalScore);
+    const isCustom = currentMode === 'custom';
     const meta = {
       gameName: 'LexiBlaster',
-      levelName: currentLevel,
+      levelName: isCustom ? `CUSTOM / ${currentLevel}` : currentLevel,
       level: currentLevel,
       mode: currentMode,
       modeLabel: describeMode(currentMode),
@@ -422,7 +465,8 @@ window.addEventListener("meteorHitBase", ()=>{
       streak: { current: streak.current, best: streak.best },
       personalBest: pb.isPersonalBest,
       highestScore: pb.highestScore,
-      previousBest: pb.previousBest
+      previousBest: pb.previousBest,
+      leaderboard: !isCustom   // カスタムはオンラインランキング非対応
     };
     const shareUrl = `${location.origin}${location.pathname}`;
     Score.overlay.show({ tracker: Score.tracker, meta, url: shareUrl });
@@ -462,6 +506,7 @@ function describeMode(modeKey){
     case 'en_jp': return 'EN→JP';
     case 'jp_en': return 'JP→EN';
     case 'en_en': return 'EN→EN';
+    case 'custom': return 'CUSTOM';
     default: return modeKey || '';
   }
 }
@@ -502,11 +547,12 @@ function describeMode(modeKey){
   document.addEventListener('lb:consent', (e)=>{
     const choice = e?.detail?.choice;
     if (choice === 'reject') {
-      try { localStorage.removeItem('lb_scores_v1'); localStorage.removeItem('bgmMuted'); } catch {}
+      try { localStorage.removeItem('lb_scores_v1'); localStorage.removeItem('bgmMuted'); localStorage.removeItem('lb_custom_words_v1'); } catch {}
       // メモリ上の状態もリセット
       userScores = {};
       bgmMuted = false;
       try { toggleBGMMute(); } catch(_) {}
+      try { window.lexiCustom?.reset?.(); } catch(_) {}
     }
   });
 })();
