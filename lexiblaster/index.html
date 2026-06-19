@@ -65,6 +65,9 @@
         <canvas id="gameCanvas" width="800" height="720"></canvas>
       </div>
       <p class="game-links"><a href="#leaderboard">ランキングを見る</a> / <a href="/">Irori's Toybox トップ</a></p>
+      <p class="custom-mode-cta">
+        <button id="customModeBtn" type="button" class="custom-mode-btn">🛠 カスタムモード（自分の単語で練習）</button>
+      </p>
       <!-- 共有ボタン（ゲーム終了時に表示） -->
       <button id="shareXBtn" class="share-x-btn" hidden>🡕 Xで共有</button>
       <button id="shareLineBtn" class="share-line-btn" hidden>🟩 LINEで共有</button>
@@ -213,6 +216,9 @@
     defer
   ></script>
 
+  <!-- カスタムモード（CSV登録・タグ練習。main.js より前で window.lexiCustom を用意） -->
+  <script src="custom.js" defer></script>
+
   <script src="main.js" defer></script>
 
   <style>
@@ -222,6 +228,9 @@
     .tab-button.active { background: #4c8bf5; color: #fff; border-color: #4c8bf5; }
     .tab-content { display: none; margin-top: 16px; }
     .tab-content.active { display: block; }
+    .custom-mode-cta { margin: 12px 0 0; text-align: center; }
+    .custom-mode-btn { font-family: inherit; font-size: 14px; padding: 10px 16px; border-radius: 8px; border: 2px solid #5cd4ff; background: #143a4f; color: #cfe8ff; cursor: pointer; }
+    .custom-mode-btn:hover { background: #1b4a63; }
   </style>
 
   <script>

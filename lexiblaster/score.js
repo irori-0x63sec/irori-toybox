@@ -346,13 +346,18 @@
       this.el.style.display = 'grid';
 
       const leaderboardRoot = this.el.querySelector('#lb-leaderboard');
-      if (leaderboardRoot) {
+      const leaderboardEnabled = meta.leaderboard !== false; // カスタムモードは false
+      if (leaderboardRoot && leaderboardEnabled) {
         const modeKey = typeof meta.mode === 'string' ? meta.mode : '';
         const levelKey = typeof meta.level === 'string' ? meta.level : (typeof meta.levelName === 'string' ? meta.levelName : '');
         if (modeKey) leaderboardRoot.dataset.mode = modeKey;
         if (levelKey) leaderboardRoot.dataset.level = levelKey;
       }
-      this._dispatchLeaderboard('show', { tracker, meta, total, root: leaderboardRoot, limit: 20 });
+      if (leaderboardEnabled) {
+        this._dispatchLeaderboard('show', { tracker, meta, total, root: leaderboardRoot, limit: 20 });
+      } else if (leaderboardRoot) {
+        leaderboardRoot.hidden = true;
+      }
     }
 
     hide() {
